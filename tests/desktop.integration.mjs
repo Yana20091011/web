@@ -24,6 +24,9 @@ try {
   for (const page of [designer, companion])
     page.on('pageerror', (error) => errors.push(error.message));
   await expect(designer.getByRole('heading', { name: 'Meet Mochi' })).toBeVisible();
+  const { version } = JSON.parse(await readFile('package.json', 'utf8'));
+  await expect(designer.getByTestId('app-version')).toHaveText(`v${version}`);
+  expect((await designer.evaluate(() => window.keycritter.getState())).version).toBe(version);
   await expect(companion.getByTestId('desktop-pet')).toBeVisible();
   const flags = await desktop.evaluate(({ BrowserWindow }) => {
     const w = BrowserWindow.getAllWindows().find((w) =>
@@ -104,7 +107,11 @@ try {
   // Closing the designer hides it without quitting the pet or keyboard hook.
   await desktop.evaluate(({ BrowserWindow }) =>
     BrowserWindow.getAllWindows()
-      .find((w) => w.webContents.getURL().endsWith('/index.html'))
+      .find(
+        (w) =>
+          w.webContents.getURL().startsWith('keycritter://app/index.html') &&
+          !w.webContents.getURL().includes('#companion'),
+      )
       .close(),
   );
   await companion.waitForTimeout(150);

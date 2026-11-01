@@ -288,6 +288,9 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
           <span>
             <span className="brand-name">
               KeyCritter<span className="brand-dot">.</span>
+              <span className="app-version" data-testid="app-version" title="Application version">
+                v{__APP_VERSION__}
+              </span>
             </span>
             <span className="brand-tagline">Your tiny typing companion.</span>
           </span>

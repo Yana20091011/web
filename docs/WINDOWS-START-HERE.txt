@@ -2,6 +2,11 @@ KEYCRITTER - WINDOWS DESKTOP PET
 
 For Windows 10/11, 64-bit (x64).
 
+This download is version 1.1.1. The logo and window title show v1.1.1.
+Quit any older KeyCritter from the system tray before opening this update.
+The included verified-ui.png and verified-ai-ui.png are screenshots captured
+while testing this exact portable executable on Windows.
+
 1. Extract the downloaded ZIP to a folder on your computer.
 2. Open the KeyCritter-Windows application (.exe). No installer or Node.js is needed.
 3. In the designer, click Enable keyboard reactions.

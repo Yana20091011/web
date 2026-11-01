@@ -10,6 +10,16 @@ import './studio.css';
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 async function start() {
   const desktopState = await window.keycritter?.getState();
+  document.title = `KeyCritter v${__APP_VERSION__} — Your tiny typing companion`;
+  if (desktopState?.version && desktopState.version !== __APP_VERSION__) {
+    root.render(
+      <p role="alert">
+        The app and interface versions do not match. Quit KeyCritter completely and reopen the
+        executable from the latest extracted download.
+      </p>,
+    );
+    return;
+  }
   const companion = Boolean(desktopState && location.hash === '#companion');
   if (companion) document.documentElement.dataset.surface = 'companion';
   root.render(

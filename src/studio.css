@@ -437,3 +437,17 @@
     font-size: 12px;
   }
 }
+.app-version {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 3px 6px;
+  border: 1px solid #ded0ed;
+  background: #f0e6fa;
+  color: #8a64b4;
+  border-radius: 5px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  margin-left: 8px;
+  line-height: 1.15;
+}

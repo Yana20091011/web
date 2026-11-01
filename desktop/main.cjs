@@ -11,6 +11,8 @@ const {
   net,
   safeStorage,
   shell,
+  session,
+  dialog,
 } = require('electron');
 const { readFile, writeFile, rename, mkdir } = require('node:fs/promises');
 const { join, extname } = require('node:path');
@@ -38,7 +40,15 @@ let keyStore, generation;
 let writeQueue = Promise.resolve();
 const settingsFile = () => join(app.getPath('userData'), 'pet-settings.json');
 const windows = () => [designer, companion].filter((w) => w && !w.isDestroyed());
-const state = () => ({ pet, listening, starting, visible, error, platform: process.platform });
+const state = () => ({
+  pet,
+  listening,
+  starting,
+  visible,
+  error,
+  platform: process.platform,
+  version: app.getVersion(),
+});
 
 function save() {
   clearTimeout(saveTimer);
@@ -160,6 +170,7 @@ function showDesigner() {
   designer.focus();
 }
 function secureWindow(window) {
+  window.webContents.on('page-title-updated', (event) => event.preventDefault());
   window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   window.webContents.on('will-navigate', (event) => event.preventDefault());
   window.webContents.on('will-attach-webview', (event) => event.preventDefault());
@@ -176,13 +187,13 @@ function createDesigner() {
     height: 1000,
     minWidth: 760,
     minHeight: 650,
-    title: 'KeyCritter — Pet designer',
+    title: `KeyCritter v${app.getVersion()} — Pet designer`,
     backgroundColor: '#f9f7f2',
     autoHideMenuBar: true,
     webPreferences: webPreferences(),
   });
   secureWindow(designer);
-  designer.loadURL('keycritter://app/index.html');
+  designer.loadURL(`keycritter://app/index.html?v=${app.getVersion()}`);
   designer.on('close', (event) => {
     if (!quitting) {
       event.preventDefault();
@@ -213,7 +224,7 @@ function createCompanion() {
   companion.setAlwaysOnTop(true, 'floating');
   companion.setIgnoreMouseEvents(true, { forward: true });
   secureWindow(companion);
-  companion.loadURL('keycritter://app/index.html#companion');
+  companion.loadURL(`keycritter://app/index.html?v=${app.getVersion()}#companion`);
   companion.once('ready-to-show', () => companion.showInactive());
   companion.on('moved', () => {
     const [x, y] = companion.getPosition();
@@ -328,12 +339,25 @@ ipcMain.on('pet:interactive', (event, interactive) => {
     companion.setIgnoreMouseEvents(!interactive, { forward: true });
 });
 
-if (!app.requestSingleInstanceLock()) app.quit();
-else {
+const ownsInstanceLock = app.requestSingleInstanceLock();
+if (!ownsInstanceLock) {
+  app.whenReady().then(() => {
+    dialog.showMessageBoxSync({
+      type: 'info',
+      title: `KeyCritter v${app.getVersion()} did not start`,
+      message: 'Another copy of KeyCritter is already running.',
+      detail: `This executable is version ${app.getVersion()}, but the existing copy is still in control. Quit KeyCritter using the × beside Show pet or its system-tray menu, then open this executable again. Your saved pets will be kept.`,
+      buttons: ['OK'],
+    });
+    app.quit();
+  });
+} else {
   app.on('second-instance', showDesigner);
   app
     .whenReady()
     .then(async () => {
+      // Clear only the HTTP cache; keep saved pets, images, and local settings.
+      await session.defaultSession.clearCache().catch(() => {});
       keyStore = createKeyStore({ directory: app.getPath('userData'), safeStorage });
       await keyStore.load();
       try {
@@ -360,6 +384,7 @@ else {
           return new Response(await readFile(file), {
             headers: {
               'Content-Type': types[extname(file)] || 'application/octet-stream',
+              'Cache-Control': 'no-store, max-age=0',
               'Content-Security-Policy':
                 "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'",
             },
@@ -384,6 +409,7 @@ app.on('window-all-closed', () => {
   /* Companion continues in the tray. */
 });
 app.on('before-quit', (event) => {
+  if (!ownsInstanceLock) return;
   if (quitting) return;
   event.preventDefault();
   quitting = true;

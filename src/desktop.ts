@@ -2,6 +2,7 @@ import type { Action, PetDesign, PetPose } from './Pet';
 import type { Reaction } from './model';
 
 export interface DesktopState {
+  version: string;
   pet: { design: PetDesign; reactions: Reaction[] };
   listening: boolean;
   starting: boolean;

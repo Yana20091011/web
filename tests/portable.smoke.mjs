@@ -82,6 +82,8 @@ try {
   await page.screenshot({ path: 'release/verified-ai-ui.png', fullPage: true });
   let windowLayer = { tested: false };
   if (process.platform === 'win32') {
+    const pinInfo = await page.evaluate(() => window.keycritter.getPinInfo());
+    expect(pinInfo.visible).toBe(true);
     foregroundBrowser = await chromium.launch({
       channel: 'msedge',
       headless: false,
@@ -104,8 +106,8 @@ try {
             '-NoProfile',
             '-File',
             resolve('tests/windows-layer-check.ps1'),
-            '-PetTitle',
-            `KeyCritter v${version} — Desktop companion`,
+            '-PetHandle',
+            pinInfo.nativeHandle,
             '-BrowserTitle',
             'KeyCritter overlay browser test',
             ...(demote ? ['-Demote'] : []),

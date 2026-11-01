@@ -39,7 +39,7 @@ jobs:
         shell: pwsh
         run: |
           try {
-            & ./tests/windows-layer-check.ps1 -PetTitle 'KeyCritter diagnostic missing pet' -BrowserTitle 'KeyCritter diagnostic missing browser'
+            & ./tests/windows-layer-check.ps1 -PetHandle '0' -BrowserTitle 'KeyCritter diagnostic missing browser'
           } catch {
             Write-Output "::error title=Windows layer probe::$($_.Exception.Message)"
             exit 1

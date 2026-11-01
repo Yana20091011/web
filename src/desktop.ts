@@ -33,6 +33,12 @@ export interface DesktopBridge {
   setEnabled(enabled: boolean): Promise<DesktopState>;
   showPet(): Promise<DesktopState>;
   setPinned(pinned: boolean): Promise<DesktopState>;
+  getPinInfo(): Promise<{
+    pinned: boolean;
+    topmost: boolean;
+    visible: boolean;
+    nativeHandle: string;
+  }>;
   openDesigner(): Promise<void>;
   preview(reaction: { action: Action; phrase: string }): Promise<void>;
   setInteractive(interactive: boolean): void;

@@ -1,5 +1,5 @@
 param(
-  [Parameter(Mandatory=$true)][string]$PetTitle,
+  [Parameter(Mandatory=$true)][string]$PetHandle,
   [Parameter(Mandatory=$true)][string]$BrowserTitle,
   [switch]$Demote
 )
@@ -9,7 +9,7 @@ using System;
 using System.Text;
 using System.Runtime.InteropServices;
 public static class KeyCritterWindowLayer {
-  [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern IntPtr FindWindow(string cls, string title);
+  [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr window);
   [DllImport("user32.dll")] public static extern IntPtr GetTopWindow(IntPtr parent);
   [DllImport("user32.dll")] public static extern IntPtr GetWindow(IntPtr window, uint command);
   [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
@@ -21,7 +21,7 @@ public static class KeyCritterWindowLayer {
   [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr window, out Rect rect);
 }
 '@
-$pet = [KeyCritterWindowLayer]::FindWindow($null, $PetTitle)
+$pet = [IntPtr]::new([Int64]::Parse($PetHandle))
 $browser = [IntPtr]::Zero
 $petIndex = -1
 $browserIndex = -1
@@ -47,7 +47,7 @@ $a = New-Object KeyCritterWindowLayer+Rect
 $b = New-Object KeyCritterWindowLayer+Rect
 $hasRects = [KeyCritterWindowLayer]::GetWindowRect($pet, [ref]$a) -and [KeyCritterWindowLayer]::GetWindowRect($browser, [ref]$b)
 [ordered]@{
-  petFound = $pet -ne [IntPtr]::Zero
+  petFound = [KeyCritterWindowLayer]::IsWindow($pet)
   browserFound = $browser -ne [IntPtr]::Zero
   petVisible = $pet -ne [IntPtr]::Zero -and [KeyCritterWindowLayer]::IsWindowVisible($pet)
   petTopmost = ($style -band 8) -ne 0

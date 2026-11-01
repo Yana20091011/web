@@ -315,6 +315,18 @@ handle('pet:enabled', ['designer', 'companion'], (enabled) => {
   return state();
 });
 handle('pet:pin', ['designer', 'companion'], setPetPin);
+handle('pet:pin-info', ['designer'], () => {
+  const bytes = companion.getNativeWindowHandle();
+  return {
+    pinned,
+    topmost: companion.isAlwaysOnTop(),
+    visible: companion.isVisible(),
+    nativeHandle: (bytes.length >= 8
+      ? bytes.readBigUInt64LE(0)
+      : BigInt(bytes.readUInt32LE(0))
+    ).toString(),
+  };
+});
 handle('pet:show', ['designer', 'companion'], () => {
   visible = true;
   companion.showInactive();

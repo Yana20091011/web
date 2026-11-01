@@ -121,11 +121,102 @@ try {
   await expect(companion.getByTestId('desktop-pet')).toHaveAttribute('data-action', 'idle');
   await companion.getByRole('button', { name: 'Open pet designer' }).click();
   await expect(designer.getByRole('heading', { name: 'Meet Desktop Mochi' })).toBeVisible();
+  await designer.getByRole('button', { name: 'Upload', exact: true }).click();
+  const customImage = await designer.evaluate(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 48;
+    canvas.height = 48;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#bba2dd';
+    ctx.fillRect(8, 8, 32, 32);
+    return canvas.toDataURL('image/png');
+  });
+  await designer.getByLabel('Pet image file').setInputFiles({
+    name: 'desktop-pet.png',
+    mimeType: 'image/png',
+    buffer: Buffer.from(customImage.split(',')[1], 'base64'),
+  });
+  await expect(companion.getByTestId('desktop-pet').locator('img')).toBeVisible();
+  const poseChooser = designer.waitForEvent('filechooser');
+  await designer.getByRole('button', { name: 'Upload Cheer image', exact: true }).click();
+  await (
+    await poseChooser
+  ).setFiles({
+    name: 'cheer.png',
+    mimeType: 'image/png',
+    buffer: Buffer.from(customImage.split(',')[1], 'base64'),
+  });
+  await designer.getByRole('button', { name: 'Preview Enter reaction', exact: true }).click();
+  await expect(companion.getByTestId('desktop-pet').locator('img')).toHaveAttribute(
+    'data-pose',
+    'cheer',
+  );
+  await expect
+    .poll(() =>
+      companion.evaluate(() =>
+        window.keycritter
+          .getState()
+          .then((s) => s.pet.design.images?.cheer?.startsWith('data:image/webp')),
+      ),
+    )
+    .toBe(true);
+  const secretAccess = await companion.evaluate(() =>
+    window.keycritter.getAIStatus().then(
+      () => 'allowed',
+      () => 'denied',
+    ),
+  );
+  expect(secretAccess).toBe('denied');
+  await designer.getByRole('button', { name: 'Create with AI', exact: true }).click();
+  await designer
+    .getByLabel('OpenAI API key', { exact: true })
+    .fill('sk-test-only-not-a-real-credential');
+  await designer.getByRole('button', { name: 'Save API key', exact: true }).click();
+  const aiStatus = await designer.evaluate(() => window.keycritter.getAIStatus());
+  expect(aiStatus.configured).toBe(true);
+  expect(aiStatus.remembered).toBe(false);
+  expect(JSON.stringify(aiStatus)).not.toContain('sk-test-only');
+  expect(await designer.evaluate(() => JSON.stringify(localStorage))).not.toContain('sk-test-only');
+  // Exercise the full IPC/generation/preview path without a paid provider request.
+  await desktop.evaluate(({ net }, png) => {
+    net.fetch = async (url, options) => {
+      if (url !== 'https://api.openai.com/v1/images/edits' || !(options.body instanceof FormData))
+        throw new Error('Unexpected AI request');
+      return Response.json({ data: [{ b64_json: png }] });
+    };
+  }, customImage.split(',')[1]);
+  await designer
+    .getByLabel('Describe your buddy')
+    .fill('The same little companion looking surprised');
+  await designer.getByLabel('Generate image for pose').selectOption('surprise');
+  await designer.getByRole('button', { name: 'Generate image', exact: true }).click();
+  await expect(designer.getByAltText('Generated pet preview')).toBeVisible();
+  await designer.getByRole('button', { name: 'Use this image', exact: true }).click();
+  await expect
+    .poll(() =>
+      companion.evaluate(() =>
+        window.keycritter.getState().then((s) => !!s.pet.design.images?.surprise),
+      ),
+    )
+    .toBe(true);
+  await designer.getByRole('button', { name: 'Preview Backspace reaction', exact: true }).click();
+  await expect(companion.getByTestId('desktop-pet').locator('img')).toHaveAttribute(
+    'data-pose',
+    'surprise',
+  );
+  await designer.locator('.ai-connection > summary').click();
+  await designer.getByRole('button', { name: 'Disconnect and remove key' }).click();
+  await expect
+    .poll(() => designer.evaluate(() => window.keycritter.getAIStatus().then((s) => s.configured)))
+    .toBe(false);
+  await designer.getByRole('button', { name: 'Upload', exact: true }).click();
   await designer.getByRole('button', { name: 'Save pet', exact: true }).click();
   await designer.screenshot({ path: '/tmp/keycritter-desktop-designer.png', fullPage: true });
   await companion.screenshot({ path: '/tmp/keycritter-floating-pet.png', omitBackground: true });
   const settings = JSON.parse(await readFile(join(profile, 'pet-settings.json'), 'utf8'));
   expect(settings.pet.design.name).toBe('Desktop Mochi');
+  expect(settings.pet.design.species).toBe('custom');
+  expect(settings.pet.design.images.cheer).toMatch(/^data:image\/webp;base64,/);
   expect(Object.keys(settings).sort()).toEqual(['pet', 'version']);
   expect(JSON.stringify(settings)).not.toContain('typedText');
   expect(errors).toEqual([]);
@@ -143,13 +234,16 @@ try {
   const restored = desktop.windows().find((w) => !w.url().includes('#companion'));
   await expect(restored.getByRole('heading', { name: 'Meet Desktop Mochi' })).toBeVisible();
   await expect(restored.getByText('Reactions paused', { exact: true })).toBeVisible();
+  await expect(restored.getByTestId('active-pet')).toHaveAttribute('data-species', 'custom');
   await restored.getByLabel('Name', { exact: true }).fill('Restored buddy');
   await restored.getByRole('button', { name: 'Save pet', exact: true }).click();
   await restored.getByRole('button', { name: /My Pets/ }).click();
   await expect(restored.getByRole('article')).toHaveCount(1);
-  await expect(restored.getByRole('heading', { name: 'Restored buddy', exact: true })).toBeVisible();
+  await expect(
+    restored.getByRole('heading', { name: 'Restored buddy', exact: true }),
+  ).toBeVisible();
   console.log(
-    'PASS: transparent always-on-top pet; live designer sync; real keyboard input in another window; input preserved; designer close; pause; saved settings; restart with monitoring off; no renderer errors.',
+    'PASS: always-on-top pet; real global keyboard input; custom images and poses; mock AI generation and preview via native IPC; session-key handling; companion secret access denied; saved settings; restart; no renderer errors.',
   );
 } finally {
   await desktop?.close();

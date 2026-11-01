@@ -1,6 +1,8 @@
-export type Species = 'cat' | 'bunny' | 'blob';
+export type Species = 'cat' | 'bunny' | 'blob' | 'custom';
 export type Accessory = 'bow' | 'glasses' | 'star' | 'none';
 export type Action = 'jump' | 'cheer' | 'surprise' | 'dance' | 'sleep';
+export type PetPose = 'idle' | Action;
+export type PetImages = Partial<Record<PetPose, string>>;
 
 export interface PetDesign {
   name: string;
@@ -8,6 +10,7 @@ export interface PetDesign {
   color: string;
   size: number;
   accessory: Accessory;
+  images?: PetImages;
 }
 
 export default function Pet({
@@ -20,6 +23,17 @@ export default function Pet({
   mini?: boolean;
 }) {
   const { species, color, accessory } = design;
+  if (species === 'custom' && design.images?.idle) {
+    return (
+      <img
+        className={`pixel-pet custom-pet ${mini ? 'mini-pet' : ''}`}
+        src={(action && design.images[action]) || design.images.idle}
+        alt=""
+        draggable={false}
+        data-pose={action && design.images[action] ? action : 'idle'}
+      />
+    );
+  }
   return (
     <svg
       className={`pixel-pet ${mini ? 'mini-pet' : ''}`}

@@ -17,4 +17,10 @@ contextBridge.exposeInMainWorld('keycritter', {
   quit: () => ipcRenderer.invoke('pet:quit'),
   onState: (callback) => subscribe('pet:changed', callback),
   onReaction: (callback) => subscribe('pet:reaction', callback),
+  getAIStatus: () => ipcRenderer.invoke('ai:status'),
+  openAIKeyPage: () => ipcRenderer.invoke('ai:key-page'),
+  setAIKey: (key, remember) => ipcRenderer.invoke('ai:key', key, remember),
+  disconnectAI: () => ipcRenderer.invoke('ai:disconnect'),
+  generateImage: (request) => ipcRenderer.invoke('ai:generate', request),
+  cancelGeneration: () => ipcRenderer.invoke('ai:cancel'),
 });

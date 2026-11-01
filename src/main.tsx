@@ -5,6 +5,7 @@ import DesktopPet from './DesktopPet';
 import '@fontsource-variable/nunito-sans';
 import './styles.css';
 import './desktop.css';
+import './studio.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 async function start() {

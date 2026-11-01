@@ -1,7 +1,7 @@
 {
   "name": "keycritter",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A tiny pixel pet that keeps you company while you type.",
   "author": "KeyCritter",
   "main": "desktop/main.cjs",
@@ -14,7 +14,7 @@
     "desktop:runtime": "node node_modules/electron/install.js",
     "desktop": "npm run desktop:runtime && npm run build && electron .",
     "desktop:win": "npm run build && electron-builder --win portable --x64 --publish never",
-    "test:desktop:unit": "node --test tests/desktop-core.test.cjs",
+    "test:desktop:unit": "node --test tests/desktop-core.test.cjs tests/desktop-ai.test.cjs",
     "test:desktop": "node tests/desktop.integration.mjs",
     "test": "playwright test",
     "format": "prettier --write src desktop scripts tests *.ts *.json *.html README.md"

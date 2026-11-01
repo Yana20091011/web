@@ -2,6 +2,20 @@ const { resolve, sep } = require('node:path');
 
 const COLORS = ['#b5dbb3', '#c7b5ee', '#f1b2cb', '#f5d793', '#a9cce9'];
 const ACTIONS = ['jump', 'cheer', 'surprise', 'dance', 'sleep'];
+function validImages(images) {
+  if (!images || typeof images !== 'object' || Array.isArray(images)) return false;
+  const entries = Object.entries(images);
+  return (
+    entries.length <= 6 &&
+    entries.every(
+      ([slot, data]) =>
+        ['idle', ...ACTIONS].includes(slot) &&
+        typeof data === 'string' &&
+        data.length <= 220000 &&
+        /^data:image\/(png|webp|jpeg);base64,[A-Za-z0-9+/]+={0,2}$/.test(data),
+    )
+  );
+}
 const DEFAULT_PET = {
   design: { name: 'Mochi', species: 'cat', color: COLORS[0], size: 100, accessory: 'bow' },
   reactions: [
@@ -18,7 +32,9 @@ function validPet(pet) {
     !!d &&
     typeof d.name === 'string' &&
     d.name.length <= 24 &&
-    ['cat', 'bunny', 'blob'].includes(d.species) &&
+    ['cat', 'bunny', 'blob', 'custom'].includes(d.species) &&
+    (d.images === undefined || validImages(d.images)) &&
+    (d.species !== 'custom' || (validImages(d.images) && typeof d.images.idle === 'string')) &&
     COLORS.includes(d.color) &&
     Number.isFinite(d.size) &&
     d.size >= 70 &&
@@ -47,7 +63,14 @@ function cleanPet(pet) {
   if (!validPet(pet)) return null;
   const { name, species, color, size, accessory } = pet.design;
   return {
-    design: { name, species, color, size, accessory },
+    design: {
+      name,
+      species,
+      color,
+      size,
+      accessory,
+      ...(pet.design.images ? { images: { ...pet.design.images } } : {}),
+    },
     reactions: pet.reactions.map(({ id, key, action, phrase }) => ({ id, key, action, phrase })),
   };
 }
@@ -78,4 +101,12 @@ function assetPath(root, url) {
   return absolute.startsWith(resolve(root) + sep) ? absolute : null;
 }
 
-module.exports = { DEFAULT_PET, ACTIONS, validPet, cleanPet, clampPosition, assetPath };
+module.exports = {
+  DEFAULT_PET,
+  ACTIONS,
+  validImages,
+  validPet,
+  cleanPet,
+  clampPosition,
+  assetPath,
+};

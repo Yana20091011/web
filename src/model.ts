@@ -1,4 +1,5 @@
 import type { Action, PetDesign } from './Pet';
+import { validPetImages } from './petImages';
 
 export interface Reaction {
   id: string;
@@ -46,7 +47,9 @@ export function validDesign(v: unknown): v is PetDesign {
     isObject(v) &&
     typeof v.name === 'string' &&
     v.name.length <= 24 &&
-    ['cat', 'bunny', 'blob'].includes(v.species as string) &&
+    ['cat', 'bunny', 'blob', 'custom'].includes(v.species as string) &&
+    (v.images === undefined || validPetImages(v.images)) &&
+    (v.species !== 'custom' || (validPetImages(v.images) && typeof v.images.idle === 'string')) &&
     COLORS.some((c) => c.value === v.color) &&
     typeof v.size === 'number' &&
     v.size >= 70 &&

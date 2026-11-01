@@ -1,10 +1,10 @@
 # KeyCritter
 
-A floating pixel pet for Windows, with a cozy React designer. Customize a cat, bunny, or blob and let it react while you type in other apps.
+A floating typing pet for Windows, with a cozy React designer. Customize a pixel pet, upload your own images, or generate a new companion with an AI prompt.
 
 ## Use the Windows desktop pet
 
-1. Open `KeyCritter-Windows-1.0.0.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
+1. Open `KeyCritter-Windows-1.1.0.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
 2. Design your pet, then click **Enable keyboard reactions**. Ordinary typing makes it bounce; Space, Enter, and Backspace have special reactions by default. Add more in the reaction editor.
 3. Drag the little name label beneath your desktop pet to move it. The pet stays above other windows without taking keyboard focus.
 4. Close the designer to keep just the pet. Reopen it from the pet's **Designer** button or the KeyCritter system-tray menu, which may be under Windows' hidden-icons arrow.
@@ -16,7 +16,27 @@ Reactions start paused on every launch. There is no automatic Windows startup ta
 
 The keyboard hook runs only after you enable reactions, in a separate local process. It matches configured keys, then sends only a reaction identifier or a generic typing pulse to the pet. It does not assemble, record, or transmit typed text, and it never suppresses or injects input. Ctrl, Alt, and Windows-key shortcuts are ignored. Custom letter and symbol triggers use physical US keyboard positions.
 
-Pet design, reactions, and position are stored at `%APPDATA%\KeyCritter\pet-settings.json`. Saved pet collections live in the app's local browser storage in the same user-data folder. No account, API key, or Internet connection is needed to use the desktop app. Closing the app terminates the keyboard-hook process.
+Pet design, reactions, custom images, and position are stored at `%APPDATA%\KeyCritter\pet-settings.json`. Saved pet collections live in the app's local browser storage in the same user-data folder. The pet and image uploads work offline. AI image generation needs Internet access and your own OpenAI API key. Closing the app terminates the keyboard-hook process.
+
+## Upload your own pet
+
+Choose **Upload** in the pet designer. Add a main PNG, JPG, or WebP image (up to 8 MB). Transparent images work best; existing image backgrounds are preserved. Images are resized locally to at most 384 pixels on the longest side and compressed for storage.
+
+Add optional images for **Jump**, **Cheer**, **Surprise**, **Dance**, and **Sleep**. The pet swaps to that image when the corresponding animation is triggered. A missing pose uses the main image and its movement animation. Use the key-reaction editor to map keys to those actions and set speech bubbles. **Pixel pets** switches back to the original characters without deleting your uploaded images.
+
+## Generate a pet with AI
+
+1. In the Windows app, choose **Create with AI**.
+2. Add an OpenAI API key. **Get an OpenAI API key** opens OpenAI's key dashboard in your normal browser. API billing is separate from a ChatGPT subscription.
+3. Enter a prompt such as “A tiny lavender dragon with round glasses and a star-shaped tail, soft pixel art.” Choose a target pose and image model.
+4. If a main image exists, optionally enable **Use main image as a character reference** to send it with the prompt and request a matching character pose.
+5. Click **Generate image**, review the preview, and choose **Use this image** or **Discard**. Repeat for additional poses as desired.
+
+Each generation makes one paid image request to OpenAI, with a transparent background requested. Images are still poses; the app adds movement animations. Nothing is sent when you merely type or upload an image. Generation sends only the prompt and, if explicitly selected, the main reference image. Typing activity never goes to the AI. Supported model IDs are checked against the official OpenAI SDK image definitions; the default is `gpt-image-1.5`.
+
+API requests run in Electron's main process against the fixed `api.openai.com` image endpoints. The key is session-only by default. **Remember securely on this computer** uses Electron safeStorage/Windows DPAPI to encrypt it in `ai-key.bin`; plaintext fallback storage is not used. **Disconnect and remove key** clears the saved connection. Keys are not returned to the renderer or stored in pet settings, prompts, or browser local storage. The browser-only designer supports uploads, but deliberately does not make AI requests with a browser-stored key.
+
+AI transport, error, reference-image, and preview tests use mock responses and do not spend API credits. Live image generation requires a usable account key and model access; it has not been verified in the cloud environment without those credentials.
 
 ## Development
 
@@ -56,13 +76,13 @@ Windows-specific transparency, tray behavior, and native key handling should als
 
 ## Build the Windows download
 
-The prepared GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the completed run, and download **KeyCritter-Windows** under **Artifacts**. Extract that ZIP and follow `START-HERE.txt`. The artifact is retained for 14 days; rerun the workflow to produce another download. The workflow must first be uploaded to GitHub before this route is available.
+The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download **KeyCritter-Windows** under **Artifacts**. Extract that ZIP and follow `START-HERE.txt`. The artifact is retained for 14 days; rerun the workflow to produce another download.
 
 ```sh
 npm run desktop:win
 ```
 
-The result is `release/KeyCritter-Windows-1.0.0.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges.
+The result is `release/KeyCritter-Windows-1.1.0.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges.
 
 ## Open without installing anything
 
@@ -76,6 +96,8 @@ This HTML version cannot create a desktop overlay or receive typing from other a
 - `desktop/main.cjs`: isolated native windows, tray menu, validated IPC, settings, and keyboard-worker lifecycle.
 - `desktop/keyboard-worker.cjs`, `desktop/keys.cjs`: key matching and generic typing pulses; no typed-text storage.
 - `desktop/preload.cjs`: narrow, context-isolated renderer bridge.
+- `desktop/ai.cjs`, `desktop/ai-key-store.cjs`: fixed-endpoint AI requests and secure key storage.
+- `src/CustomPetStudio.tsx`, `src/petImages.ts`: image uploads, pose assignments, and AI previews.
 - `src/DesktopPet.tsx`: transparent floating pet.
 - `src/DesktopPanel.tsx`: desktop controls inside the designer.
 - `src/Pet.tsx`: recolorable SVG pixel characters and accessories.

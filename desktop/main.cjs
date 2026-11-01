@@ -8,10 +8,15 @@ const {
   Menu,
   nativeImage,
   utilityProcess,
+  net,
+  safeStorage,
+  shell,
 } = require('electron');
 const { readFile, writeFile, rename, mkdir } = require('node:fs/promises');
 const { join, extname } = require('node:path');
 const { DEFAULT_PET, cleanPet, clampPosition, assetPath, ACTIONS } = require('./shared.cjs');
+const { generateImage } = require('./ai.cjs');
+const { createKeyStore } = require('./ai-key-store.cjs');
 
 app.setName('KeyCritter');
 protocol.registerSchemesAsPrivileged([
@@ -29,6 +34,7 @@ let starting = false;
 let visible = true;
 let error = '';
 let saveTimer, hookTimer;
+let keyStore, generation;
 let writeQueue = Promise.resolve();
 const settingsFile = () => join(app.getPath('userData'), 'pet-settings.json');
 const windows = () => [designer, companion].filter((w) => w && !w.isDestroyed());
@@ -273,6 +279,50 @@ handle('pet:preview', ['designer'], (value) => {
   sendReaction({ action: value.action, phrase: value.phrase });
 });
 handle('pet:quit', ['designer', 'companion'], () => app.quit());
+handle('ai:status', ['designer'], () => keyStore.status());
+handle('ai:key-page', ['designer'], () =>
+  shell.openExternal('https://platform.openai.com/api-keys'),
+);
+handle('ai:key', ['designer'], async (key, remember) => {
+  try {
+    return { ok: true, status: await keyStore.set(key, remember) };
+  } catch (cause) {
+    return { ok: false, error: cause.message };
+  }
+});
+handle('ai:disconnect', ['designer'], async () => {
+  generation?.abort();
+  try {
+    return { ok: true, status: await keyStore.clear() };
+  } catch (cause) {
+    return { ok: false, error: cause.message };
+  }
+});
+handle('ai:cancel', ['designer'], () => generation?.abort());
+handle('ai:generate', ['designer'], async (request) => {
+  if (generation)
+    return { ok: false, error: 'An image is already being generated. Wait or cancel it first.' };
+  const controller = new AbortController();
+  generation = controller;
+  const timeout = setTimeout(() => controller.abort(), 180000);
+  try {
+    const image = await generateImage({
+      request,
+      key: keyStore.get(),
+      fetchImpl: (url, options) => net.fetch(url, options),
+      signal: controller.signal,
+    });
+    return { ok: true, image };
+  } catch (cause) {
+    return {
+      ok: false,
+      error: controller.signal.aborted ? 'Generation cancelled or timed out.' : cause.message,
+    };
+  } finally {
+    clearTimeout(timeout);
+    if (generation === controller) generation = undefined;
+  }
+});
 ipcMain.on('pet:interactive', (event, interactive) => {
   if (allowed(event, ['companion']) && typeof interactive === 'boolean')
     companion.setIgnoreMouseEvents(!interactive, { forward: true });
@@ -284,6 +334,8 @@ else {
   app
     .whenReady()
     .then(async () => {
+      keyStore = createKeyStore({ directory: app.getPath('userData'), safeStorage });
+      await keyStore.load();
       try {
         const saved = JSON.parse(await readFile(settingsFile(), 'utf8'));
         pet = cleanPet(saved.pet) || pet;
@@ -309,7 +361,7 @@ else {
             headers: {
               'Content-Type': types[extname(file)] || 'application/octet-stream',
               'Content-Security-Policy':
-                "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'",
+                "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'",
             },
           });
         } catch {
@@ -335,6 +387,7 @@ app.on('before-quit', (event) => {
   if (quitting) return;
   event.preventDefault();
   quitting = true;
+  generation?.abort();
   stopListening();
   clearTimeout(saveTimer);
   save().finally(() => app.quit());

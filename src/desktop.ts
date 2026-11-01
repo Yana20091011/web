@@ -1,4 +1,4 @@
-import type { Action, PetDesign } from './Pet';
+import type { Action, PetDesign, PetPose } from './Pet';
 import type { Reaction } from './model';
 
 export interface DesktopState {
@@ -13,6 +13,18 @@ export interface DesktopReaction {
   action: Action | 'tap';
   phrase: string;
 }
+export interface AIStatus {
+  configured: boolean;
+  remembered: boolean;
+  canRemember: boolean;
+}
+export type AIConnectionResult = { ok: true; status: AIStatus } | { ok: false; error: string };
+export interface ImageRequest {
+  prompt: string;
+  model: string;
+  pose: PetPose;
+  reference?: string;
+}
 export interface DesktopBridge {
   getState(): Promise<DesktopState>;
   updatePet(pet: DesktopState['pet']): Promise<DesktopState>;
@@ -24,6 +36,14 @@ export interface DesktopBridge {
   quit(): Promise<void>;
   onState(callback: (state: DesktopState) => void): () => void;
   onReaction(callback: (reaction: DesktopReaction) => void): () => void;
+  getAIStatus(): Promise<AIStatus>;
+  openAIKeyPage(): Promise<void>;
+  setAIKey(key: string, remember: boolean): Promise<AIConnectionResult>;
+  disconnectAI(): Promise<AIConnectionResult>;
+  generateImage(
+    request: ImageRequest,
+  ): Promise<{ ok: true; image: string } | { ok: false; error: string }>;
+  cancelGeneration(): Promise<void>;
 }
 declare global {
   interface Window {

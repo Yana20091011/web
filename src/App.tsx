@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import Pet, { type Accessory, type Action, type PetDesign, type Species } from './Pet';
 import DesktopPanel from './DesktopPanel';
+import CustomPetStudio from './CustomPetStudio';
 import type { DesktopState } from './desktop';
 import {
   ACTIONS,
@@ -524,6 +525,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
                       autoComplete="off"
                     />
                   </div>
+                  <CustomPetStudio design={design} onChange={setDesign} />
                   <div className="field-row color-row">
                     <span id="color-label">Color</span>
                     <div className="color-options" role="group" aria-labelledby="color-label">

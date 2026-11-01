@@ -35,6 +35,16 @@ jobs:
       - name: Check desktop settings and key matching
         run: npm run test:desktop:unit
 
+      - name: Check native window probe
+        shell: pwsh
+        run: |
+          try {
+            & ./tests/windows-layer-check.ps1 -PetTitle 'KeyCritter diagnostic missing pet' -BrowserTitle 'KeyCritter diagnostic missing browser'
+          } catch {
+            Write-Output "::error title=Windows layer probe::$($_.Exception.Message)"
+            exit 1
+          }
+
       - name: Build portable Windows app
         run: npm run desktop:win
 

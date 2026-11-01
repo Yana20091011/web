@@ -31,6 +31,7 @@ const child = spawn(
 );
 let browser;
 let foregroundBrowser;
+let lastWindowLayer;
 let launchError;
 child.on('error', (error) => {
   launchError = error;
@@ -94,8 +95,8 @@ try {
     await cdp.send('Browser.setWindowBounds', { windowId, bounds: { windowState: 'maximized' } });
     const tabB = await context.newPage();
     await tabB.setContent('<title>KeyCritter overlay browser test B</title><h1>Browser tab B</h1>');
-    const layer = (demote = false) =>
-      JSON.parse(
+    const layer = (demote = false) => {
+      const value = JSON.parse(
         execFileSync(
           'pwsh',
           [
@@ -112,6 +113,9 @@ try {
           { encoding: 'utf8' },
         ).trim(),
       );
+      lastWindowLayer = value;
+      return value;
+    };
     const isPinnedAboveBrowser = () => {
       const value = layer();
       return (
@@ -177,6 +181,16 @@ try {
   console.log(
     `PASS: ${prefix.length ? 'local runtime' : 'actual portable executable'} v${version} launched; native/renderer versions match; Upload and AI tabs work; screenshots and verification report saved.`,
   );
+} catch (error) {
+  const detail =
+    `${error.stack || error.message}\nWindow layer: ${JSON.stringify(lastWindowLayer || null)}`
+      .replace(/\u001b\[[0-9;]*m/g, '')
+      .slice(0, 10000)
+      .replace(/%/g, '%25')
+      .replace(/\r/g, '%0D')
+      .replace(/\n/g, '%0A');
+  console.error(`::error title=Packaged pet verification::${detail}`);
+  throw error;
 } finally {
   await foregroundBrowser?.close().catch(() => {});
   await browser?.close().catch(() => {});

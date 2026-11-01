@@ -1,0 +1,265 @@
+.desktop-panel {
+  padding: 19px 21px;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin: 0 0 22px;
+  flex-wrap: wrap;
+}
+.desktop-panel-icon {
+  display: grid;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  background: #e9f0e5;
+  border-radius: 13px;
+  color: #8ba081;
+  flex-shrink: 0;
+}
+.desktop-panel-copy {
+  flex: 1;
+  min-width: 270px;
+}
+.desktop-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.desktop-panel-title h2 {
+  font-size: 15px;
+}
+.desktop-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  color: #9c8aa9;
+  background: #f0e9f7;
+  border-radius: 20px;
+  padding: 4px 8px;
+}
+.desktop-status .green-dot {
+  background: #b3a2c3;
+  box-shadow: none;
+}
+.desktop-status.on {
+  color: #6b8c64;
+  background: #e9f2e4;
+}
+.desktop-status.on .green-dot {
+  background: #89ae7d;
+}
+.desktop-panel-copy p {
+  font-size: 11px;
+  color: #95869e;
+  line-height: 1.6;
+  margin: 8px 0 4px;
+}
+.desktop-panel-copy small {
+  font-size: 9px;
+  color: #aa9caf;
+}
+.desktop-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  padding-top: 3px;
+}
+.desktop-panel-actions .button {
+  font-size: 10px;
+  padding: 10px 12px;
+}
+.desktop-error {
+  flex-basis: 100%;
+  padding: 10px 13px;
+  margin: 0;
+  border-radius: 8px;
+  color: #a35e71;
+  background: #fcf0f3;
+  font-size: 12px;
+}
+.desktop-key-note {
+  flex-basis: 100%;
+  font-size: 9px;
+  color: #a396ad;
+  margin-left: 58px;
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+html[data-surface='companion'],
+html[data-surface='companion'] body,
+html[data-surface='companion'] #root {
+  background: transparent !important;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+  margin: 0;
+  user-select: none;
+}
+.desktop-companion {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  background: transparent;
+}
+.companion-content {
+  position: absolute;
+  bottom: 59px;
+  left: 50%;
+  width: 245px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+.companion-sprite {
+  width: calc(164px * var(--companion-scale));
+  pointer-events: auto;
+  margin-bottom: -2px;
+}
+.companion-bubble {
+  background: #fffcf4;
+  border: 2px solid #82708f;
+  border-radius: 13px;
+  padding: 10px 15px;
+  max-width: 235px;
+  margin-bottom: 14px;
+  position: relative;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.45;
+  text-align: center;
+  color: #5d4773;
+  box-shadow: 0 3px 0 #49355319;
+  overflow-wrap: anywhere;
+}
+.companion-bubble:after {
+  content: '';
+  position: absolute;
+  bottom: -7px;
+  left: 48%;
+  transform: rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background: #fffcf4;
+  border-right: 2px solid #82708f;
+  border-bottom: 2px solid #82708f;
+}
+.companion-shadow {
+  position: absolute;
+  bottom: 10px;
+  width: 115px;
+  height: 12px;
+  border-radius: 50%;
+  background: #40304725;
+  filter: blur(4px);
+  z-index: -1;
+}
+.companion-dock {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 270px;
+}
+.companion-drag {
+  -webkit-app-region: drag;
+  cursor: grab;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 9px;
+  background: #fffaf1ed;
+  color: #8d7b9c;
+  border: 1px solid #e4d7e8;
+  border-radius: 8px;
+  font-size: 9px;
+  box-shadow: 0 2px 8px #48385312;
+}
+.companion-drag > span:first-of-type {
+  font-weight: 850;
+  max-width: 116px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #6f587d;
+}
+.companion-dot {
+  width: 5px;
+  height: 5px;
+  background: #bba8c6;
+  border-radius: 50%;
+}
+.companion-dot.on {
+  background: #8eaf7d;
+}
+.companion-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 4px;
+}
+.companion-buttons button {
+  -webkit-app-region: no-drag;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid #dfd1e5;
+  background: #fdf7f5ed;
+  color: #90759f;
+  border-radius: 6px;
+  padding: 4px 7px;
+  font-size: 9px;
+}
+.companion-buttons button:hover {
+  background: #ebdef7;
+}
+.companion-error {
+  font-size: 9px;
+  color: #bb7492;
+  background: #fffafa;
+  border-radius: 5px;
+  padding: 4px;
+  margin: 3px 0;
+  max-width: 220px;
+}
+.pet-animated.tap {
+  animation: typing-bounce 0.22s ease-out;
+  transform-origin: center bottom;
+}
+@keyframes typing-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-7px) rotate(2deg);
+  }
+}
+@media (max-width: 1100px) {
+  .desktop-panel-actions {
+    margin-left: 58px;
+  }
+}
+@media (max-width: 700px) {
+  .desktop-panel {
+    padding: 17px;
+    gap: 12px;
+  }
+  .desktop-panel-copy {
+    min-width: 180px;
+  }
+  .desktop-panel-actions,
+  .desktop-key-note {
+    margin-left: 0;
+  }
+}

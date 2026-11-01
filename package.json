@@ -1,0 +1,71 @@
+{
+  "name": "keycritter",
+  "private": true,
+  "version": "1.0.0",
+  "description": "A tiny pixel pet that keeps you company while you type.",
+  "author": "KeyCritter",
+  "main": "desktop/main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "export": "npm run build && node scripts/export-standalone.mjs",
+    "desktop:runtime": "node node_modules/electron/install.js",
+    "desktop": "npm run desktop:runtime && npm run build && electron .",
+    "desktop:win": "npm run build && electron-builder --win portable --x64 --publish never",
+    "test:desktop:unit": "node --test tests/desktop-core.test.cjs",
+    "test:desktop": "node tests/desktop.integration.mjs",
+    "test": "playwright test",
+    "format": "prettier --write src desktop scripts tests *.ts *.json *.html README.md"
+  },
+  "build": {
+    "appId": "dev.keycritter.desktop",
+    "productName": "KeyCritter",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "desktop/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "**/*.node",
+      "**/*.dll",
+      "**/*.so",
+      "**/*.so.*"
+    ],
+    "npmRebuild": false,
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "desktop/icon.ico",
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "KeyCritter-Windows-${version}.exe",
+      "requestExecutionLevel": "user"
+    }
+  },
+  "dependencies": {
+    "@fontsource-variable/nunito-sans": "^5.3.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "uiohook-napi": "^1.5.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "electron": "^45.2.1",
+    "electron-builder": "^26.18.0",
+    "prettier": "^3.9.10",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.0"
+  }
+}

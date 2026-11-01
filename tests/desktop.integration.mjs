@@ -1,0 +1,157 @@
+import { _electron as electron, expect } from '@playwright/test';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { execFileSync } from 'node:child_process';
+
+const profile = await mkdtemp(join(tmpdir(), 'keycritter-desktop-'));
+const appPath = process.env.KEYCRITTER_APP_PATH || '.';
+const errors = [];
+let desktop;
+try {
+  desktop = await electron.launch({
+    args: [appPath, '--no-sandbox', '--disable-gpu', `--profile=${profile}`],
+    cwd: resolve('.'),
+    timeout: 30000,
+  });
+  desktop.process().stderr.on('data', (data) => {
+    if (String(data).includes('KeyCritter could not start')) console.error(String(data));
+  });
+  await expect.poll(() => desktop.windows().length).toBe(2);
+  const designer = desktop.windows().find((w) => !w.url().includes('#companion'));
+  const companion = desktop.windows().find((w) => w.url().includes('#companion'));
+  if (!designer || !companion) throw new Error('Both desktop windows must load.');
+  for (const page of [designer, companion])
+    page.on('pageerror', (error) => errors.push(error.message));
+  await expect(designer.getByRole('heading', { name: 'Meet Mochi' })).toBeVisible();
+  await expect(companion.getByTestId('desktop-pet')).toBeVisible();
+  const flags = await desktop.evaluate(({ BrowserWindow }) => {
+    const w = BrowserWindow.getAllWindows().find((w) =>
+      w.webContents.getURL().includes('#companion'),
+    );
+    return {
+      alwaysOnTop: w.isAlwaysOnTop(),
+      focusable: w.isFocusable(),
+      resizable: w.isResizable(),
+      background: w.getBackgroundColor(),
+    };
+  });
+  expect(flags).toEqual({
+    alwaysOnTop: true,
+    focusable: false,
+    resizable: false,
+    background: '#000000',
+  });
+  await expect(companion.locator('html')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  await expect(designer.getByText('Reactions paused', { exact: true })).toBeVisible();
+  await designer.getByLabel('Name', { exact: true }).fill('Desktop Mochi');
+  await designer.getByRole('button', { name: 'Lavender color' }).click();
+  await expect(companion.locator('.pixel-pet')).toHaveCSS('--pet-color', '#c7b5ee');
+  await designer.getByRole('button', { name: 'Preview Space reaction', exact: true }).click();
+  await expect(companion.getByTestId('desktop-pet')).toHaveAttribute('data-action', 'jump');
+  await designer.getByRole('button', { name: 'Enable keyboard reactions', exact: true }).click();
+  await expect(designer.getByText('Reactions on', { exact: true })).toBeVisible({ timeout: 15000 });
+
+  // A separate native window stands in for another app. XTest sends actual OS input.
+  await desktop.evaluate(async ({ BrowserWindow }) => {
+    const input = new BrowserWindow({
+      width: 500,
+      height: 220,
+      title: 'KeyCritter input test',
+      webPreferences: { contextIsolation: true, sandbox: true },
+    });
+    await input.loadURL(
+      'data:text/html,<title>KeyCritter input test</title><textarea autofocus aria-label="External app"></textarea>',
+    );
+    input.show();
+    input.focus();
+  });
+  await expect.poll(() => desktop.windows().some((w) => w.url().startsWith('data:'))).toBe(true);
+  const input = desktop.windows().find((w) => w.url().startsWith('data:'));
+  await expect(input.getByRole('textbox')).toBeVisible();
+  const xdotool = process.env.XDOTOOL_PATH || 'xdotool';
+  const xenv = { ...process.env };
+  const nativeWindow = execFileSync(xdotool, ['search', '--name', '^KeyCritter input test$'], {
+    env: xenv,
+    encoding: 'utf8',
+  })
+    .trim()
+    .split('\n')[0];
+  execFileSync(xdotool, ['windowfocus', '--sync', nativeWindow], { env: xenv });
+  execFileSync(xdotool, ['key', 'space'], { env: xenv });
+  await expect(companion.getByTestId('desktop-pet')).toHaveAttribute('data-action', 'jump');
+  await expect(input.getByRole('textbox')).toHaveValue(' ');
+  await companion.waitForTimeout(150);
+  execFileSync(xdotool, ['key', 'a'], { env: xenv });
+  await expect(companion.getByTestId('desktop-pet')).toHaveAttribute('data-action', 'tap');
+  await expect(input.getByRole('textbox')).toHaveValue(' a');
+  await designer.getByRole('button', { name: 'Add a reaction', exact: true }).click();
+  await designer.getByRole('textbox', { name: 'Reaction key', exact: true }).press('k');
+  await designer.getByLabel('Reaction animation').selectOption('dance');
+  await designer.getByLabel('Reaction message').fill('Desktop dance!');
+  await designer.getByRole('button', { name: 'Add', exact: true }).click();
+  await expect
+    .poll(async () =>
+      (await companion.evaluate(() => window.keycritter.getState())).pet.reactions.some(
+        (r) => r.key === 'k',
+      ),
+    )
+    .toBe(true);
+  execFileSync(xdotool, ['windowfocus', '--sync', nativeWindow], { env: xenv });
+  execFileSync(xdotool, ['key', 'k'], { env: xenv });
+  await expect(companion.getByTestId('desktop-pet')).toHaveAttribute('data-action', 'dance');
+  await expect(companion.locator('.companion-bubble')).toHaveText('Desktop dance!');
+  // Closing the designer hides it without quitting the pet or keyboard hook.
+  await desktop.evaluate(({ BrowserWindow }) =>
+    BrowserWindow.getAllWindows()
+      .find((w) => w.webContents.getURL().endsWith('/index.html'))
+      .close(),
+  );
+  await companion.waitForTimeout(150);
+  execFileSync(xdotool, ['key', 'Return'], { env: xenv });
+  await expect(companion.getByTestId('desktop-pet')).toHaveAttribute('data-action', 'cheer');
+  await companion.getByRole('button', { name: 'Pause desktop reactions' }).click();
+  await expect(companion.getByText('paused', { exact: true })).toBeVisible();
+  await expect(companion.getByTestId('desktop-pet')).toHaveAttribute('data-action', 'idle', {
+    timeout: 4000,
+  });
+  execFileSync(xdotool, ['windowfocus', '--sync', nativeWindow], { env: xenv });
+  execFileSync(xdotool, ['key', 'space'], { env: xenv });
+  await companion.waitForTimeout(350);
+  await expect(companion.getByTestId('desktop-pet')).toHaveAttribute('data-action', 'idle');
+  await companion.getByRole('button', { name: 'Open pet designer' }).click();
+  await expect(designer.getByRole('heading', { name: 'Meet Desktop Mochi' })).toBeVisible();
+  await designer.getByRole('button', { name: 'Save pet', exact: true }).click();
+  await designer.screenshot({ path: '/tmp/keycritter-desktop-designer.png', fullPage: true });
+  await companion.screenshot({ path: '/tmp/keycritter-floating-pet.png', omitBackground: true });
+  const settings = JSON.parse(await readFile(join(profile, 'pet-settings.json'), 'utf8'));
+  expect(settings.pet.design.name).toBe('Desktop Mochi');
+  expect(Object.keys(settings).sort()).toEqual(['pet', 'version']);
+  expect(JSON.stringify(settings)).not.toContain('typedText');
+  expect(errors).toEqual([]);
+  await designer.getByRole('button', { name: 'Enable keyboard reactions', exact: true }).click();
+  await expect(designer.getByText('Reactions on', { exact: true })).toBeVisible();
+  await desktop.close();
+  desktop = undefined;
+  const restart = await electron.launch({
+    args: [appPath, '--no-sandbox', '--disable-gpu', `--profile=${profile}`],
+    cwd: resolve('.'),
+    timeout: 30000,
+  });
+  desktop = restart;
+  await expect.poll(() => desktop.windows().length).toBe(2);
+  const restored = desktop.windows().find((w) => !w.url().includes('#companion'));
+  await expect(restored.getByRole('heading', { name: 'Meet Desktop Mochi' })).toBeVisible();
+  await expect(restored.getByText('Reactions paused', { exact: true })).toBeVisible();
+  await restored.getByLabel('Name', { exact: true }).fill('Restored buddy');
+  await restored.getByRole('button', { name: 'Save pet', exact: true }).click();
+  await restored.getByRole('button', { name: /My Pets/ }).click();
+  await expect(restored.getByRole('article')).toHaveCount(1);
+  await expect(restored.getByRole('heading', { name: 'Restored buddy', exact: true })).toBeVisible();
+  console.log(
+    'PASS: transparent always-on-top pet; live designer sync; real keyboard input in another window; input preserved; designer close; pause; saved settings; restart with monitoring off; no renderer errors.',
+  );
+} finally {
+  await desktop?.close();
+  await rm(profile, { recursive: true, force: true });
+}

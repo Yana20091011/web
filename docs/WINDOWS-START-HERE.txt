@@ -1,0 +1,26 @@
+KEYCRITTER - WINDOWS DESKTOP PET
+
+For Windows 10/11, 64-bit (x64).
+
+1. Extract the downloaded ZIP to a folder on your computer.
+2. Open KeyCritter-Windows-1.0.0.exe. No installer or Node.js is needed.
+3. In the designer, click Enable keyboard reactions.
+4. Type in another app. Ordinary typing gives your pet a little bounce.
+   Space makes it jump, Enter makes it cheer, and Backspace surprises it.
+   Change these reactions or add your own in the designer.
+5. Drag the little name label beneath the pet to move it.
+6. Close the designer to leave the pet on your desktop.
+
+Use the pet's Designer button or the KeyCritter system-tray menu to reopen
+settings. The tray icon may be inside Windows' hidden-icons arrow.
+Pause reactions from the pet, designer, or tray menu.
+Choose Quit KeyCritter in the tray menu to close everything.
+
+Keyboard reactions start paused each time you launch the app.
+KeyCritter does not start automatically with Windows.
+Typed text is not recorded or transmitted.
+Letter and symbol triggers use US keyboard positions.
+Your design, reactions, and pet position are saved on this computer.
+
+This is an unsigned development build. Its behavior in your Windows desktop
+session still needs to be checked, even when the Windows build succeeds.

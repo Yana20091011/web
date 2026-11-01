@@ -114,6 +114,7 @@ async function mockAI(page: Page, fail = false) {
         listening: false,
         starting: false,
         visible: true,
+        pinned: true,
         error: '',
         platform: 'win32',
       };

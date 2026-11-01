@@ -7,6 +7,7 @@ export interface DesktopState {
   listening: boolean;
   starting: boolean;
   visible: boolean;
+  pinned: boolean;
   error: string;
   platform: string;
 }
@@ -31,6 +32,7 @@ export interface DesktopBridge {
   updatePet(pet: DesktopState['pet']): Promise<DesktopState>;
   setEnabled(enabled: boolean): Promise<DesktopState>;
   showPet(): Promise<DesktopState>;
+  setPinned(pinned: boolean): Promise<DesktopState>;
   openDesigner(): Promise<void>;
   preview(reaction: { action: Action; phrase: string }): Promise<void>;
   setInteractive(interactive: boolean): void;

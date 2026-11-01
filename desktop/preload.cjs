@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('keycritter', {
   updatePet: (pet) => ipcRenderer.invoke('pet:update', pet),
   setEnabled: (enabled) => ipcRenderer.invoke('pet:enabled', enabled),
   showPet: () => ipcRenderer.invoke('pet:show'),
+  setPinned: (pinned) => ipcRenderer.invoke('pet:pin', pinned),
   openDesigner: () => ipcRenderer.invoke('pet:designer'),
   preview: (reaction) => ipcRenderer.invoke('pet:preview', reaction),
   setInteractive: (interactive) => ipcRenderer.send('pet:interactive', interactive),

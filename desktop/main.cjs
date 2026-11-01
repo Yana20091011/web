@@ -34,6 +34,8 @@ let pet = structuredClone(DEFAULT_PET);
 let listening = false;
 let starting = false;
 let visible = true;
+let pinned = true;
+let pinTimer;
 let error = '';
 let saveTimer, hookTimer;
 let keyStore, generation;
@@ -45,6 +47,7 @@ const state = () => ({
   listening,
   starting,
   visible,
+  pinned,
   error,
   platform: process.platform,
   version: app.getVersion(),
@@ -53,7 +56,7 @@ const state = () => ({
 function save() {
   clearTimeout(saveTimer);
   // Opt-in is session-only: keyboard monitoring never silently resumes on launch.
-  const contents = JSON.stringify({ version: 1, pet, position });
+  const contents = JSON.stringify({ version: 1, pet, position, pinned });
   writeQueue = writeQueue
     .catch(() => {})
     .then(async () => {
@@ -77,6 +80,23 @@ function broadcast() {
 }
 function sendReaction(reaction) {
   if (companion && !companion.isDestroyed()) companion.webContents.send('pet:reaction', reaction);
+}
+function applyPetPin(refresh = false) {
+  if (quitting || !companion || companion.isDestroyed()) return;
+  // A Windows foreground/fullscreen transition can leave Chromium's cached
+  // topmost state out of sync with the native window. Reset the native level
+  // without activating the window, then raise it within the topmost group.
+  if (pinned && refresh && process.platform === 'win32') companion.setAlwaysOnTop(false);
+  companion.setAlwaysOnTop(pinned, process.platform === 'win32' ? 'pop-up-menu' : 'floating');
+  if (pinned && visible && companion.isVisible() && !companion.isMinimized()) companion.moveTop();
+}
+function setPetPin(value) {
+  if (typeof value !== 'boolean') throw new Error('Invalid pin setting');
+  pinned = value;
+  applyPetPin(true);
+  queueSave();
+  broadcast();
+  return state();
 }
 function stopListening() {
   clearTimeout(hookTimer);
@@ -144,10 +164,18 @@ function updateTray() {
         label: visible ? 'Hide desktop pet' : 'Show desktop pet',
         click: () => {
           visible = !visible;
-          if (visible) companion.showInactive();
-          else companion.hide();
+          if (visible) {
+            companion.showInactive();
+            applyPetPin(true);
+          } else companion.hide();
           broadcast();
         },
+      },
+      {
+        label: 'Pin pet above other apps',
+        type: 'checkbox',
+        checked: pinned,
+        click: (item) => setPetPin(item.checked),
       },
       { type: 'separator' },
       {
@@ -200,6 +228,7 @@ function createDesigner() {
       designer.hide();
     }
   });
+  designer.on('blur', () => applyPetPin(true));
 }
 function createCompanion() {
   const display = position ? screen.getDisplayNearestPoint(position) : screen.getPrimaryDisplay();
@@ -219,13 +248,26 @@ function createCompanion() {
     skipTaskbar: true,
     focusable: false,
     show: false,
+    title: `KeyCritter v${app.getVersion()} — Desktop companion`,
     webPreferences: { ...webPreferences(), backgroundThrottling: false },
   });
-  companion.setAlwaysOnTop(true, 'floating');
+  applyPetPin();
   companion.setIgnoreMouseEvents(true, { forward: true });
   secureWindow(companion);
   companion.loadURL(`keycritter://app/index.html?v=${app.getVersion()}#companion`);
   companion.once('ready-to-show', () => companion.showInactive());
+  companion.on('show', () => applyPetPin(true));
+  companion.on('restore', () => applyPetPin(true));
+  pinTimer = setInterval(() => {
+    if (!pinned || !visible || quitting || companion.isDestroyed() || !companion.isVisible())
+      return;
+    try {
+      applyPetPin(true);
+    } catch {
+      /* The window may be closing during shutdown. */
+    }
+  }, 1500);
+  pinTimer.unref();
   companion.on('moved', () => {
     const [x, y] = companion.getPosition();
     position = { x, y };
@@ -272,9 +314,11 @@ handle('pet:enabled', ['designer', 'companion'], (enabled) => {
   }
   return state();
 });
+handle('pet:pin', ['designer', 'companion'], setPetPin);
 handle('pet:show', ['designer', 'companion'], () => {
   visible = true;
   companion.showInactive();
+  applyPetPin(true);
   broadcast();
   return state();
 });
@@ -365,6 +409,7 @@ if (!ownsInstanceLock) {
         pet = cleanPet(saved.pet) || pet;
         if (Number.isFinite(saved.position?.x) && Number.isFinite(saved.position?.y))
           position = saved.position;
+        if (typeof saved.pinned === 'boolean') pinned = saved.pinned;
       } catch {
         /* First launch or invalid settings: use a fresh pet. */
       }
@@ -413,6 +458,7 @@ app.on('before-quit', (event) => {
   if (quitting) return;
   event.preventDefault();
   quitting = true;
+  clearInterval(pinTimer);
   generation?.abort();
   stopListening();
   clearTimeout(saveTimer);

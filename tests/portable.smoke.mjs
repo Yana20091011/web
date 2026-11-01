@@ -30,6 +30,7 @@ const child = spawn(
   { stdio: 'ignore', windowsHide: false },
 );
 let browser;
+let foregroundBrowser;
 let launchError;
 child.on('error', (error) => {
   launchError = error;
@@ -67,6 +68,7 @@ try {
   const state = await page.evaluate(() => window.keycritter.getState());
   expect(state.version).toBe(version);
   expect(state.listening).toBe(false);
+  expect(state.pinned).toBe(true);
   await expect(page.getByRole('button', { name: 'Upload', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Create with AI', exact: true })).toBeVisible();
   await mkdir('release', { recursive: true });
@@ -77,6 +79,74 @@ try {
   await expect(page.getByLabel('Describe your buddy')).toBeVisible();
   await expect(page.getByLabel('OpenAI API key', { exact: true })).toBeVisible();
   await page.screenshot({ path: 'release/verified-ai-ui.png', fullPage: true });
+  let windowLayer = { tested: false };
+  if (process.platform === 'win32') {
+    foregroundBrowser = await chromium.launch({
+      channel: 'msedge',
+      headless: false,
+      args: ['--start-maximized', '--no-first-run'],
+    });
+    const context = await foregroundBrowser.newContext({ viewport: null });
+    const tabA = await context.newPage();
+    await tabA.setContent('<title>KeyCritter overlay browser test A</title><h1>Browser tab A</h1>');
+    const cdp = await context.newCDPSession(tabA);
+    const { windowId } = await cdp.send('Browser.getWindowForTarget');
+    await cdp.send('Browser.setWindowBounds', { windowId, bounds: { windowState: 'maximized' } });
+    const tabB = await context.newPage();
+    await tabB.setContent('<title>KeyCritter overlay browser test B</title><h1>Browser tab B</h1>');
+    const layer = (demote = false) =>
+      JSON.parse(
+        execFileSync(
+          'pwsh',
+          [
+            '-NoLogo',
+            '-NoProfile',
+            '-File',
+            resolve('tests/windows-layer-check.ps1'),
+            '-PetTitle',
+            `KeyCritter v${version} — Desktop companion`,
+            '-BrowserTitle',
+            'KeyCritter overlay browser test',
+            ...(demote ? ['-Demote'] : []),
+          ],
+          { encoding: 'utf8' },
+        ).trim(),
+      );
+    const isPinnedAboveBrowser = () => {
+      const value = layer();
+      return (
+        value.petFound &&
+        value.browserFound &&
+        value.petVisible &&
+        value.petTopmost &&
+        value.petAboveBrowser &&
+        value.browserHasFocus &&
+        value.overlapsBrowser
+      );
+    };
+    for (const tab of [tabA, tabB, tabA, tabB]) {
+      await tab.bringToFront();
+      await expect.poll(isPinnedAboveBrowser, { timeout: 12000 }).toBe(true);
+    }
+    expect(layer(true).demoted).toBe(true);
+    await expect.poll(isPinnedAboveBrowser, { timeout: 12000 }).toBe(true);
+    await page.getByRole('button', { name: 'Pin pet above apps', exact: true }).click();
+    await tabA.bringToFront();
+    await new Promise((resolve) => setTimeout(resolve, 1800));
+    expect(layer().petTopmost).toBe(false);
+    await page.getByRole('button', { name: 'Pin pet above apps', exact: true }).click();
+    await tabB.bringToFront();
+    await expect.poll(isPinnedAboveBrowser, { timeout: 12000 }).toBe(true);
+    windowLayer = {
+      tested: true,
+      aboveBrowserTabs: true,
+      recoveredAfterNativeDemotion: true,
+      browserKeptFocus: true,
+      unpinRespected: true,
+    };
+    await foregroundBrowser.close();
+    foregroundBrowser = undefined;
+  }
   await writeFile(
     'release/package-verification.json',
     JSON.stringify(
@@ -85,6 +155,7 @@ try {
         runtimeVersion: state.version,
         rendererVersion: `v${version}`,
         portableExecutable: prefix.length === 0,
+        windowLayer,
         uploadVisible: true,
         aiVisible: true,
         verifiedAt: new Date().toISOString(),
@@ -107,6 +178,7 @@ try {
     `PASS: ${prefix.length ? 'local runtime' : 'actual portable executable'} v${version} launched; native/renderer versions match; Upload and AI tabs work; screenshots and verification report saved.`,
   );
 } finally {
+  await foregroundBrowser?.close().catch(() => {});
   await browser?.close().catch(() => {});
   if (child.exitCode === null && child.pid) {
     if (process.platform === 'win32') {

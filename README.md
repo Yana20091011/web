@@ -4,7 +4,7 @@ A floating typing pet for Windows, with a cozy React designer. Customize a pixel
 
 ## Use the Windows desktop pet
 
-1. Open `KeyCritter-Windows-1.1.1.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
+1. Open `KeyCritter-Windows-1.1.2.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
 2. Design your pet, then click **Enable keyboard reactions**. Ordinary typing makes it bounce; Space, Enter, and Backspace have special reactions by default. Add more in the reaction editor.
 3. Drag the little name label beneath your desktop pet to move it. The pet stays above other windows without taking keyboard focus.
 4. Close the designer to keep just the pet. Reopen it from the pet's **Designer** button or the KeyCritter system-tray menu, which may be under Windows' hidden-icons arrow.
@@ -13,6 +13,8 @@ A floating typing pet for Windows, with a cozy React designer. Customize a pixel
 Reactions start paused on every launch. There is no automatic Windows startup task. The portable build is unsigned; it is a development build, not a signed public release.
 
 The version appears beside the logo and in the window title. Quit an existing copy completely before opening an update. If another copy is already running, a new launch displays a message rather than silently presenting the existing app as the update. Versioned local URLs and cache headers prevent stale interface files from being reused; saved pets and settings are preserved.
+
+**Pin above apps** keeps the floating pet above normal application windows. It is on by default and can be toggled from the pet, designer, or tray menu. The choice is saved. On Windows, the app reapplies its non-activating topmost window level while the pet is visible and pinned, including after foreground-window changes. Unpinning stops that behavior; hiding the pet keeps it hidden. The pet never requests keyboard focus to stay above a browser.
 
 ### Privacy and storage
 
@@ -78,13 +80,13 @@ Windows-specific transparency, tray behavior, and native key handling should als
 
 ## Build the Windows download
 
-The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions and working Upload/AI panels, and saves screenshots before uploading the download. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.1.1** artifact. Extract that ZIP and follow `START-HERE.txt`. `verified-ui.png`, `verified-ai-ui.png`, and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
+The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions and working Upload/AI panels, and saves screenshots before uploading the download. It also opens Microsoft Edge, switches tabs, and uses Win32 window order/styles to check that the pet stays above the browser without taking focus, recovers from an intentional native topmost reset, and respects unpinning. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.1.2** artifact. Extract that ZIP and follow `START-HERE.txt`. `verified-ui.png`, `verified-ai-ui.png`, and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
 
 ```sh
 npm run desktop:win
 ```
 
-The result is `release/KeyCritter-Windows-1.1.1.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges. Run `npm run test:portable` on Windows to verify this exact executable, or `npm run test:second-instance` with Linux X11/xdotool to exercise the duplicate-launch message and saved-data protection.
+The result is `release/KeyCritter-Windows-1.1.2.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges. Run `npm run test:portable` on Windows to verify this exact executable, or `npm run test:second-instance` with Linux X11/xdotool to exercise the duplicate-launch message and saved-data protection.
 
 ## Open without installing anything
 

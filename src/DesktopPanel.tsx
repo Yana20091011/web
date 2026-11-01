@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Monitor, Pause, Play, X } from 'lucide-react';
+import { Monitor, Pause, Play, X, Pin } from 'lucide-react';
 import type { PetDesign } from './Pet';
 import type { Reaction } from './model';
 import type { DesktopState } from './desktop';
@@ -62,6 +62,20 @@ export default function DesktopPanel({
         </small>
       </div>
       <div className="desktop-panel-actions">
+        <button
+          className={`button ${state.pinned ? 'preview-button' : 'primary'}`}
+          aria-label="Pin pet above apps"
+          aria-pressed={state.pinned}
+          onClick={() => {
+            window
+              .keycritter!.setPinned(!state.pinned)
+              .then(setState)
+              .catch(() => setSyncError('Could not change the pet pin. Try Show pet again.'));
+          }}
+        >
+          <Pin size={14} />
+          {state.pinned ? 'Pinned above apps' : 'Pin above apps'}
+        </button>
         <button
           className={`button ${state.listening ? 'preview-button' : 'primary'}`}
           disabled={state.starting || busy}

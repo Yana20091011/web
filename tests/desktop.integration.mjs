@@ -45,6 +45,31 @@ try {
     resizable: false,
     background: '#000000',
   });
+  await expect(
+    designer.getByRole('button', { name: 'Pin pet above apps', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'true');
+  await designer.getByRole('button', { name: 'Pin pet above apps', exact: true }).click();
+  await expect
+    .poll(() =>
+      desktop.evaluate(({ BrowserWindow }) =>
+        BrowserWindow.getAllWindows()
+          .find((w) => w.webContents.getURL().includes('#companion'))
+          .isAlwaysOnTop(),
+      ),
+    )
+    .toBe(false);
+  await companion.waitForTimeout(1800);
+  expect((await companion.evaluate(() => window.keycritter.getState())).pinned).toBe(false);
+  await companion.getByRole('button', { name: 'Pin pet above apps', exact: true }).click();
+  await expect
+    .poll(() =>
+      desktop.evaluate(({ BrowserWindow }) =>
+        BrowserWindow.getAllWindows()
+          .find((w) => w.webContents.getURL().includes('#companion'))
+          .isAlwaysOnTop(),
+      ),
+    )
+    .toBe(true);
   await expect(companion.locator('html')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   await expect(designer.getByText('Reactions paused', { exact: true })).toBeVisible();
   await designer.getByLabel('Name', { exact: true }).fill('Desktop Mochi');
@@ -224,11 +249,15 @@ try {
   expect(settings.pet.design.name).toBe('Desktop Mochi');
   expect(settings.pet.design.species).toBe('custom');
   expect(settings.pet.design.images.cheer).toMatch(/^data:image\/webp;base64,/);
-  expect(Object.keys(settings).sort()).toEqual(['pet', 'version']);
+  expect(Object.keys(settings).sort()).toEqual(['pet', 'pinned', 'version']);
   expect(JSON.stringify(settings)).not.toContain('typedText');
   expect(errors).toEqual([]);
   await designer.getByRole('button', { name: 'Enable keyboard reactions', exact: true }).click();
   await expect(designer.getByText('Reactions on', { exact: true })).toBeVisible();
+  await designer.getByRole('button', { name: 'Pin pet above apps', exact: true }).click();
+  await expect(
+    designer.getByRole('button', { name: 'Pin pet above apps', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'false');
   await desktop.close();
   desktop = undefined;
   const restart = await electron.launch({
@@ -241,6 +270,10 @@ try {
   const restored = desktop.windows().find((w) => !w.url().includes('#companion'));
   await expect(restored.getByRole('heading', { name: 'Meet Desktop Mochi' })).toBeVisible();
   await expect(restored.getByText('Reactions paused', { exact: true })).toBeVisible();
+  await expect(
+    restored.getByRole('button', { name: 'Pin pet above apps', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'false');
+  await restored.getByRole('button', { name: 'Pin pet above apps', exact: true }).click();
   await expect(restored.getByTestId('active-pet')).toHaveAttribute('data-species', 'custom');
   await restored.getByLabel('Name', { exact: true }).fill('Restored buddy');
   await restored.getByRole('button', { name: 'Save pet', exact: true }).click();

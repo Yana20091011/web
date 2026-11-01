@@ -2,7 +2,7 @@ KEYCRITTER - WINDOWS DESKTOP PET
 
 For Windows 10/11, 64-bit (x64).
 
-This download is version 1.1.1. The logo and window title show v1.1.1.
+This download is version 1.1.2. The logo and window title show v1.1.2.
 Quit any older KeyCritter from the system tray before opening this update.
 The included verified-ui.png and verified-ai-ui.png are screenshots captured
 while testing this exact portable executable on Windows.
@@ -25,7 +25,12 @@ Keyboard reactions start paused each time you launch the app.
 KeyCritter does not start automatically with Windows.
 Typed text is not recorded or transmitted.
 Letter and symbol triggers use US keyboard positions.
-Your design, reactions, and pet position are saved on this computer.
+Your design, reactions, pet position, and pin choice are saved on this computer.
+
+PIN ABOVE OTHER APPS
+Leave the Pinned button enabled beneath your pet to keep it above browser tabs
+and normal app windows. The same switch is in the designer and tray menu.
+You can unpin it at any time; Show pet brings it forward again.
 
 CUSTOM PETS
 Choose Upload in the designer to add a main image and optional reaction poses.

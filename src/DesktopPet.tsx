@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { GripHorizontal, Palette, Pause, Play } from 'lucide-react';
+import { GripHorizontal, Palette, Pause, Play, Pin, PinOff } from 'lucide-react';
 import Pet from './Pet';
 import type { DesktopReaction, DesktopState } from './desktop';
 
@@ -82,6 +82,20 @@ export default function DesktopPet({ initial }: { initial: DesktopState }) {
           <span>{state.starting ? 'starting' : state.listening ? 'listening' : 'paused'}</span>
         </div>
         <div className="companion-buttons">
+          <button
+            aria-label="Pin pet above apps"
+            aria-pressed={state.pinned}
+            title={state.pinned ? 'Pinned above app windows' : 'Keep pet above app windows'}
+            onClick={() => {
+              window
+                .keycritter!.setPinned(!state.pinned)
+                .then(setState)
+                .catch(() => setError('Could not pin the pet. Try Show pet in the designer.'));
+            }}
+          >
+            {state.pinned ? <Pin size={12} /> : <PinOff size={12} />}
+            {state.pinned ? 'Pinned' : 'Pin'}
+          </button>
           <button
             aria-label={state.listening ? 'Pause desktop reactions' : 'Enable desktop reactions'}
             disabled={state.starting}

@@ -36,6 +36,7 @@ let starting = false;
 let visible = true;
 let pinned = true;
 let pinTimer;
+let dragOrigin, dragTimer;
 let error = '';
 let saveTimer, hookTimer;
 let keyStore, generation;
@@ -97,6 +98,34 @@ function setPetPin(value) {
   queueSave();
   broadcast();
   return state();
+}
+function finishDrag(keepInteractive = false) {
+  clearTimeout(dragTimer);
+  if (dragOrigin && companion && !companion.isDestroyed()) {
+    const [x, y] = companion.getPosition();
+    position = { x, y };
+    queueSave();
+  }
+  dragOrigin = undefined;
+  if (companion && !companion.isDestroyed()) {
+    companion.setIgnoreMouseEvents(!keepInteractive, { forward: true });
+    applyPetPin(true);
+  }
+}
+function moveDrag() {
+  if (quitting || !dragOrigin || !companion || companion.isDestroyed()) return;
+  const cursor = screen.getCursorScreenPoint();
+  const [width, height] = companion.getSize();
+  const target = clampPosition(
+    {
+      x: dragOrigin.x + cursor.x - dragOrigin.cursor.x,
+      y: dragOrigin.y + cursor.y - dragOrigin.cursor.y,
+    },
+    screen.getDisplayNearestPoint(cursor).workArea,
+    width,
+    height,
+  );
+  companion.setPosition(target.x, target.y, false);
 }
 function stopListening() {
   clearTimeout(hookTimer);
@@ -259,7 +288,14 @@ function createCompanion() {
   companion.on('show', () => applyPetPin(true));
   companion.on('restore', () => applyPetPin(true));
   pinTimer = setInterval(() => {
-    if (!pinned || !visible || quitting || companion.isDestroyed() || !companion.isVisible())
+    if (
+      !pinned ||
+      !visible ||
+      quitting ||
+      dragOrigin ||
+      companion.isDestroyed() ||
+      !companion.isVisible()
+    )
       return;
     try {
       applyPetPin(true);
@@ -273,6 +309,7 @@ function createCompanion() {
     position = { x, y };
     queueSave();
   });
+  companion.on('hide', () => finishDrag());
   companion.on('close', (event) => {
     if (!quitting) {
       event.preventDefault();
@@ -315,6 +352,18 @@ handle('pet:enabled', ['designer', 'companion'], (enabled) => {
   return state();
 });
 handle('pet:pin', ['designer', 'companion'], setPetPin);
+handle('pet:drag-start', ['companion'], () => {
+  const [x, y] = companion.getPosition();
+  dragOrigin = { x, y, cursor: screen.getCursorScreenPoint() };
+  companion.setIgnoreMouseEvents(false, { forward: true });
+  clearTimeout(dragTimer);
+  dragTimer = setTimeout(() => finishDrag(), 30000);
+  dragTimer.unref();
+});
+handle('pet:drag-end', ['companion'], (keepInteractive) => {
+  if (typeof keepInteractive !== 'boolean') throw new Error('Invalid drag state');
+  finishDrag(keepInteractive);
+});
 handle('pet:pin-info', ['designer'], () => {
   const bytes = companion.getNativeWindowHandle();
   return {
@@ -392,7 +441,10 @@ handle('ai:generate', ['designer'], async (request) => {
 });
 ipcMain.on('pet:interactive', (event, interactive) => {
   if (allowed(event, ['companion']) && typeof interactive === 'boolean')
-    companion.setIgnoreMouseEvents(!interactive, { forward: true });
+    companion.setIgnoreMouseEvents(!interactive && !dragOrigin, { forward: true });
+});
+ipcMain.on('pet:drag-move', (event) => {
+  if (allowed(event, ['companion'])) moveDrag();
 });
 
 const ownsInstanceLock = app.requestSingleInstanceLock();
@@ -471,6 +523,7 @@ app.on('before-quit', (event) => {
   event.preventDefault();
   quitting = true;
   clearInterval(pinTimer);
+  finishDrag();
   generation?.abort();
   stopListening();
   clearTimeout(saveTimer);

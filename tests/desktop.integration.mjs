@@ -293,6 +293,53 @@ try {
   await expect
     .poll(() => designer.evaluate(() => window.keycritter.getAIStatus().then((s) => s.configured)))
     .toBe(false);
+  expect(
+    await designer.evaluate(() =>
+      window.keycritter.startDrag().then(
+        () => 'allowed',
+        () => 'denied',
+      ),
+    ),
+  ).toBe('denied');
+  // Xvfb has no window manager, so use renderer pointer events for the handle
+  // and real OS cursor positions for movement. Windows checks the full OS gesture.
+  await companion.locator('.companion-drag').hover();
+  const bar = await companion.locator('.companion-drag').boundingBox();
+  const beforeMove = await desktop.evaluate(({ BrowserWindow }) =>
+    BrowserWindow.getAllWindows()
+      .find((w) => w.webContents.getURL().includes('#companion'))
+      .getBounds(),
+  );
+  const grab = {
+    x: Math.round(beforeMove.x + bar.x + bar.width / 2),
+    y: Math.round(beforeMove.y + bar.y + bar.height / 2),
+  };
+  execFileSync(xdotool, ['mousemove', '--sync', String(grab.x), String(grab.y)], { env: xenv });
+  await companion.waitForTimeout(100);
+  await companion.mouse.down();
+  await companion.waitForTimeout(100);
+  execFileSync(xdotool, ['mousemove', '--sync', String(grab.x - 80), String(grab.y - 40)], {
+    env: xenv,
+  });
+  await companion.mouse.move(bar.x + bar.width / 2 - 80, bar.y + bar.height / 2 - 40);
+  await companion.waitForTimeout(150);
+  await companion.mouse.up();
+  const expectedPosition = { x: beforeMove.x - 80, y: beforeMove.y - 40 };
+  await expect
+    .poll(() =>
+      desktop.evaluate(({ BrowserWindow }) => {
+        const { x, y } = BrowserWindow.getAllWindows()
+          .find((w) => w.webContents.getURL().includes('#companion'))
+          .getBounds();
+        return { x, y };
+      }),
+    )
+    .toEqual(expectedPosition);
+  await expect
+    .poll(
+      async () => JSON.parse(await readFile(join(profile, 'pet-settings.json'), 'utf8')).position,
+    )
+    .toEqual(expectedPosition);
   await designer.getByRole('button', { name: 'Upload', exact: true }).click();
   await designer.getByRole('button', { name: 'Save pet', exact: true }).click();
   await designer.screenshot({ path: '/tmp/keycritter-desktop-designer.png', fullPage: true });
@@ -304,7 +351,7 @@ try {
   expect(settings.pet.design.animations.idle.frames).toHaveLength(3);
   expect(settings.pet.design.motionStrength).toBe(25);
   expect(settings.pet.design.animations.idle.frames[0].duration).toBe(1000);
-  expect(Object.keys(settings).sort()).toEqual(['pet', 'pinned', 'version']);
+  expect(Object.keys(settings).sort()).toEqual(['pet', 'pinned', 'position', 'version']);
   expect(JSON.stringify(settings)).not.toContain('typedText');
   expect(errors).toEqual([]);
   await designer.getByRole('button', { name: 'Enable keyboard reactions', exact: true }).click();
@@ -331,6 +378,14 @@ try {
   await restored.getByRole('button', { name: 'Pin pet above apps', exact: true }).click();
   await expect(restored.getByTestId('active-pet')).toHaveAttribute('data-species', 'custom');
   const restoredCompanion = desktop.windows().find((w) => w.url().includes('#companion'));
+  expect(
+    await desktop.evaluate(({ BrowserWindow }) => {
+      const { x, y } = BrowserWindow.getAllWindows()
+        .find((w) => w.webContents.getURL().includes('#companion'))
+        .getBounds();
+      return { x, y };
+    }),
+  ).toEqual(expectedPosition);
   await expect(restored.getByRole('slider', { name: 'Movement strength' })).toHaveValue('25');
   await expect(restoredCompanion.getByTestId('desktop-pet')).toHaveAttribute(
     'data-motion-strength',

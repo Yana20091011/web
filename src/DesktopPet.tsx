@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import { GripHorizontal, Palette, Pause, Play, Pin, PinOff } from 'lucide-react';
 import Pet from './Pet';
 import { reactionDuration } from './framePlayback';
@@ -20,6 +20,16 @@ export default function DesktopPet({ initial }: { initial: DesktopState }) {
   const [error, setError] = useState('');
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const speechTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const dragging = useRef(false);
+  function stopDrag(event: PointerEvent<HTMLDivElement>, keepInteractive: boolean) {
+    if (!dragging.current) return;
+    dragging.current = false;
+    if (event.currentTarget.hasPointerCapture(event.pointerId))
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    void window
+      .keycritter!.endDrag(keepInteractive)
+      .catch(() => setError('Could not finish moving the pet. Try again.'));
+  }
   const moveable = {
     onMouseEnter: () => window.keycritter!.setInteractive(true),
     onMouseLeave: () => window.keycritter!.setInteractive(false),
@@ -95,7 +105,38 @@ export default function DesktopPet({ initial }: { initial: DesktopState }) {
         <div className="companion-shadow" />
       </div>
       <div className="companion-dock" {...moveable}>
-        <div className="companion-drag" title="Drag to move your pet">
+        <div
+          className="companion-drag"
+          title="Drag to move your pet"
+          onPointerDown={(event) => {
+            if (event.button !== 0 || !event.isPrimary) return;
+            event.preventDefault();
+            const element = event.currentTarget;
+            const pointer = event.pointerId;
+            element.setPointerCapture(pointer);
+            dragging.current = true;
+            void window.keycritter!.startDrag().catch(() => {
+              dragging.current = false;
+              if (element.hasPointerCapture(pointer)) element.releasePointerCapture(pointer);
+              setError('Could not start moving the pet. Try again.');
+            });
+          }}
+          onPointerMove={() => {
+            if (dragging.current) window.keycritter!.moveDrag();
+          }}
+          onPointerUp={(event) => {
+            const bounds = event.currentTarget.getBoundingClientRect();
+            stopDrag(
+              event,
+              event.clientX >= bounds.left &&
+                event.clientX <= bounds.right &&
+                event.clientY >= bounds.top &&
+                event.clientY <= bounds.bottom,
+            );
+          }}
+          onPointerCancel={(event) => stopDrag(event, false)}
+          onLostPointerCapture={(event) => stopDrag(event, false)}
+        >
           <GripHorizontal size={12} />
           <span>{name}</span>
           <span className={`companion-dot ${state.listening ? 'on' : ''}`} />

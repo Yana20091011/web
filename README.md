@@ -100,6 +100,8 @@ Windows-specific transparency, tray behavior, and native key handling should als
 
 ## Build the Windows download
 
+Windows verification checks 0% movement with blinking still active, scaled reaction movement at 25%, and persistence of that setting. It also drags the floating pet's name bar using native Windows mouse input and checks that the new position is saved. The drag handle uses pointer capture and native window positioning, without activating the pet window.
+
 The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions, Upload/AI panels, and uploaded frames playing on the floating pet, and saves screenshots before uploading the download. It also opens Microsoft Edge, switches tabs, and uses Win32 window order/styles to check that the pet stays above the browser without taking focus, recovers from an intentional native topmost reset, and respects unpinning. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.3.0** artifact. Extract that ZIP and follow `START-HERE.txt`. The three `verified-*-ui.png` screenshots and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
 
 ```sh

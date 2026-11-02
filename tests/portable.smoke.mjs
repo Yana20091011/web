@@ -206,6 +206,7 @@ try {
     await companion.mouse.move(drag.x + drag.width / 2, drag.y + drag.height / 2);
     await companion.mouse.down();
     await companion.waitForTimeout(100);
+    let heldPosition;
     try {
       const pressed = nativePosition(undefined, 'Down');
       expect(pressed.leftPressed, `Mouse-button result: ${JSON.stringify(pressed)}`).toBe(true);
@@ -255,10 +256,19 @@ try {
           message: 'Transparent top padding must not block placement near the screen top',
         })
         .toBe(true);
+      heldPosition = nativePosition();
     } finally {
       nativePosition(undefined, 'Up');
       await companion.mouse.up();
     }
+    const placed = () => {
+      const current = nativePosition();
+      return { x: current.x, y: current.y };
+    };
+    await expect.poll(placed).toEqual({ x: heldPosition.x, y: heldPosition.y });
+    setCursor({ x: heldPosition.cursorX - 20, y: heldPosition.cursorY + 20 });
+    await companion.waitForTimeout(120);
+    expect(placed()).toEqual({ x: heldPosition.x, y: heldPosition.y });
     await expect
       .poll(async () => {
         const settings = JSON.parse(await readFile(join(profile, 'pet-settings.json'), 'utf8'));

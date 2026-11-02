@@ -2,7 +2,7 @@ KEYCRITTER - WINDOWS DESKTOP PET
 
 For Windows 10/11, 64-bit (x64).
 
-This download is version 1.2.1. The logo and window title show v1.2.1.
+This download is version 1.3.0. The logo and window title show v1.3.0.
 Quit any older KeyCritter from the system tray before opening this update.
 The included verified-ui.png, verified-ai-ui.png, and verified-animation-ui.png
 are screenshots captured while testing this exact portable executable on Windows.
@@ -33,6 +33,13 @@ and normal app windows. The same switch is in the designer and tray menu.
 You can unpin it at any time; Show pet brings it forward again.
 
 CUSTOM PETS
+You can use any character: upload its image as the main pet, then add matching
+expressions for reactions. Make more expressions of this character opens the AI
+panel with the main image selected as a reference. After generating an expression,
+Add as frame adds it to that pose's animation without another AI request.
+For blinking, choose Main image and ask to change only the eyes, keeping the
+body pose and placement the same. Adjust the sequence in Animate afterward.
+
 Choose Upload in the designer to add a main image and optional reaction poses.
 PNG, JPG, and WebP are supported; transparent images work best.
 Choose Create with AI to generate a pet or another pose from a prompt.
@@ -65,6 +72,13 @@ Stop preview pauses only the small editor preview. Use this animation on my pet
 turns the actual animation on or off. Windows reduced-motion settings use a still
 frame. Replacing a pose through Upload or AI turns off that pose's animation;
 you can enable its saved frames again in Animate.
+
+MOVEMENT STRENGTH AND POSITION
+Use Movement strength below Size to control shaking and bouncing. Try 25% for
+gentle movement or 0% to keep the body still while blinking frames keep playing.
+Reset restores 100%. The setting is saved with each pet.
+Click and hold the floating pet's name bar marked Drag to move, then drag it
+to another place on the screen. Your new position is saved for the next launch.
 
 This is an unsigned development build. Its behavior in your Windows desktop
 session still needs to be checked, even when the Windows build succeeds.

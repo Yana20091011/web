@@ -57,8 +57,8 @@ export default function DesktopPanel({
             : 'Enable reactions to let your pet respond while you type in other apps. Reactions start paused each time you launch KeyCritter.'}
         </p>
         <small>
-          Drag the label beneath your desktop pet to move it. Closing this designer keeps the pet in
-          your system tray.
+          Click and hold the name bar beneath your floating pet, then drag it to move around your
+          screen. Its position is saved. Closing this designer keeps the pet in your system tray.
         </small>
       </div>
       <div className="desktop-panel-actions">

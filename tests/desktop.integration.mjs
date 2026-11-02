@@ -268,6 +268,26 @@ try {
     'data-pose',
     'surprise',
   );
+  await designer.getByLabel('Generate image for pose').selectOption('idle');
+  await designer
+    .getByLabel('Describe your buddy')
+    .fill('Same character with closed eyes; keep the body and placement unchanged.');
+  await designer.getByRole('button', { name: 'Generate image', exact: true }).click();
+  await designer.getByRole('button', { name: 'Add as animation frame' }).click();
+  await expect
+    .poll(() =>
+      companion.evaluate(() =>
+        window.keycritter.getState().then((s) => s.pet.design.animations.idle.frames.length),
+      ),
+    )
+    .toBe(3);
+  const movement = designer.getByRole('slider', { name: 'Movement strength' });
+  await movement.focus();
+  await movement.press('Home');
+  await expect(companion.getByTestId('desktop-pet')).toHaveAttribute('data-motion-strength', '0');
+  await expect(companion.getByTestId('desktop-pet')).toHaveCSS('animation-name', 'none');
+  for (let n = 0; n < 5; n++) await movement.press('ArrowRight');
+  await expect(companion.getByTestId('desktop-pet')).toHaveAttribute('data-motion-strength', '25');
   await designer.locator('.ai-connection > summary').click();
   await designer.getByRole('button', { name: 'Disconnect and remove key' }).click();
   await expect
@@ -281,7 +301,8 @@ try {
   expect(settings.pet.design.name).toBe('Desktop Mochi');
   expect(settings.pet.design.species).toBe('custom');
   expect(settings.pet.design.images.cheer).toMatch(/^data:image\/webp;base64,/);
-  expect(settings.pet.design.animations.idle.frames).toHaveLength(2);
+  expect(settings.pet.design.animations.idle.frames).toHaveLength(3);
+  expect(settings.pet.design.motionStrength).toBe(25);
   expect(settings.pet.design.animations.idle.frames[0].duration).toBe(1000);
   expect(Object.keys(settings).sort()).toEqual(['pet', 'pinned', 'version']);
   expect(JSON.stringify(settings)).not.toContain('typedText');
@@ -310,6 +331,11 @@ try {
   await restored.getByRole('button', { name: 'Pin pet above apps', exact: true }).click();
   await expect(restored.getByTestId('active-pet')).toHaveAttribute('data-species', 'custom');
   const restoredCompanion = desktop.windows().find((w) => w.url().includes('#companion'));
+  await expect(restored.getByRole('slider', { name: 'Movement strength' })).toHaveValue('25');
+  await expect(restoredCompanion.getByTestId('desktop-pet')).toHaveAttribute(
+    'data-motion-strength',
+    '25',
+  );
   await expect(restoredCompanion.getByTestId('desktop-pet').locator('img')).toHaveAttribute(
     'data-animated',
     'true',

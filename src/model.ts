@@ -56,6 +56,11 @@ export function validDesign(v: unknown): v is PetDesign {
     typeof v.size === 'number' &&
     v.size >= 70 &&
     v.size <= 125 &&
+    (v.motionStrength === undefined ||
+      (typeof v.motionStrength === 'number' &&
+        Number.isInteger(v.motionStrength) &&
+        v.motionStrength >= 0 &&
+        v.motionStrength <= 100)) &&
     ['bow', 'glasses', 'star', 'none'].includes(v.accessory as string)
   );
 }

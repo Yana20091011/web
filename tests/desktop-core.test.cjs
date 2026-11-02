@@ -17,6 +17,19 @@ const { DEFAULT_PET, cleanPet, clampPosition, assetPath } = require('../desktop/
 const { createKeyDecoder, createReactionFilter } = require('../desktop/keys.cjs');
 const decode = createKeyDecoder(UiohookKey);
 
+test('movement strength preserves old pets and validates the complete range', () => {
+  assert.ok(cleanPet(DEFAULT_PET));
+  for (const motionStrength of [0, 25, 100]) {
+    const pet = { ...DEFAULT_PET, design: { ...DEFAULT_PET.design, motionStrength } };
+    assert.deepEqual(cleanPet(pet), pet);
+  }
+  for (const motionStrength of [-1, 101, 25.5, null, '25', NaN, Infinity])
+    assert.equal(
+      cleanPet({ ...DEFAULT_PET, design: { ...DEFAULT_PET.design, motionStrength } }),
+      null,
+    );
+});
+
 test('desktop settings are validated and unrelated data is discarded', () => {
   assert.deepEqual(cleanPet({ ...DEFAULT_PET, typedText: 'never store this' }), DEFAULT_PET);
   assert.equal(

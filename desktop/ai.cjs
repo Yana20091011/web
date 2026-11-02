@@ -38,7 +38,11 @@ async function generateImage({ request, key, fetchImpl, signal }) {
   if (!validRequest(request))
     throw new Error('Enter a prompt of 3–1500 characters and choose a supported pose and model.');
   if (typeof key !== 'string' || !key) throw new Error('Connect your OpenAI API key first.');
-  const prompt = `Create one character image for a desktop typing pet. User character description: ${request.prompt.trim()}\nPose: ${POSE_PROMPTS[request.pose]}\nShow a single complete character, centered, with a genuinely transparent background and generous clear space around it. No scene, text, labels, UI, shadow backdrop, or other characters. Keep all body parts inside the canvas.${request.reference ? '\nUse the reference image to preserve this exact character, colors, species, and accessories; change the pose and expression as requested.' : ''}`;
+  const pose =
+    request.reference && request.pose === 'idle'
+      ? 'Preserve the reference body pose, silhouette, scale, camera, and placement. Change only the expression details requested by the user, keeping the rest aligned for an animation.'
+      : POSE_PROMPTS[request.pose];
+  const prompt = `Create one character image for a desktop typing pet. User character description: ${request.prompt.trim()}\nPose: ${pose}\nShow a single complete character, centered, with a genuinely transparent background and generous clear space around it. No scene, text, labels, UI, shadow backdrop, or other characters. Keep all body parts inside the canvas.${request.reference ? '\nUse the reference image to preserve this exact character, colors, species, and accessories; change the pose and expression as requested.' : ''}`;
   const params = {
     model: request.model,
     prompt,

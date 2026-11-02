@@ -109,6 +109,29 @@ test('generation rejects missing or malformed image responses', async () => {
     );
   }
 });
+
+test('reference expression edits request fixed body pose and placement for animation frames', async () => {
+  await generateImage({
+    request: {
+      ...request,
+      pose: 'idle',
+      reference: image,
+      prompt: 'The same character with half-closed eyes',
+    },
+    key,
+    fetchImpl: async (_url, options) => {
+      const prompt = options.body.get('prompt');
+      assert.ok(
+        prompt.includes(
+          'Preserve the reference body pose, silhouette, scale, camera, and placement',
+        ),
+      );
+      assert.ok(prompt.includes('Change only the expression details requested'));
+      assert.ok(!prompt.includes('Standing in a relaxed'));
+      return Response.json({ data: [{ b64_json: png }] });
+    },
+  });
+});
 test('network failures and cancellation are handled without leaking secrets', async () => {
   await assert.rejects(
     generateImage({

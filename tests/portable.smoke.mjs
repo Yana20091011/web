@@ -127,11 +127,79 @@ try {
   await expect
     .poll(() => petImage.getAttribute('data-frame-index'), { intervals: [20], timeout: 12000 })
     .toBe('2');
+  const movement = page.getByRole('slider', { name: 'Movement strength' });
+  await movement.focus();
+  await movement.press('Home');
+  const pet = companion.getByTestId('desktop-pet');
+  await expect(pet).toHaveAttribute('data-motion-strength', '0');
+  await page.evaluate(() =>
+    window.keycritter.preview({ action: 'cheer', phrase: 'Still, but blinking!' }),
+  );
+  await expect(pet).toHaveAttribute('data-action', 'cheer');
+  await expect(pet).toHaveCSS('animation-name', 'none');
+  await expect(pet).toHaveCSS('transform', 'none');
+  await expect(petImage).toHaveAttribute('data-animated', 'true');
+  const presetState = await page.evaluate(() => window.keycritter.getState());
+  await expect(petImage).toHaveAttribute(
+    'src',
+    presetState.pet.design.animations.idle.frames[2].image,
+    { timeout: 12000 },
+  );
+  await movement.focus();
+  for (let n = 0; n < 5; n++) await movement.press('ArrowRight');
+  await expect(pet).toHaveAttribute('data-motion-strength', '25');
+  await page.evaluate(() =>
+    window.keycritter.preview({ action: 'cheer', phrase: 'Gentle movement!' }),
+  );
+  await expect(pet).toHaveAttribute('data-action', 'cheer');
+  const gentleOffset = await pet.evaluate((node) => {
+    const animation = node.getAnimations()[0];
+    animation.pause();
+    animation.currentTime = 250;
+    return new DOMMatrix(getComputedStyle(node).transform).m42;
+  });
+  expect(gentleOffset).toBeCloseTo(-3.25, 1);
+  await expect
+    .poll(
+      async () =>
+        JSON.parse(await readFile(join(profile, 'pet-settings.json'), 'utf8')).pet.design
+          .motionStrength,
+    )
+    .toBe(25);
   await page.screenshot({ path: 'release/verified-animation-ui.png', fullPage: true });
   let windowLayer = { tested: false };
+  let position = { tested: false };
   if (process.platform === 'win32') {
     const pinInfo = await page.evaluate(() => window.keycritter.getPinInfo());
     expect(pinInfo.visible).toBe(true);
+    const drag = await companion.locator('.companion-drag').boundingBox();
+    const viewport = await companion.evaluate(() => ({ width: innerWidth, height: innerHeight }));
+    const moved = JSON.parse(
+      execFileSync(
+        'pwsh',
+        [
+          '-NoLogo',
+          '-NoProfile',
+          '-File',
+          resolve('tests/windows-drag-check.ps1'),
+          '-PetHandle',
+          pinInfo.nativeHandle,
+          '-XFraction',
+          String((drag.x + drag.width / 2) / viewport.width),
+          '-YFraction',
+          String((drag.y + drag.height / 2) / viewport.height),
+        ],
+        { encoding: 'utf8' },
+      ).trim(),
+    );
+    expect(moved.moved).toBe(true);
+    await expect
+      .poll(async () => {
+        const settings = JSON.parse(await readFile(join(profile, 'pet-settings.json'), 'utf8'));
+        return Number.isFinite(settings.position?.x) && Number.isFinite(settings.position?.y);
+      })
+      .toBe(true);
+    position = { tested: true, nativeNameBarDrag: true, positionSaved: true };
     foregroundBrowser = await chromium.launch({
       channel: 'msedge',
       headless: false,
@@ -210,6 +278,8 @@ try {
         rendererVersion: `v${version}`,
         portableExecutable: prefix.length === 0,
         windowLayer,
+        position,
+        movement: { stillModeKeepsFrames: true, gentleAmplitudeVerified: true, savedStrength: 25 },
         uploadVisible: true,
         aiVisible: true,
         animations: { uploadedFrames: 3, readyMadeFrames: 4, nativePlaybackVerified: true },

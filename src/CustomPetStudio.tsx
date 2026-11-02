@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { Check, Film, ImagePlus, KeyRound, LoaderCircle, Sparkles, Upload, X } from 'lucide-react';
 import AnimationEditor from './AnimationEditor';
-import type { PetDesign, PetPose } from './Pet';
+import type { PetAnimation, PetDesign, PetFrame, PetPose } from './Pet';
 import type { AIStatus } from './desktop';
 import { IMAGE_SLOTS, preparePetImage } from './petImages';
+import { MAX_FRAMES, MAX_FRAME_LENGTH, validAnimations } from './framePlayback';
 
 const title = (slot: PetPose) =>
   slot === 'idle' ? 'Main image' : slot.charAt(0).toUpperCase() + slot.slice(1);
@@ -40,6 +41,8 @@ export default function CustomPetStudio({
   const uploadSlot = useRef<PetPose>('idle');
   const alive = useRef(true);
   const sequence = useRef(0);
+  const latestDesign = useRef(design);
+  latestDesign.current = design;
 
   useEffect(() => {
     alive.current = true;
@@ -76,6 +79,60 @@ export default function CustomPetStudio({
     }));
     setNotice(`${title(pose)} is ready. Try a key reaction!`);
     setError('');
+  }
+  async function addAsFrame() {
+    if (!pending || uploading) return;
+    const { image: source, slot: pose } = pending;
+    setUploading(true);
+    setError('');
+    setNotice('');
+    try {
+      const previous = latestDesign.current.animations?.[pose];
+      if ((previous?.frames.length || 0) >= MAX_FRAMES)
+        throw new Error(
+          `Each animation can have up to ${MAX_FRAMES} frames. Remove a frame in Animate before adding more.`,
+        );
+      const options = { maxSide: 256, maxLength: MAX_FRAME_LENGTH };
+      const frames: PetFrame[] = [];
+      // Start a new sequence with the current pose, keeping the original character as the resting frame.
+      const base = latestDesign.current.images?.[pose] || latestDesign.current.images?.idle;
+      if (!previous && base)
+        frames.push({
+          id: crypto.randomUUID(),
+          image: await preparePetImage(base, options),
+          duration: 120,
+        });
+      const image = await preparePetImage(source, options);
+      frames.push({ id: crypto.randomUUID(), image, duration: 120 });
+      if (!alive.current) return;
+      const next: PetAnimation = {
+        loop: true,
+        pauseMs: pose === 'idle' ? 3000 : 0,
+        ...previous,
+        enabled: true,
+        frames: [...(previous?.frames || []), ...frames],
+      };
+      if (!validAnimations({ ...latestDesign.current.animations, [pose]: next }))
+        throw new Error(
+          'This pet has too much frame data. Remove some frames in Animate before adding more.',
+        );
+      onChange((current) => ({
+        ...current,
+        species: 'custom',
+        accessory: 'none',
+        images: { ...current.images, idle: current.images?.idle || next.frames[0].image },
+        animations: { ...current.animations, [pose]: next },
+      }));
+      setPending(null);
+      setNotice(
+        `Frame added to ${pose === 'idle' ? 'Idle / blink' : title(pose)}. Open Animate to adjust its order and timing.`,
+      );
+    } catch (cause) {
+      if (alive.current)
+        setError(cause instanceof Error ? cause.message : 'Could not add the animation frame.');
+    } finally {
+      if (alive.current) setUploading(false);
+    }
   }
   async function upload(file: File, pose: PetPose) {
     setUploading(true);
@@ -120,7 +177,7 @@ export default function CustomPetStudio({
     }
   }
   async function generate() {
-    if (!window.keycritter || working) return;
+    if (!window.keycritter || working || uploading) return;
     setWorking(true);
     setError('');
     setNotice('');
@@ -159,7 +216,7 @@ export default function CustomPetStudio({
       <div className="pet-source-tabs" role="group" aria-label="Pet source">
         <button
           aria-pressed={mode === 'pixel'}
-          disabled={working}
+          disabled={working || uploading}
           onClick={() => {
             setMode('pixel');
             setError('');
@@ -170,7 +227,7 @@ export default function CustomPetStudio({
         </button>
         <button
           aria-pressed={mode === 'upload'}
-          disabled={working}
+          disabled={working || uploading}
           onClick={() => {
             setMode('upload');
             setError('');
@@ -182,7 +239,7 @@ export default function CustomPetStudio({
         </button>
         <button
           aria-pressed={mode === 'animate'}
-          disabled={working}
+          disabled={working || uploading}
           onClick={() => {
             setMode('animate');
             setError('');
@@ -194,7 +251,7 @@ export default function CustomPetStudio({
         </button>
         <button
           aria-pressed={mode === 'ai'}
-          disabled={working}
+          disabled={working || uploading}
           onClick={() => {
             setMode('ai');
             setError('');
@@ -212,8 +269,8 @@ export default function CustomPetStudio({
             <h3>Make any little thing your buddy.</h3>
           </div>
           <p className="studio-description">
-            Upload a main image, then optional expressions for each reaction. Missing poses use your
-            main image with movement.
+            Choose any character image as your main pet, then add matching expressions for its
+            reactions. Missing poses use your main image with movement.
           </p>
           <button
             className="image-dropzone"
@@ -251,6 +308,21 @@ export default function CustomPetStudio({
           <p className="image-transparency-note">
             Transparent images work best. Uploaded backgrounds stay in the image.
           </p>
+          {design.images?.idle && (
+            <button
+              className="character-expressions-button"
+              onClick={() => {
+                setMode('ai');
+                setReference(true);
+                setError('');
+                setNotice('');
+              }}
+              disabled={uploading}
+            >
+              <Sparkles size={13} />
+              Make more expressions of this character
+            </button>
+          )}
           <div className="pose-grid">
             {IMAGE_SLOTS.filter((p) => p !== 'idle').map((pose) => (
               <div className="pose-tile" key={pose}>
@@ -310,7 +382,8 @@ export default function CustomPetStudio({
             <h3>Dream it. Meet it.</h3>
           </div>
           <p className="studio-description">
-            Describe a new buddy, or create another pose for your current one.
+            Describe a new buddy, or make another expression of your uploaded character. Keep “Use
+            main image as a character reference” selected to request the same character.
           </p>
           {!window.keycritter ? (
             <div className="ai-desktop-note">
@@ -463,7 +536,11 @@ export default function CustomPetStudio({
             <button
               className="button primary"
               disabled={
-                !window.keycritter || !status?.configured || prompt.trim().length < 3 || working
+                !window.keycritter ||
+                !status?.configured ||
+                prompt.trim().length < 3 ||
+                working ||
+                uploading
               }
               onClick={generate}
             >
@@ -492,6 +569,7 @@ export default function CustomPetStudio({
               <div>
                 <button
                   className="button primary"
+                  disabled={uploading}
                   onClick={() => {
                     useImage(pending.slot, pending.image);
                     setPending(null);
@@ -500,10 +578,27 @@ export default function CustomPetStudio({
                   <Check size={13} />
                   Use this image
                 </button>
-                <button className="button preview-button" onClick={() => setPending(null)}>
+                <button
+                  className="button preview-button"
+                  aria-label="Add as animation frame"
+                  disabled={uploading}
+                  onClick={() => void addAsFrame()}
+                >
+                  {uploading ? <LoaderCircle className="spin" size={13} /> : <Film size={13} />}
+                  {uploading ? 'Preparing…' : 'Add as frame'}
+                </button>
+                <button
+                  className="button preview-button"
+                  disabled={uploading}
+                  onClick={() => setPending(null)}
+                >
                   Discard
                 </button>
               </div>
+              <small className="generated-frame-note">
+                Add as frame builds a sequence in Animate. A new sequence starts with your current
+                pose image.
+              </small>
             </div>
           )}
         </div>

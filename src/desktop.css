@@ -198,6 +198,15 @@ html[data-surface='companion'] #root {
   background: #bba8c6;
   border-radius: 50%;
 }
+.companion-drag-hint {
+  font-size: 8px;
+  color: #a690b5;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.companion-drag > span:first-of-type {
+  min-width: 0;
+}
 .companion-dot.on {
   background: #8eaf7d;
 }
@@ -242,7 +251,8 @@ html[data-surface='companion'] #root {
     transform: translateY(0);
   }
   40% {
-    transform: translateY(-7px) rotate(2deg);
+    transform: translateY(calc(-7px * var(--motion-strength, 1)))
+      rotate(calc(2deg * var(--motion-strength, 1)));
   }
 }
 @media (max-width: 1100px) {

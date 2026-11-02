@@ -4,7 +4,7 @@ A floating typing pet for Windows, with a cozy React designer. Customize a pixel
 
 ## Use the Windows desktop pet
 
-1. Open `KeyCritter-Windows-1.2.1.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
+1. Open `KeyCritter-Windows-1.3.0.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
 2. Design your pet, then click **Enable keyboard reactions**. Ordinary typing makes it bounce; Space, Enter, and Backspace have special reactions by default. Add more in the reaction editor.
 3. Drag the little name label beneath your desktop pet to move it. The pet stays above other windows without taking keyboard focus.
 4. Close the designer to keep just the pet. Reopen it from the pet's **Designer** button or the KeyCritter system-tray menu, which may be under Windows' hidden-icons arrow.
@@ -40,6 +40,12 @@ The **Laptop buddy** preset includes a pixel character using a laptop, with thre
 
 Each pose supports up to 12 frames, 40–5000 ms per frame, and a pause up to 15 seconds. Frames are resized locally to at most 256 pixels and compressed; total frame data is limited to keep storage manageable. Frames work offline and are saved with the pet. Reduced-motion settings show a still frame. Replacing a pose through Upload or AI turns off its existing frame animation while retaining its frames, which can be enabled again in Animate. Existing single-image pets continue to work.
 
+## Control movement and position
+
+**Movement strength**, below **Size** in the designer, controls the amount of shaking, bouncing, rotation, and stretching. Try 25% for gentle reactions, 100% for the original movement, or 0% for a still body while images, expressions, and uploaded animation frames keep changing. **Reset** restores 100%. This setting is saved with each pet and applies in the playground and on the desktop. Existing pets start at 100%. **Size** changes the pet's overall size.
+
+To move the floating pet, click and hold the name bar marked **Drag to move**, then drag it anywhere on the screen. The app remembers its position when reopened. The character image itself is separate from this drag handle.
+
 ## Generate a pet with AI
 
 1. In the Windows app, choose **Create with AI**.
@@ -48,7 +54,9 @@ Each pose supports up to 12 frames, 40–5000 ms per frame, and a pause up to 15
 4. If a main image exists, optionally enable **Use main image as a character reference** to send it with the prompt and request a matching character pose.
 5. Click **Generate image**, review the preview, and choose **Use this image** or **Discard**. Repeat for additional poses as desired.
 
-Each generation makes one paid image request to OpenAI, with a transparent background requested. AI generates a single still image per request; use **Animate** to upload a sequence of frames. Nothing is sent when you merely type or upload an image. Generation sends only the prompt and, if explicitly selected, the main reference image. Typing activity never goes to the AI. Supported model IDs are checked against the official OpenAI SDK image definitions; the default is `gpt-image-1.5`.
+To make expressions of your own character, first upload its main image, then click **Make more expressions of this character**. Keep **Use main image as a character reference** selected. For blinking, choose **Main image** as the target and ask for “the same character with half-closed eyes, same body pose and placement.” After generation, **Add as frame** adds that preview to the selected pose's animation. A new sequence starts with your original pose image, then the generated expression; an existing sequence receives one new frame. Repeat for closed eyes, then choose **Animate** to adjust the order and durations. The original main image stays available as a reference. You can also create frames elsewhere and upload them without using the app's API connection.
+
+Each generation makes one paid image request to OpenAI, with a transparent background requested. AI generates a single still image per request; **Add as frame** prepares it locally and makes no extra provider request. Character identity and alignment depend on the image model; reference edits request consistent placement but may still need adjustment. Nothing is sent when you merely type or upload an image. Generation sends only the prompt and, if explicitly selected, the main reference image. Typing activity never goes to the AI. Supported model IDs are checked against the official OpenAI SDK image definitions; the default is `gpt-image-1.5`.
 
 API requests run in Electron's main process against the fixed `api.openai.com` image endpoints. The key is session-only by default. **Remember securely on this computer** uses Electron safeStorage/Windows DPAPI to encrypt it in `ai-key.bin`; plaintext fallback storage is not used. **Disconnect and remove key** clears the saved connection. Keys are not returned to the renderer or stored in pet settings, prompts, or browser local storage. The browser-only designer supports uploads, but deliberately does not make AI requests with a browser-stored key.
 
@@ -92,13 +100,13 @@ Windows-specific transparency, tray behavior, and native key handling should als
 
 ## Build the Windows download
 
-The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions, Upload/AI panels, and uploaded frames playing on the floating pet, and saves screenshots before uploading the download. It also opens Microsoft Edge, switches tabs, and uses Win32 window order/styles to check that the pet stays above the browser without taking focus, recovers from an intentional native topmost reset, and respects unpinning. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.2.1** artifact. Extract that ZIP and follow `START-HERE.txt`. The three `verified-*-ui.png` screenshots and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
+The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions, Upload/AI panels, and uploaded frames playing on the floating pet, and saves screenshots before uploading the download. It also opens Microsoft Edge, switches tabs, and uses Win32 window order/styles to check that the pet stays above the browser without taking focus, recovers from an intentional native topmost reset, and respects unpinning. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.3.0** artifact. Extract that ZIP and follow `START-HERE.txt`. The three `verified-*-ui.png` screenshots and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
 
 ```sh
 npm run desktop:win
 ```
 
-The result is `release/KeyCritter-Windows-1.2.1.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges. Run `npm run test:portable` on Windows to verify this exact executable, or `npm run test:second-instance` with Linux X11/xdotool to exercise the duplicate-launch message and saved-data protection.
+The result is `release/KeyCritter-Windows-1.3.0.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges. Run `npm run test:portable` on Windows to verify this exact executable, or `npm run test:second-instance` with Linux X11/xdotool to exercise the duplicate-launch message and saved-data protection.
 
 ## Open without installing anything
 

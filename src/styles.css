@@ -417,6 +417,11 @@ h1 > span {
   animation: breathe 2s ease-in-out infinite;
   transform-origin: center bottom;
 }
+.pet-animated[data-motion-strength='0'],
+.pet-animated[data-motion-strength='0'] .pet-tail {
+  animation: none !important;
+  transform: none;
+}
 .speech-bubble {
   position: relative;
   margin: 0 auto 13px;
@@ -1325,7 +1330,8 @@ input[type='range']::-moz-range-thumb {
     transform: translateY(0) scaleY(1);
   }
   50% {
-    transform: translateY(1px) scaleY(0.98);
+    transform: translateY(calc(1px * var(--motion-strength, 1)))
+      scaleY(calc(1 - 0.02 * var(--motion-strength, 1)));
   }
 }
 @keyframes tail-wiggle {
@@ -1334,7 +1340,7 @@ input[type='range']::-moz-range-thumb {
     transform: rotate(0);
   }
   50% {
-    transform: rotate(-6deg);
+    transform: rotate(calc(-6deg * var(--motion-strength, 1)));
   }
 }
 @keyframes pet-jump {
@@ -1343,22 +1349,26 @@ input[type='range']::-moz-range-thumb {
     transform: translateY(0) scale(1);
   }
   20% {
-    transform: translateY(3px) scale(1.07, 0.9);
+    transform: translateY(calc(3px * var(--motion-strength, 1)))
+      scale(calc(1 + 0.07 * var(--motion-strength, 1)), calc(1 - 0.1 * var(--motion-strength, 1)));
   }
   50% {
-    transform: translateY(-48px) scale(0.96, 1.04);
+    transform: translateY(calc(-48px * var(--motion-strength, 1)))
+      scale(calc(1 - 0.04 * var(--motion-strength, 1)), calc(1 + 0.04 * var(--motion-strength, 1)));
   }
   80% {
-    transform: translateY(0) scale(1.05, 0.96);
+    transform: translateY(0)
+      scale(calc(1 + 0.05 * var(--motion-strength, 1)), calc(1 - 0.04 * var(--motion-strength, 1)));
   }
 }
 @keyframes cheer {
   0%,
   100% {
-    transform: translateY(0) rotate(-3deg);
+    transform: translateY(0) rotate(calc(-3deg * var(--motion-strength, 1)));
   }
   50% {
-    transform: translateY(-13px) rotate(4deg);
+    transform: translateY(calc(-13px * var(--motion-strength, 1)))
+      rotate(calc(4deg * var(--motion-strength, 1)));
   }
 }
 @keyframes surprise {
@@ -1366,13 +1376,15 @@ input[type='range']::-moz-range-thumb {
     transform: scale(1);
   }
   35% {
-    transform: scale(1.14) translateY(-16px);
+    transform: scale(calc(1 + 0.14 * var(--motion-strength, 1)))
+      translateY(calc(-16px * var(--motion-strength, 1)));
   }
   55% {
-    transform: scale(0.97) rotate(4deg);
+    transform: scale(calc(1 - 0.03 * var(--motion-strength, 1)))
+      rotate(calc(4deg * var(--motion-strength, 1)));
   }
   75% {
-    transform: rotate(-4deg);
+    transform: rotate(calc(-4deg * var(--motion-strength, 1)));
   }
   100% {
     transform: scale(1);
@@ -1381,10 +1393,13 @@ input[type='range']::-moz-range-thumb {
 @keyframes dance {
   0%,
   100% {
-    transform: rotate(-9deg) translateX(-4px);
+    transform: rotate(calc(-9deg * var(--motion-strength, 1)))
+      translateX(calc(-4px * var(--motion-strength, 1)));
   }
   50% {
-    transform: rotate(9deg) translateX(4px) translateY(-8px);
+    transform: rotate(calc(9deg * var(--motion-strength, 1)))
+      translateX(calc(4px * var(--motion-strength, 1)))
+      translateY(calc(-8px * var(--motion-strength, 1)));
   }
 }
 @keyframes float-particle {

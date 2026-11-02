@@ -196,3 +196,44 @@ test('AI errors preserve the current pet and allow retrying (mock provider)', as
   await expect(page.getByTestId('active-pet')).toHaveAttribute('data-species', 'cat');
   await expect(page.getByRole('button', { name: 'Generate image', exact: true })).toBeEnabled();
 });
+
+test('uses an uploaded character as a reference and adds AI expressions to an editable sequence', async ({
+  page,
+}) => {
+  await mockAI(page);
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Upload', exact: true }).click();
+  await page.getByLabel('Pet image file').setInputFiles(await fixture(page));
+  const reference = await page.getByTestId('active-pet').locator('img').getAttribute('src');
+  await page.getByRole('button', { name: 'Make more expressions of this character' }).click();
+  await expect(
+    page.getByRole('checkbox', { name: 'Use main image as a character reference' }),
+  ).toBeChecked();
+  await page
+    .getByLabel('OpenAI API key', { exact: true })
+    .fill('sk-test-only-not-a-real-credential');
+  await page.getByRole('button', { name: 'Save API key', exact: true }).click();
+  await page
+    .getByLabel('Describe your buddy')
+    .fill('Same character with half-closed eyes; keep everything else aligned.');
+  await page.getByRole('button', { name: 'Generate image', exact: true }).click();
+  await expect(page.getByAltText('Generated pet preview')).toBeVisible();
+  await page.getByRole('button', { name: 'Add as animation frame' }).click();
+  await expect(page.getByAltText('Generated pet preview')).toHaveCount(0);
+  const draft = await page.evaluate(() => JSON.parse(localStorage.getItem('keycritter-draft')!));
+  expect(draft.design.images.idle).toBe(reference);
+  expect(draft.design.animations.idle.frames).toHaveLength(2);
+  const requests = await page.evaluate(
+    () => (window as unknown as { aiRequests: { reference: string }[] }).aiRequests,
+  );
+  expect(requests).toHaveLength(1);
+  expect(requests[0].reference).toBe(reference);
+  await page.getByRole('button', { name: 'Generate image', exact: true }).click();
+  await page.getByRole('button', { name: 'Add as animation frame' }).click();
+  await page.getByRole('button', { name: 'Animate', exact: true }).click();
+  await expect(page.locator('.animation-frame')).toHaveCount(3);
+  await page.getByRole('button', { name: 'Save pet', exact: true }).click();
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('keycritter-pets')!));
+  expect(saved[0].design.animations.idle.frames).toHaveLength(3);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});

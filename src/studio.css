@@ -8,6 +8,60 @@
   min-width: 0;
   width: 100%;
 }
+.motion-settings {
+  padding: 13px;
+  border: 1px solid #e8dfed;
+  border-radius: 9px;
+  background: #faf7fd;
+}
+.motion-settings-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  margin-bottom: 11px;
+  color: #897294;
+  font-size: 10px;
+}
+.motion-settings-title > label {
+  font-weight: 750;
+}
+.motion-settings-title > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.motion-settings-title output {
+  font-variant-numeric: tabular-nums;
+  color: #8e69b0;
+}
+.motion-settings-title button {
+  border: 1px solid #e3d4ed;
+  border-radius: 5px;
+  background: #fffdfd;
+  padding: 4px 7px;
+  color: #a085b2;
+  font-size: 9px;
+}
+.motion-settings input[type='range'] {
+  display: block;
+  width: 100%;
+  accent-color: #a27bc6;
+  cursor: pointer;
+}
+.motion-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  color: #a18bad;
+  font-size: 9px;
+}
+.motion-settings p {
+  margin: 9px 0 0;
+  color: #a18bad;
+  font-size: 9px;
+  line-height: 1.6;
+}
 .workspace-grid:has(.custom-studio[data-mode='upload']),
 .workspace-grid:has(.custom-studio[data-mode='animate']),
 .workspace-grid:has(.custom-studio[data-mode='ai']) {
@@ -369,6 +423,35 @@
 .generated-preview > div:last-child {
   display: flex;
   gap: 7px;
+}
+.generated-preview > div:has(> .button) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.generated-preview > div:has(> .button) .button {
+  flex: 1 1 100px;
+}
+.generated-frame-note {
+  display: block;
+  margin-top: 9px;
+  font-size: 9px;
+  color: #a18bad;
+  line-height: 1.6;
+}
+.character-expressions-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 10px;
+  background: #f3eafa;
+  color: #9773b5;
+  border: 1px solid #e4d3f0;
+  border-radius: 7px;
+  font-size: 10px;
 }
 .generated-preview .button {
   flex: 1;

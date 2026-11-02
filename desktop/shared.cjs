@@ -84,6 +84,8 @@ function validPet(pet) {
     Number.isFinite(d.size) &&
     d.size >= 70 &&
     d.size <= 125 &&
+    (d.motionStrength === undefined ||
+      (Number.isInteger(d.motionStrength) && d.motionStrength >= 0 && d.motionStrength <= 100)) &&
     ['bow', 'glasses', 'star', 'none'].includes(d.accessory) &&
     Array.isArray(rs) &&
     rs.length <= 30 &&
@@ -114,6 +116,9 @@ function cleanPet(pet) {
       color,
       size,
       accessory,
+      ...(pet.design.motionStrength !== undefined
+        ? { motionStrength: pet.design.motionStrength }
+        : {}),
       ...(pet.design.images ? { images: { ...pet.design.images } } : {}),
       ...(pet.design.animations
         ? {

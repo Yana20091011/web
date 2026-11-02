@@ -78,6 +78,12 @@ export default function DesktopPet({ initial }: { initial: DesktopState }) {
             className={`pet-animated ${action || 'idle'}`}
             data-testid="desktop-pet"
             data-action={action || 'idle'}
+            data-motion-strength={state.pet.design.motionStrength ?? 100}
+            style={
+              {
+                '--motion-strength': (state.pet.design.motionStrength ?? 100) / 100,
+              } as React.CSSProperties
+            }
           >
             <Pet
               design={state.pet.design}
@@ -94,6 +100,7 @@ export default function DesktopPet({ initial }: { initial: DesktopState }) {
           <span>{name}</span>
           <span className={`companion-dot ${state.listening ? 'on' : ''}`} />
           <span>{state.starting ? 'starting' : state.listening ? 'listening' : 'paused'}</span>
+          <span className="companion-drag-hint">Drag to move</span>
         </div>
         <div className="companion-buttons">
           <button

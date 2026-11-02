@@ -29,6 +29,7 @@ import {
 import Pet, { type Accessory, type Action, type PetDesign, type Species } from './Pet';
 import DesktopPanel from './DesktopPanel';
 import CustomPetStudio from './CustomPetStudio';
+import MotionControls from './MotionControls';
 import { reactionDuration } from './framePlayback';
 import { usePetMotion } from './usePetMotion';
 import type { DesktopState } from './desktop';
@@ -399,6 +400,12 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
                       data-testid="active-pet"
                       data-species={design.species}
                       data-action={animation.action || 'idle'}
+                      data-motion-strength={design.motionStrength ?? 100}
+                      style={
+                        {
+                          '--motion-strength': (design.motionStrength ?? 100) / 100,
+                        } as React.CSSProperties
+                      }
                     >
                       <Pet design={design} action={animation.action} playbackId={animation.n} />
                     </div>
@@ -590,6 +597,10 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
                       <PawPrint size={22} />
                     </div>
                   </div>
+                  <MotionControls
+                    design={design}
+                    onChange={(strength) => update('motionStrength', strength)}
+                  />
                   <div className="field-row accessory-row">
                     <span id="accessory-label">Accessory</span>
                     <div

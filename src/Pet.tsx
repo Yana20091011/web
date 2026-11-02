@@ -23,6 +23,7 @@ export interface PetDesign {
   species: Species;
   color: string;
   size: number;
+  motionStrength?: number;
   accessory: Accessory;
   images?: PetImages;
   animations?: PetAnimations;

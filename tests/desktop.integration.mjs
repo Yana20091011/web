@@ -301,8 +301,7 @@ try {
       ),
     ),
   ).toBe('denied');
-  // Xvfb has no window manager, so use renderer pointer events for the handle
-  // and real OS cursor positions for movement. Windows checks the full OS gesture.
+  // Captured pointer events must move the native window and persist its location.
   await companion.locator('.companion-drag').hover();
   const bar = await companion.locator('.companion-drag').boundingBox();
   const beforeMove = await desktop.evaluate(({ BrowserWindow }) =>
@@ -310,17 +309,9 @@ try {
       .find((w) => w.webContents.getURL().includes('#companion'))
       .getBounds(),
   );
-  const grab = {
-    x: Math.round(beforeMove.x + bar.x + bar.width / 2),
-    y: Math.round(beforeMove.y + bar.y + bar.height / 2),
-  };
-  execFileSync(xdotool, ['mousemove', '--sync', String(grab.x), String(grab.y)], { env: xenv });
-  await companion.waitForTimeout(100);
+  await companion.mouse.move(bar.x + bar.width / 2, bar.y + bar.height / 2);
   await companion.mouse.down();
   await companion.waitForTimeout(100);
-  execFileSync(xdotool, ['mousemove', '--sync', String(grab.x - 80), String(grab.y - 40)], {
-    env: xenv,
-  });
   await companion.mouse.move(bar.x + bar.width / 2 - 80, bar.y + bar.height / 2 - 40);
   await companion.waitForTimeout(150);
   await companion.mouse.up();

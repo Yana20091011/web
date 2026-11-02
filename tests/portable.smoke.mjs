@@ -173,26 +173,36 @@ try {
     const pinInfo = await page.evaluate(() => window.keycritter.getPinInfo());
     expect(pinInfo.visible).toBe(true);
     const drag = await companion.locator('.companion-drag').boundingBox();
-    const viewport = await companion.evaluate(() => ({ width: innerWidth, height: innerHeight }));
-    const moved = JSON.parse(
-      execFileSync(
-        'pwsh',
-        [
-          '-NoLogo',
-          '-NoProfile',
-          '-File',
-          resolve('tests/windows-drag-check.ps1'),
-          '-PetHandle',
-          pinInfo.nativeHandle,
-          '-XFraction',
-          String((drag.x + drag.width / 2) / viewport.width),
-          '-YFraction',
-          String((drag.y + drag.height / 2) / viewport.height),
-        ],
-        { encoding: 'utf8' },
-      ).trim(),
-    );
-    expect(moved.moved, `Native drag result: ${JSON.stringify(moved)}`).toBe(true);
+    const nativePosition = () =>
+      JSON.parse(
+        execFileSync(
+          'pwsh',
+          [
+            '-NoLogo',
+            '-NoProfile',
+            '-File',
+            resolve('tests/windows-position-check.ps1'),
+            '-PetHandle',
+            pinInfo.nativeHandle,
+          ],
+          { encoding: 'utf8' },
+        ).trim(),
+      );
+    const beforeDrag = nativePosition();
+    await companion.mouse.move(drag.x + drag.width / 2, drag.y + drag.height / 2);
+    await companion.mouse.down();
+    await companion.waitForTimeout(100);
+    await companion.mouse.move(drag.x + drag.width / 2 - 80, drag.y + drag.height / 2 - 40);
+    await companion.mouse.up();
+    await expect
+      .poll(
+        () => {
+          const afterDrag = nativePosition();
+          return afterDrag.x < beforeDrag.x - 20 && afterDrag.y < beforeDrag.y - 10;
+        },
+        { message: 'Pointer dragging must move the actual native Windows window', timeout: 10000 },
+      )
+      .toBe(true);
     await expect
       .poll(async () => {
         const settings = JSON.parse(await readFile(join(profile, 'pet-settings.json'), 'utf8'));

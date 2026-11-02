@@ -112,9 +112,19 @@ function finishDrag(keepInteractive = false) {
     applyPetPin(true);
   }
 }
-function moveDrag() {
-  if (quitting || !dragOrigin || !companion || companion.isDestroyed()) return;
-  const cursor = screen.getCursorScreenPoint();
+function validDragPoint(point) {
+  return (
+    point &&
+    Number.isFinite(point.x) &&
+    Number.isFinite(point.y) &&
+    Math.abs(point.x) <= 1000000 &&
+    Math.abs(point.y) <= 1000000
+  );
+}
+function moveDrag(point) {
+  if (quitting || !dragOrigin || !companion || companion.isDestroyed() || !validDragPoint(point))
+    return;
+  const cursor = { x: Math.round(point.x), y: Math.round(point.y) };
   const [width, height] = companion.getSize();
   const target = clampPosition(
     {
@@ -352,9 +362,10 @@ handle('pet:enabled', ['designer', 'companion'], (enabled) => {
   return state();
 });
 handle('pet:pin', ['designer', 'companion'], setPetPin);
-handle('pet:drag-start', ['companion'], () => {
+handle('pet:drag-start', ['companion'], (point) => {
+  if (!validDragPoint(point)) throw new Error('Invalid drag point');
   const [x, y] = companion.getPosition();
-  dragOrigin = { x, y, cursor: screen.getCursorScreenPoint() };
+  dragOrigin = { x, y, cursor: { x: Math.round(point.x), y: Math.round(point.y) } };
   companion.setIgnoreMouseEvents(false, { forward: true });
   clearTimeout(dragTimer);
   dragTimer = setTimeout(() => finishDrag(), 30000);
@@ -443,8 +454,8 @@ ipcMain.on('pet:interactive', (event, interactive) => {
   if (allowed(event, ['companion']) && typeof interactive === 'boolean')
     companion.setIgnoreMouseEvents(!interactive && !dragOrigin, { forward: true });
 });
-ipcMain.on('pet:drag-move', (event) => {
-  if (allowed(event, ['companion'])) moveDrag();
+ipcMain.on('pet:drag-move', (event, point) => {
+  if (allowed(event, ['companion'])) moveDrag(point);
 });
 
 const ownsInstanceLock = app.requestSingleInstanceLock();

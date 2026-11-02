@@ -42,8 +42,8 @@ export interface DesktopBridge {
   openDesigner(): Promise<void>;
   preview(reaction: { action: Action; phrase: string }): Promise<void>;
   setInteractive(interactive: boolean): void;
-  startDrag(): Promise<void>;
-  moveDrag(): void;
+  startDrag(point: { x: number; y: number }): Promise<void>;
+  moveDrag(point: { x: number; y: number }): void;
   endDrag(interactive: boolean): Promise<void>;
   quit(): Promise<void>;
   onState(callback: (state: DesktopState) => void): () => void;

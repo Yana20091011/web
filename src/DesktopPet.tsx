@@ -115,14 +115,15 @@ export default function DesktopPet({ initial }: { initial: DesktopState }) {
             const pointer = event.pointerId;
             element.setPointerCapture(pointer);
             dragging.current = true;
-            void window.keycritter!.startDrag().catch(() => {
+            void window.keycritter!.startDrag({ x: event.screenX, y: event.screenY }).catch(() => {
               dragging.current = false;
               if (element.hasPointerCapture(pointer)) element.releasePointerCapture(pointer);
               setError('Could not start moving the pet. Try again.');
             });
           }}
-          onPointerMove={() => {
-            if (dragging.current) window.keycritter!.moveDrag();
+          onPointerMove={(event) => {
+            if (dragging.current)
+              window.keycritter!.moveDrag({ x: event.screenX, y: event.screenY });
           }}
           onPointerUp={(event) => {
             const bounds = event.currentTarget.getBoundingClientRect();

@@ -80,6 +80,42 @@ try {
   await expect(page.getByLabel('Describe your buddy')).toBeVisible();
   await expect(page.getByLabel('OpenAI API key', { exact: true })).toBeVisible();
   await page.screenshot({ path: 'release/verified-ai-ui.png', fullPage: true });
+  await page.getByRole('button', { name: 'Animate', exact: true }).click();
+  const blinkFrames = await page.evaluate(() =>
+    [0, 1, 2].map((blink) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 96;
+      canvas.height = 96;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#b5dbb3';
+      ctx.fillRect(16, 20, 64, 64);
+      ctx.fillStyle = '#40374d';
+      ctx.fillRect(30, 46, 7, blink === 0 ? 9 : blink === 1 ? 5 : 2);
+      ctx.fillRect(59, 46, 7, blink === 0 ? 9 : blink === 1 ? 5 : 2);
+      ctx.fillRect(43, 64, 10, 3);
+      return canvas.toDataURL('image/png');
+    }),
+  );
+  await page.getByLabel('Animation frame files').setInputFiles(
+    blinkFrames.map((image, n) => ({
+      name: `blink-${n}.png`,
+      mimeType: 'image/png',
+      buffer: Buffer.from(image.split(',')[1], 'base64'),
+    })),
+  );
+  await expect(page.locator('.animation-frame')).toHaveCount(3);
+  const companion = browser
+    .contexts()
+    .flatMap((c) => c.pages())
+    .find((p) => p.url().includes('#companion'));
+  const petImage = companion.getByTestId('desktop-pet').locator('img');
+  await expect(petImage).toHaveAttribute('data-animated', 'true');
+  await expect
+    .poll(() => petImage.getAttribute('data-frame-index'), { intervals: [20], timeout: 12000 })
+    .toBe('2');
+  const animationState = await page.evaluate(() => window.keycritter.getState());
+  expect(animationState.pet.design.animations.idle.frames).toHaveLength(3);
+  await page.screenshot({ path: 'release/verified-animation-ui.png', fullPage: true });
   let windowLayer = { tested: false };
   if (process.platform === 'win32') {
     const pinInfo = await page.evaluate(() => window.keycritter.getPinInfo());
@@ -164,6 +200,7 @@ try {
         windowLayer,
         uploadVisible: true,
         aiVisible: true,
+        animations: { uploadedFrames: 3, nativePlaybackVerified: true },
         verifiedAt: new Date().toISOString(),
       },
       null,
@@ -181,7 +218,7 @@ try {
   if (!exited) throw new Error('The packaged app did not quit normally.');
   expect(child.exitCode).toBe(0);
   console.log(
-    `PASS: ${prefix.length ? 'local runtime' : 'actual portable executable'} v${version} launched; native/renderer versions match; Upload and AI tabs work; screenshots and verification report saved.`,
+    `PASS: ${prefix.length ? 'local runtime' : 'actual portable executable'} v${version} launched; native/renderer versions match; Upload, AI, and frame animation work; screenshots and verification report saved.`,
   );
 } catch (error) {
   const detail =

@@ -192,6 +192,38 @@ try {
       ),
     )
     .toBe(true);
+  await designer.getByRole('button', { name: 'Animate', exact: true }).click();
+  await designer.getByLabel('Animation frame files').setInputFiles(
+    [0, 1].map((n) => ({
+      name: `idle-${n}.png`,
+      mimeType: 'image/png',
+      buffer: Buffer.from(customImage.split(',')[1], 'base64'),
+    })),
+  );
+  await expect(designer.locator('.animation-frame')).toHaveCount(2);
+  for (const n of [1, 2]) {
+    await designer.getByLabel(`Frame ${n} duration in milliseconds`).fill('1000');
+    await designer.getByLabel(`Frame ${n} duration in milliseconds`).press('Enter');
+  }
+  await designer.getByRole('button', { name: 'Enable keyboard reactions', exact: true }).click();
+  await expect(designer.getByText('Reactions on', { exact: true })).toBeVisible();
+  await expect(companion.getByTestId('desktop-pet')).toHaveAttribute('data-action', 'idle');
+  const animatedImage = companion.getByTestId('desktop-pet').locator('img');
+  await expect(animatedImage).toHaveAttribute('data-animated', 'true');
+  await expect
+    .poll(() => animatedImage.getAttribute('data-frame-index'), { intervals: [20], timeout: 8000 })
+    .toBe('1');
+  const sameImage = await animatedImage.elementHandle();
+  execFileSync(xdotool, ['windowfocus', '--sync', nativeWindow], { env: xenv });
+  execFileSync(xdotool, ['key', 'q'], { env: xenv });
+  await expect(companion.getByTestId('desktop-pet')).toHaveAttribute('data-action', 'tap');
+  await expect(animatedImage).toHaveAttribute('data-frame-index', '1');
+  expect(
+    await sameImage.evaluate(
+      (node) => node === document.querySelector('[data-testid="desktop-pet"] img'),
+    ),
+  ).toBe(true);
+  await designer.getByRole('button', { name: 'Pause reactions', exact: true }).click();
   const secretAccess = await companion.evaluate(() =>
     window.keycritter.getAIStatus().then(
       () => 'allowed',
@@ -249,6 +281,8 @@ try {
   expect(settings.pet.design.name).toBe('Desktop Mochi');
   expect(settings.pet.design.species).toBe('custom');
   expect(settings.pet.design.images.cheer).toMatch(/^data:image\/webp;base64,/);
+  expect(settings.pet.design.animations.idle.frames).toHaveLength(2);
+  expect(settings.pet.design.animations.idle.frames[0].duration).toBe(1000);
   expect(Object.keys(settings).sort()).toEqual(['pet', 'pinned', 'version']);
   expect(JSON.stringify(settings)).not.toContain('typedText');
   expect(errors).toEqual([]);
@@ -275,6 +309,11 @@ try {
   ).toHaveAttribute('aria-pressed', 'false');
   await restored.getByRole('button', { name: 'Pin pet above apps', exact: true }).click();
   await expect(restored.getByTestId('active-pet')).toHaveAttribute('data-species', 'custom');
+  const restoredCompanion = desktop.windows().find((w) => w.url().includes('#companion'));
+  await expect(restoredCompanion.getByTestId('desktop-pet').locator('img')).toHaveAttribute(
+    'data-animated',
+    'true',
+  );
   await restored.getByLabel('Name', { exact: true }).fill('Restored buddy');
   await restored.getByRole('button', { name: 'Save pet', exact: true }).click();
   await restored.getByRole('button', { name: /My Pets/ }).click();
@@ -283,7 +322,7 @@ try {
     restored.getByRole('heading', { name: 'Restored buddy', exact: true }),
   ).toBeVisible();
   console.log(
-    'PASS: always-on-top pet; real global keyboard input; custom images and poses; mock AI generation and preview via native IPC; session-key handling; companion secret access denied; saved settings; restart; no renderer errors.',
+    'PASS: always-on-top pet; real global keyboard input; custom images and poses; frame animations continue through typing and restart; mock AI generation and preview via native IPC; session-key handling; companion secret access denied; saved settings; restart; no renderer errors.',
   );
 } finally {
   await desktop?.close();

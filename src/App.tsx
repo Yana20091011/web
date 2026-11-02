@@ -29,6 +29,8 @@ import {
 import Pet, { type Accessory, type Action, type PetDesign, type Species } from './Pet';
 import DesktopPanel from './DesktopPanel';
 import CustomPetStudio from './CustomPetStudio';
+import { reactionDuration } from './framePlayback';
+import { usePetMotion } from './usePetMotion';
 import type { DesktopState } from './desktop';
 import {
   ACTIONS,
@@ -57,6 +59,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
   const [text, setText] = useState('');
   const [triggered, setTriggered] = useState(0);
   const [animation, setAnimation] = useState<{ action?: Action; n: number }>({ n: 0 });
+  const petMotion = usePetMotion(animation.n);
   const [speech, setSpeech] = useState('You got this!');
   const [sound, setSound] = useState(false);
   const [night, setNight] = useState(false);
@@ -153,12 +156,15 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
       window.keycritter
         ?.preview({ action, phrase })
         .catch(() => setToast('Could not reach the desktop pet. Try Show pet.'));
-      timer.current = setTimeout(() => {
-        setAnimation((a) => ({ n: a.n }));
-        setSpeech('You got this!');
-      }, 2400);
+      timer.current = setTimeout(
+        () => {
+          setAnimation((a) => ({ n: a.n }));
+          setSpeech('You got this!');
+        },
+        reactionDuration(design, action, 2400),
+      );
     },
-    [playSound],
+    [playSound, design],
   );
 
   const update = <K extends keyof PetDesign>(key: K, value: PetDesign[K]) =>
@@ -388,13 +394,13 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
                     onClick={() => react('cheer', 'Aww, I love you too!')}
                   >
                     <div
-                      key={animation.n}
+                      ref={petMotion}
                       className={`pet-animated ${animation.action || 'idle'}`}
                       data-testid="active-pet"
                       data-species={design.species}
                       data-action={animation.action || 'idle'}
                     >
-                      <Pet design={design} action={animation.action} />
+                      <Pet design={design} action={animation.action} playbackId={animation.n} />
                     </div>
                   </button>
                   {animation.action && (
@@ -839,7 +845,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
           {pets.length === 0 ? (
             <div className="card empty-library">
               <div className="empty-pet">
-                <Pet design={design} />
+                <Pet design={design} animationPlaying={false} />
               </div>
               <h2>A little friend is waiting.</h2>
               <p>Design your first buddy, then choose “Save pet” to give it a home here.</p>
@@ -857,7 +863,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
                     style={{ '--saved-color': p.design.color } as React.CSSProperties}
                   >
                     <span className="saved-sparkle">✦</span>
-                    <Pet design={p.design} />
+                    <Pet design={p.design} animationPlaying={false} />
                     <span className="saved-heart">♡</span>
                   </div>
                   <div className="saved-pet-info">

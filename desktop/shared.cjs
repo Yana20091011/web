@@ -2,6 +2,50 @@ const { resolve, sep } = require('node:path');
 
 const COLORS = ['#b5dbb3', '#c7b5ee', '#f1b2cb', '#f5d793', '#a9cce9'];
 const ACTIONS = ['jump', 'cheer', 'surprise', 'dance', 'sleep'];
+function validAnimations(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  let length = 0;
+  const entries = Object.entries(value);
+  return (
+    entries.length <= 6 &&
+    entries.every(([pose, clip]) => {
+      if (
+        !['idle', ...ACTIONS].includes(pose) ||
+        !clip ||
+        typeof clip !== 'object' ||
+        typeof clip.enabled !== 'boolean' ||
+        typeof clip.loop !== 'boolean' ||
+        !Number.isInteger(clip.pauseMs) ||
+        clip.pauseMs < 0 ||
+        clip.pauseMs > 15000 ||
+        !Array.isArray(clip.frames) ||
+        !clip.frames.length ||
+        clip.frames.length > 12
+      )
+        return false;
+      const ids = new Set();
+      return clip.frames.every((frame) => {
+        if (
+          !frame ||
+          typeof frame.id !== 'string' ||
+          !frame.id.length ||
+          frame.id.length > 100 ||
+          ids.has(frame.id) ||
+          typeof frame.image !== 'string' ||
+          frame.image.length > 60000 ||
+          !/^data:image\/(png|webp|jpeg);base64,[A-Za-z0-9+/]+={0,2}$/.test(frame.image) ||
+          !Number.isInteger(frame.duration) ||
+          frame.duration < 40 ||
+          frame.duration > 5000
+        )
+          return false;
+        ids.add(frame.id);
+        length += frame.image.length;
+        return length <= 900000;
+      });
+    })
+  );
+}
 function validImages(images) {
   if (!images || typeof images !== 'object' || Array.isArray(images)) return false;
   const entries = Object.entries(images);
@@ -34,6 +78,7 @@ function validPet(pet) {
     d.name.length <= 24 &&
     ['cat', 'bunny', 'blob', 'custom'].includes(d.species) &&
     (d.images === undefined || validImages(d.images)) &&
+    (d.animations === undefined || validAnimations(d.animations)) &&
     (d.species !== 'custom' || (validImages(d.images) && typeof d.images.idle === 'string')) &&
     COLORS.includes(d.color) &&
     Number.isFinite(d.size) &&
@@ -70,6 +115,21 @@ function cleanPet(pet) {
       size,
       accessory,
       ...(pet.design.images ? { images: { ...pet.design.images } } : {}),
+      ...(pet.design.animations
+        ? {
+            animations: Object.fromEntries(
+              Object.entries(pet.design.animations).map(([pose, clip]) => [
+                pose,
+                {
+                  enabled: clip.enabled,
+                  loop: clip.loop,
+                  pauseMs: clip.pauseMs,
+                  frames: clip.frames.map(({ id, image, duration }) => ({ id, image, duration })),
+                },
+              ]),
+            ),
+          }
+        : {}),
     },
     reactions: pet.reactions.map(({ id, key, action, phrase }) => ({ id, key, action, phrase })),
   };
@@ -105,6 +165,7 @@ module.exports = {
   DEFAULT_PET,
   ACTIONS,
   validImages,
+  validAnimations,
   validPet,
   cleanPet,
   clampPosition,

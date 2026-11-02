@@ -60,6 +60,7 @@ jobs:
           Copy-Item release/package-verification.json windows-download/
           Copy-Item release/verified-ui.png windows-download/
           Copy-Item release/verified-ai-ui.png windows-download/
+          Copy-Item release/verified-animation-ui.png windows-download/
           Get-FileHash windows-download/*.exe -Algorithm SHA256 |
             ForEach-Object { "$($_.Hash.ToLower())  $(Split-Path $_.Path -Leaf)" } |
             Set-Content windows-download/SHA256SUMS.txt

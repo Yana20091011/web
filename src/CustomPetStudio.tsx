@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
-import { Check, ImagePlus, KeyRound, LoaderCircle, Sparkles, Upload, X } from 'lucide-react';
+import { Check, Film, ImagePlus, KeyRound, LoaderCircle, Sparkles, Upload, X } from 'lucide-react';
+import AnimationEditor from './AnimationEditor';
 import type { PetDesign, PetPose } from './Pet';
 import type { AIStatus } from './desktop';
 import { IMAGE_SLOTS, preparePetImage } from './petImages';
@@ -15,8 +16,12 @@ export default function CustomPetStudio({
   design: PetDesign;
   onChange: Dispatch<SetStateAction<PetDesign>>;
 }) {
-  const [mode, setMode] = useState<'pixel' | 'upload' | 'ai'>(
-    design.species === 'custom' ? 'upload' : 'pixel',
+  const [mode, setMode] = useState<'pixel' | 'upload' | 'animate' | 'ai'>(
+    design.species === 'custom'
+      ? Object.keys(design.animations || {}).length
+        ? 'animate'
+        : 'upload'
+      : 'pixel',
   );
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
@@ -60,6 +65,14 @@ export default function CustomPetStudio({
       species: 'custom',
       accessory: 'none',
       images: { ...current.images, idle: current.images?.idle || image, [pose]: image },
+      ...(current.animations?.[pose]
+        ? {
+            animations: {
+              ...current.animations,
+              [pose]: { ...current.animations[pose], enabled: false },
+            },
+          }
+        : {}),
     }));
     setNotice(`${title(pose)} is ready. Try a key reaction!`);
     setError('');
@@ -168,6 +181,18 @@ export default function CustomPetStudio({
           Upload
         </button>
         <button
+          aria-pressed={mode === 'animate'}
+          disabled={working}
+          onClick={() => {
+            setMode('animate');
+            setError('');
+            if (design.images?.idle) onChange((d) => ({ ...d, species: 'custom' }));
+          }}
+        >
+          <Film size={13} />
+          Animate
+        </button>
+        <button
           aria-pressed={mode === 'ai'}
           disabled={working}
           onClick={() => {
@@ -179,6 +204,7 @@ export default function CustomPetStudio({
           Create with AI
         </button>
       </div>
+      {mode === 'animate' && <AnimationEditor design={design} onChange={onChange} />}
       {mode === 'upload' && (
         <div className="upload-panel">
           <div className="studio-section-title">

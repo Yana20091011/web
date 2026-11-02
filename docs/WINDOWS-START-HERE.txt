@@ -2,10 +2,10 @@ KEYCRITTER - WINDOWS DESKTOP PET
 
 For Windows 10/11, 64-bit (x64).
 
-This download is version 1.1.2. The logo and window title show v1.1.2.
+This download is version 1.2.0. The logo and window title show v1.2.0.
 Quit any older KeyCritter from the system tray before opening this update.
-The included verified-ui.png and verified-ai-ui.png are screenshots captured
-while testing this exact portable executable on Windows.
+The included verified-ui.png, verified-ai-ui.png, and verified-animation-ui.png
+are screenshots captured while testing this exact portable executable on Windows.
 
 1. Extract the downloaded ZIP to a folder on your computer.
 2. Open the KeyCritter-Windows application (.exe). No installer or Node.js is needed.
@@ -40,6 +40,24 @@ AI generation needs your own OpenAI API key and API billing, separate from
 ChatGPT. Each click requests one image. Preview the result before applying it.
 Your typing is never sent to the AI. A reference image is sent only if selected.
 Keys are session-only unless you choose encrypted storage on this computer.
+
+BLINKING AND FRAME ANIMATIONS
+1. Choose Animate in the designer, then Idle / blink.
+2. Click Add frames and select your images (up to 12 per animation).
+   For blinking: open eyes, half-closed, closed, open eyes.
+3. Use the numbered frames' arrows to change the order. Adjust each duration
+   in milliseconds, or choose Use blink timing for 100 ms frames and a 3 s pause.
+4. Leave Repeat animation enabled for blinking. During a pause, frame 1 is shown.
+   Use images with matching canvas sizes to prevent the pet from shifting around.
+5. Select another pose, such as Cheer, to add a sequence for a key reaction.
+   Assign that action to a key in Key reactions, then try it.
+6. Choose Save pet. Idle animations play on the floating pet automatically.
+   No AI connection is needed for uploaded animations.
+
+Stop preview pauses only the small editor preview. Use this animation on my pet
+turns the actual animation on or off. Windows reduced-motion settings use a still
+frame. Replacing a pose through Upload or AI turns off that pose's animation;
+you can enable its saved frames again in Animate.
 
 This is an unsigned development build. Its behavior in your Windows desktop
 session still needs to be checked, even when the Windows build succeeds.

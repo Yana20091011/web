@@ -1,10 +1,10 @@
 # KeyCritter
 
-A floating typing pet for Windows, with a cozy React designer. Customize a pixel pet, upload your own images, or generate a new companion with an AI prompt.
+A floating typing pet for Windows, with a cozy React designer. Customize a pixel pet, animate your own image frames, or generate a new companion with an AI prompt.
 
 ## Use the Windows desktop pet
 
-1. Open `KeyCritter-Windows-1.1.2.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
+1. Open `KeyCritter-Windows-1.2.0.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
 2. Design your pet, then click **Enable keyboard reactions**. Ordinary typing makes it bounce; Space, Enter, and Backspace have special reactions by default. Add more in the reaction editor.
 3. Drag the little name label beneath your desktop pet to move it. The pet stays above other windows without taking keyboard focus.
 4. Close the designer to keep just the pet. Reopen it from the pet's **Designer** button or the KeyCritter system-tray menu, which may be under Windows' hidden-icons arrow.
@@ -28,6 +28,16 @@ Choose **Upload** in the pet designer. Add a main PNG, JPG, or WebP image (up to
 
 Add optional images for **Jump**, **Cheer**, **Surprise**, **Dance**, and **Sleep**. The pet swaps to that image when the corresponding animation is triggered. A missing pose uses the main image and its movement animation. Use the key-reaction editor to map keys to those actions and set speech bubbles. **Pixel pets** switches back to the original characters without deleting your uploaded images.
 
+## Animate your own images
+
+1. Choose **Animate** in the designer, then select **Idle / blink** or a reaction such as **Cheer**.
+2. Click **Add frames** and select several PNG, JPG, or WebP images. They are added in the file picker's returned order; the numbered thumbnails show the playback order. For blinking, use open eyes → half-closed → closed → open eyes. Matching canvas sizes and transparent backgrounds keep the pet steady.
+3. Use the arrows to reorder frames, the trash button to remove one, and each frame's **ms** field to set its duration. **Use blink timing** sets every frame to 100 ms with a 3-second pause between repeats.
+4. **Repeat animation** loops the sequence; its pause holds frame 1 (use open eyes as your resting frame). Without repeat, the last frame stays until the reaction ends. **Stop preview** pauses only the small editor preview. **Use this animation on my pet** controls actual playback.
+5. Idle animations play automatically on the floating pet and continue through ordinary typing pulses. For reaction sequences, map the matching action in **Key reactions**. A reaction remains active for at least one full sequence. Choose **Save pet** to add the animated design to **My Pets**.
+
+Each pose supports up to 12 frames, 40–5000 ms per frame, and a pause up to 15 seconds. Frames are resized locally to at most 256 pixels and compressed; total frame data is limited to keep storage manageable. Frames work offline and are saved with the pet. Reduced-motion settings show a still frame. Replacing a pose through Upload or AI turns off its existing frame animation while retaining its frames, which can be enabled again in Animate. Existing single-image pets continue to work.
+
 ## Generate a pet with AI
 
 1. In the Windows app, choose **Create with AI**.
@@ -36,7 +46,7 @@ Add optional images for **Jump**, **Cheer**, **Surprise**, **Dance**, and **Slee
 4. If a main image exists, optionally enable **Use main image as a character reference** to send it with the prompt and request a matching character pose.
 5. Click **Generate image**, review the preview, and choose **Use this image** or **Discard**. Repeat for additional poses as desired.
 
-Each generation makes one paid image request to OpenAI, with a transparent background requested. Images are still poses; the app adds movement animations. Nothing is sent when you merely type or upload an image. Generation sends only the prompt and, if explicitly selected, the main reference image. Typing activity never goes to the AI. Supported model IDs are checked against the official OpenAI SDK image definitions; the default is `gpt-image-1.5`.
+Each generation makes one paid image request to OpenAI, with a transparent background requested. AI generates a single still image per request; use **Animate** to upload a sequence of frames. Nothing is sent when you merely type or upload an image. Generation sends only the prompt and, if explicitly selected, the main reference image. Typing activity never goes to the AI. Supported model IDs are checked against the official OpenAI SDK image definitions; the default is `gpt-image-1.5`.
 
 API requests run in Electron's main process against the fixed `api.openai.com` image endpoints. The key is session-only by default. **Remember securely on this computer** uses Electron safeStorage/Windows DPAPI to encrypt it in `ai-key.bin`; plaintext fallback storage is not used. **Disconnect and remove key** clears the saved connection. Keys are not returned to the renderer or stored in pet settings, prompts, or browser local storage. The browser-only designer supports uploads, but deliberately does not make AI requests with a browser-stored key.
 
@@ -80,13 +90,13 @@ Windows-specific transparency, tray behavior, and native key handling should als
 
 ## Build the Windows download
 
-The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions and working Upload/AI panels, and saves screenshots before uploading the download. It also opens Microsoft Edge, switches tabs, and uses Win32 window order/styles to check that the pet stays above the browser without taking focus, recovers from an intentional native topmost reset, and respects unpinning. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.1.2** artifact. Extract that ZIP and follow `START-HERE.txt`. `verified-ui.png`, `verified-ai-ui.png`, and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
+The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions, Upload/AI panels, and uploaded frames playing on the floating pet, and saves screenshots before uploading the download. It also opens Microsoft Edge, switches tabs, and uses Win32 window order/styles to check that the pet stays above the browser without taking focus, recovers from an intentional native topmost reset, and respects unpinning. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.2.0** artifact. Extract that ZIP and follow `START-HERE.txt`. The three `verified-*-ui.png` screenshots and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
 
 ```sh
 npm run desktop:win
 ```
 
-The result is `release/KeyCritter-Windows-1.1.2.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges. Run `npm run test:portable` on Windows to verify this exact executable, or `npm run test:second-instance` with Linux X11/xdotool to exercise the duplicate-launch message and saved-data protection.
+The result is `release/KeyCritter-Windows-1.2.0.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges. Run `npm run test:portable` on Windows to verify this exact executable, or `npm run test:second-instance` with Linux X11/xdotool to exercise the duplicate-launch message and saved-data protection.
 
 ## Open without installing anything
 
@@ -102,6 +112,7 @@ This HTML version cannot create a desktop overlay or receive typing from other a
 - `desktop/preload.cjs`: narrow, context-isolated renderer bridge.
 - `desktop/ai.cjs`, `desktop/ai-key-store.cjs`: fixed-endpoint AI requests and secure key storage.
 - `src/CustomPetStudio.tsx`, `src/petImages.ts`: image uploads, pose assignments, and AI previews.
+- `src/AnimationEditor.tsx`, `src/CustomPetImage.tsx`, `src/framePlayback.ts`: frame order, timing, looping, and animation playback.
 - `src/DesktopPet.tsx`: transparent floating pet.
 - `src/DesktopPanel.tsx`: desktop controls inside the designer.
 - `src/Pet.tsx`: recolorable SVG pixel characters and accessories.

@@ -1,8 +1,22 @@
+import CustomPetImage from './CustomPetImage';
+
 export type Species = 'cat' | 'bunny' | 'blob' | 'custom';
 export type Accessory = 'bow' | 'glasses' | 'star' | 'none';
 export type Action = 'jump' | 'cheer' | 'surprise' | 'dance' | 'sleep';
 export type PetPose = 'idle' | Action;
 export type PetImages = Partial<Record<PetPose, string>>;
+export interface PetFrame {
+  id: string;
+  image: string;
+  duration: number;
+}
+export interface PetAnimation {
+  enabled: boolean;
+  frames: PetFrame[];
+  loop: boolean;
+  pauseMs: number;
+}
+export type PetAnimations = Partial<Record<PetPose, PetAnimation>>;
 
 export interface PetDesign {
   name: string;
@@ -11,26 +25,31 @@ export interface PetDesign {
   size: number;
   accessory: Accessory;
   images?: PetImages;
+  animations?: PetAnimations;
 }
 
 export default function Pet({
   design,
   action,
   mini = false,
+  playbackId = 0,
+  animationPlaying = true,
 }: {
   design: PetDesign;
   action?: Action;
   mini?: boolean;
+  playbackId?: number;
+  animationPlaying?: boolean;
 }) {
   const { species, color, accessory } = design;
   if (species === 'custom' && design.images?.idle) {
     return (
-      <img
-        className={`pixel-pet custom-pet ${mini ? 'mini-pet' : ''}`}
-        src={(action && design.images[action]) || design.images.idle}
-        alt=""
-        draggable={false}
-        data-pose={action && design.images[action] ? action : 'idle'}
+      <CustomPetImage
+        design={design}
+        action={action}
+        mini={mini}
+        playbackId={playbackId}
+        playing={animationPlaying}
       />
     );
   }

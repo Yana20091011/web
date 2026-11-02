@@ -17,7 +17,10 @@ export function validPetImages(value: unknown): value is PetImages {
   );
 }
 
-export async function preparePetImage(source: File | string): Promise<string> {
+export async function preparePetImage(
+  source: File | string,
+  options = { maxSide: 384, maxLength: MAX_IMAGE_LENGTH },
+): Promise<string> {
   if (
     source instanceof File &&
     (!['image/png', 'image/jpeg', 'image/webp'].includes(source.type) ||
@@ -43,7 +46,7 @@ export async function preparePetImage(source: File | string): Promise<string> {
     )
       throw new Error('Choose an image no larger than 8192 pixels on either side.');
     const canvas = document.createElement('canvas');
-    const ratio = Math.min(1, 384 / Math.max(image.naturalWidth, image.naturalHeight));
+    const ratio = Math.min(1, options.maxSide / Math.max(image.naturalWidth, image.naturalHeight));
     canvas.width = Math.max(1, Math.round(image.naturalWidth * ratio));
     canvas.height = Math.max(1, Math.round(image.naturalHeight * ratio));
     const ctx = canvas.getContext('2d');
@@ -51,7 +54,7 @@ export async function preparePetImage(source: File | string): Promise<string> {
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
     for (const quality of [0.9, 0.75, 0.55]) {
       const data = canvas.toDataURL('image/webp', quality);
-      if (data.length <= MAX_IMAGE_LENGTH) return data;
+      if (data.length <= options.maxLength) return data;
     }
     throw new Error('This image is too detailed to save. Try a smaller or simpler image.');
   } finally {

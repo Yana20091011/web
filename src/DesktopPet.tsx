@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { GripHorizontal, Palette, Pause, Play, Pin, PinOff } from 'lucide-react';
 import Pet from './Pet';
+import { reactionDuration } from './framePlayback';
+import { usePetMotion } from './usePetMotion';
 import type { DesktopReaction, DesktopState } from './desktop';
 
 export default function DesktopPet({ initial }: { initial: DesktopState }) {
@@ -11,6 +13,9 @@ export default function DesktopPet({ initial }: { initial: DesktopState }) {
     n: 0,
   });
   const [active, setActive] = useState(false);
+  const petMotion = usePetMotion(reaction.n);
+  const latestState = useRef(state);
+  latestState.current = state;
   const [message, setMessage] = useState('Hello, friend!');
   const [error, setError] = useState('');
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -25,7 +30,12 @@ export default function DesktopPet({ initial }: { initial: DesktopState }) {
       setReaction((previous) => ({ ...next, n: previous.n + 1 }));
       setActive(true);
       clearTimeout(timer.current);
-      timer.current = setTimeout(() => setActive(false), next.action === 'tap' ? 220 : 1800);
+      timer.current = setTimeout(
+        () => setActive(false),
+        next.action === 'tap'
+          ? 220
+          : reactionDuration(latestState.current.pet.design, next.action, 1800),
+      );
       // Ordinary typing doesn't reset an expressive reaction's speech bubble.
       if (next.phrase) {
         setMessage(next.phrase);
@@ -64,12 +74,16 @@ export default function DesktopPet({ initial }: { initial: DesktopState }) {
         )}
         <div className="companion-sprite" {...moveable}>
           <div
-            key={reaction.n}
+            ref={petMotion}
             className={`pet-animated ${action || 'idle'}`}
             data-testid="desktop-pet"
             data-action={action || 'idle'}
           >
-            <Pet design={state.pet.design} action={action === 'tap' ? undefined : action} />
+            <Pet
+              design={state.pet.design}
+              action={action === 'tap' ? undefined : action}
+              playbackId={reaction.n}
+            />
           </div>
         </div>
         <div className="companion-shadow" />

@@ -192,7 +192,7 @@ try {
         { encoding: 'utf8' },
       ).trim(),
     );
-    expect(moved.moved).toBe(true);
+    expect(moved.moved, `Native drag result: ${JSON.stringify(moved)}`).toBe(true);
     await expect
       .poll(async () => {
         const settings = JSON.parse(await readFile(join(profile, 'pet-settings.json'), 'utf8'));

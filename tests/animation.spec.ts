@@ -27,6 +27,71 @@ async function openEditor(page: Page) {
   await page.getByRole('button', { name: 'Animate', exact: true }).click();
 }
 
+test('applies the built-in blink offline, preserves the pet name, and restores editable frames', async ({
+  page,
+}) => {
+  const aiRequests: string[] = [];
+  page.on('request', (request) => {
+    if (request.url().includes('openai.com')) aiRequests.push(request.url());
+  });
+  await openEditor(page);
+  await page.getByLabel('Name', { exact: true }).fill('My laptop friend');
+  await page.context().setOffline(true);
+  await page.getByRole('button', { name: 'Use laptop buddy', exact: true }).click();
+  await expect(page.locator('.animation-frame')).toHaveCount(4);
+  await expect(page.getByLabel('Frame 3 duration in milliseconds')).toHaveValue('400');
+  await expect(page.getByLabel('Pause between repeats in milliseconds')).toHaveValue('3000');
+  await expect(page.getByLabel('Name', { exact: true })).toHaveValue('My laptop friend');
+  const image = page.getByTestId('active-pet').locator('img');
+  await expect(image).toHaveAttribute('data-animated', 'true');
+  await expect.poll(() => image.getAttribute('data-frame-index'), { intervals: [20] }).toBe('2');
+  await expect(page.getByRole('checkbox', { name: 'Repeat animation', exact: true })).toBeChecked();
+  const preset = await page.evaluate(
+    () => JSON.parse(localStorage.getItem('keycritter-draft')!).design,
+  );
+  expect(
+    preset.animations.idle.frames.map((frame: { duration: number }) => frame.duration),
+  ).toEqual([100, 120, 400, 120]);
+  expect(preset.animations.idle.frames[1].image).toBe(preset.animations.idle.frames[3].image);
+  expect(preset.images.idle).toBe(preset.animations.idle.frames[0].image);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByRole('button', { name: 'Save pet', exact: true }).click();
+  await page.context().setOffline(false);
+  await page.reload();
+  await expect(page.locator('.animation-frame')).toHaveCount(4);
+  await expect(page.getByLabel('Frame 3 duration in milliseconds')).toHaveValue('400');
+  await page.getByLabel('Frame 3 duration in milliseconds').fill('600');
+  await page.getByLabel('Frame 3 duration in milliseconds').press('Enter');
+  expect(
+    await page.evaluate(
+      () =>
+        JSON.parse(localStorage.getItem('keycritter-draft')!).design.animations.idle.frames[2]
+          .duration,
+    ),
+  ).toBe(600);
+  expect(aiRequests).toEqual([]);
+});
+
+test('a ready-made sequence replaces only the selected animation and keeps existing reactions', async ({
+  page,
+}) => {
+  await openEditor(page);
+  await page.getByLabel('Animation frame files').setInputFiles(await frames(page));
+  await expect(page.locator('.animation-frame')).toHaveCount(3);
+  const before = await page.evaluate(() => JSON.parse(localStorage.getItem('keycritter-draft')!));
+  await page.getByLabel('Animation pose').selectOption('cheer');
+  await page.getByRole('button', { name: 'Use laptop buddy', exact: true }).click();
+  await expect(page.locator('.animation-frame')).toHaveCount(4);
+  await page.getByRole('button', { name: 'Use laptop buddy', exact: true }).click();
+  await expect(page.locator('.animation-frame')).toHaveCount(4);
+  const after = await page.evaluate(() => JSON.parse(localStorage.getItem('keycritter-draft')!));
+  expect(after.design.animations.idle).toEqual(before.design.animations.idle);
+  expect(after.design.images.idle).toBe(before.design.images.idle);
+  expect(after.reactions).toEqual(before.reactions);
+  await page.getByRole('textbox', { name: 'Typing playground' }).press('Enter');
+  await expect(page.getByTestId('active-pet').locator('img')).toHaveAttribute('data-pose', 'cheer');
+});
+
 test('uploads, reorders, times, and saves a blinking pet; frames survive reload', async ({
   page,
 }) => {

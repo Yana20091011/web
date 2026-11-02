@@ -115,6 +115,18 @@ try {
     .toBe('2');
   const animationState = await page.evaluate(() => window.keycritter.getState());
   expect(animationState.pet.design.animations.idle.frames).toHaveLength(3);
+  await page.getByRole('button', { name: 'Use laptop buddy', exact: true }).click();
+  await expect(page.locator('.animation-frame')).toHaveCount(4);
+  await expect(page.getByLabel('Frame 3 duration in milliseconds')).toHaveValue('400');
+  await expect
+    .poll(async () => {
+      const next = await page.evaluate(() => window.keycritter.getState());
+      return next.pet.design.animations.idle.frames.length;
+    })
+    .toBe(4);
+  await expect
+    .poll(() => petImage.getAttribute('data-frame-index'), { intervals: [20], timeout: 12000 })
+    .toBe('2');
   await page.screenshot({ path: 'release/verified-animation-ui.png', fullPage: true });
   let windowLayer = { tested: false };
   if (process.platform === 'win32') {
@@ -200,7 +212,7 @@ try {
         windowLayer,
         uploadVisible: true,
         aiVisible: true,
-        animations: { uploadedFrames: 3, nativePlaybackVerified: true },
+        animations: { uploadedFrames: 3, readyMadeFrames: 4, nativePlaybackVerified: true },
         verifiedAt: new Date().toISOString(),
       },
       null,

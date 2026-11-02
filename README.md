@@ -4,7 +4,7 @@ A floating typing pet for Windows, with a cozy React designer. Customize a pixel
 
 ## Use the Windows desktop pet
 
-1. Open `KeyCritter-Windows-1.2.0.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
+1. Open `KeyCritter-Windows-1.2.1.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
 2. Design your pet, then click **Enable keyboard reactions**. Ordinary typing makes it bounce; Space, Enter, and Backspace have special reactions by default. Add more in the reaction editor.
 3. Drag the little name label beneath your desktop pet to move it. The pet stays above other windows without taking keyboard focus.
 4. Close the designer to keep just the pet. Reopen it from the pet's **Designer** button or the KeyCritter system-tray menu, which may be under Windows' hidden-icons arrow.
@@ -29,6 +29,8 @@ Choose **Upload** in the pet designer. Add a main PNG, JPG, or WebP image (up to
 Add optional images for **Jump**, **Cheer**, **Surprise**, **Dance**, and **Sleep**. The pet swaps to that image when the corresponding animation is triggered. A missing pose uses the main image and its movement animation. Use the key-reaction editor to map keys to those actions and set speech bubbles. **Pixel pets** switches back to the original characters without deleting your uploaded images.
 
 ## Animate your own images
+
+The **Laptop buddy** preset includes a pixel character using a laptop, with three transparent blink expressions. Choose **Animate → Idle / blink → Use laptop buddy**, then **Save pet** to use them directly without downloading files or connecting an AI account. It installs four frames (open → half-closed → closed → half-closed), with 100 / 120 / 400 / 120 ms timing and a 3-second pause. You can change every frame's timing and order afterward. Applying it to another selected pose replaces only that pose's animation; your name and key reactions stay the same. The original images ship with the app, so this also works offline and in the standalone HTML export.
 
 1. Choose **Animate** in the designer, then select **Idle / blink** or a reaction such as **Cheer**.
 2. Click **Add frames** and select several PNG, JPG, or WebP images. They are added in the file picker's returned order; the numbered thumbnails show the playback order. For blinking, use open eyes → half-closed → closed → open eyes. Matching canvas sizes and transparent backgrounds keep the pet steady.
@@ -90,13 +92,13 @@ Windows-specific transparency, tray behavior, and native key handling should als
 
 ## Build the Windows download
 
-The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions, Upload/AI panels, and uploaded frames playing on the floating pet, and saves screenshots before uploading the download. It also opens Microsoft Edge, switches tabs, and uses Win32 window order/styles to check that the pet stays above the browser without taking focus, recovers from an intentional native topmost reset, and respects unpinning. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.2.0** artifact. Extract that ZIP and follow `START-HERE.txt`. The three `verified-*-ui.png` screenshots and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
+The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions, Upload/AI panels, and uploaded frames playing on the floating pet, and saves screenshots before uploading the download. It also opens Microsoft Edge, switches tabs, and uses Win32 window order/styles to check that the pet stays above the browser without taking focus, recovers from an intentional native topmost reset, and respects unpinning. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.2.1** artifact. Extract that ZIP and follow `START-HERE.txt`. The three `verified-*-ui.png` screenshots and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
 
 ```sh
 npm run desktop:win
 ```
 
-The result is `release/KeyCritter-Windows-1.2.0.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges. Run `npm run test:portable` on Windows to verify this exact executable, or `npm run test:second-instance` with Linux X11/xdotool to exercise the duplicate-launch message and saved-data protection.
+The result is `release/KeyCritter-Windows-1.2.1.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges. Run `npm run test:portable` on Windows to verify this exact executable, or `npm run test:second-instance` with Linux X11/xdotool to exercise the duplicate-launch message and saved-data protection.
 
 ## Open without installing anything
 

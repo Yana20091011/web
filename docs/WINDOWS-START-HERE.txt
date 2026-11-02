@@ -2,7 +2,7 @@ KEYCRITTER - WINDOWS DESKTOP PET
 
 For Windows 10/11, 64-bit (x64).
 
-This download is version 1.2.0. The logo and window title show v1.2.0.
+This download is version 1.2.1. The logo and window title show v1.2.1.
 Quit any older KeyCritter from the system tray before opening this update.
 The included verified-ui.png, verified-ai-ui.png, and verified-animation-ui.png
 are screenshots captured while testing this exact portable executable on Windows.
@@ -42,6 +42,13 @@ Your typing is never sent to the AI. A reference image is sent only if selected.
 Keys are session-only unless you choose encrypted storage on this computer.
 
 BLINKING AND FRAME ANIMATIONS
+To use the included laptop character, choose:
+Animate > Idle / blink > Use laptop buddy > Save pet.
+Her frames and slow-blink timing are included. No API key, payment, Internet
+connection, or manual image upload is needed to use this preset.
+You can adjust the frame durations afterward. It uses a 400 ms closed-eye hold.
+
+To add your own frames:
 1. Choose Animate in the designer, then Idle / blink.
 2. Click Add frames and select your images (up to 12 per animation).
    For blinking: open eyes, half-closed, closed, open eyes.

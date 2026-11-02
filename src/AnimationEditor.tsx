@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Film, LoaderCircle, Pause, Play, Plus, Trash2 } 
 import Pet, { type PetAnimation, type PetDesign, type PetFrame, type PetPose } from './Pet';
 import { IMAGE_SLOTS, preparePetImage } from './petImages';
 import { MAX_FRAMES, MAX_FRAME_LENGTH, validAnimations } from './framePlayback';
+import { LAPTOP_BUDDY } from './petPresets';
 
 const poseTitle = (pose: PetPose) =>
   pose === 'idle' ? 'Idle / blink' : pose[0].toUpperCase() + pose.slice(1);
@@ -61,6 +62,7 @@ export default function AnimationEditor({
   const [pose, setPose] = useState<PetPose>('idle');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [playing, setPlaying] = useState(true);
   const [restart, setRestart] = useState(0);
   const input = useRef<HTMLInputElement>(null);
@@ -86,6 +88,58 @@ export default function AnimationEditor({
       return { ...current, animations };
     });
   }
+  function applyAnimation(next: PetAnimation) {
+    if (!validAnimations({ ...latest.current.animations, [pose]: next }))
+      throw new Error(
+        'This pet has too much frame data. Remove some frames or use simpler images.',
+      );
+    onChange((current) => ({
+      ...current,
+      species: 'custom',
+      accessory: 'none',
+      images: {
+        ...current.images,
+        idle: current.images?.idle || next.frames[0].image,
+        [pose]: next.frames[0].image,
+      },
+      animations: { ...current.animations, [pose]: next },
+    }));
+    setPlaying(true);
+    setRestart((n) => n + 1);
+  }
+  async function useLaptopBuddy() {
+    if (busy) return;
+    setBusy(true);
+    setError('');
+    setNotice('');
+    try {
+      const images: string[] = [];
+      for (const expression of LAPTOP_BUDDY.expressions) {
+        images.push(
+          await preparePetImage(expression.image, { maxSide: 256, maxLength: MAX_FRAME_LENGTH }),
+        );
+      }
+      if (!alive.current) return;
+      applyAnimation({
+        enabled: true,
+        loop: true,
+        pauseMs: LAPTOP_BUDDY.pauseMs,
+        frames: LAPTOP_BUDDY.sequence.map(({ expression, duration }) => ({
+          id: crypto.randomUUID(),
+          image: images[expression],
+          duration,
+        })),
+      });
+      setNotice(
+        `Laptop buddy frames are ready for ${poseTitle(pose)}. Save your pet to keep them.`,
+      );
+    } catch (cause) {
+      if (alive.current)
+        setError(cause instanceof Error ? cause.message : 'Could not apply the ready-made frames.');
+    } finally {
+      if (alive.current) setBusy(false);
+    }
+  }
   async function upload(files: File[]) {
     if (!files.length || busy) return;
     if (files.length + (clip?.frames.length || 0) > MAX_FRAMES) {
@@ -97,6 +151,7 @@ export default function AnimationEditor({
     }
     setBusy(true);
     setError('');
+    setNotice('');
     try {
       const frames: PetFrame[] = [];
       for (const file of files) {
@@ -113,23 +168,7 @@ export default function AnimationEditor({
         frames: [...(previous?.frames || []), ...frames],
       };
       next.enabled = true;
-      if (!validAnimations({ ...latest.current.animations, [pose]: next }))
-        throw new Error(
-          'This pet has too much frame data. Remove some frames or use simpler images.',
-        );
-      onChange((current) => ({
-        ...current,
-        species: 'custom',
-        accessory: 'none',
-        images: {
-          ...current.images,
-          idle: current.images?.idle || frames[0].image,
-          [pose]: next.frames[0].image,
-        },
-        animations: { ...current.animations, [pose]: next },
-      }));
-      setPlaying(true);
-      setRestart((n) => n + 1);
+      applyAnimation(next);
     } catch (cause) {
       if (alive.current)
         setError(cause instanceof Error ? cause.message : 'Could not add these frames.');
@@ -166,6 +205,7 @@ export default function AnimationEditor({
           onChange={(event) => {
             setPose(event.target.value as PetPose);
             setError('');
+            setNotice('');
             setPlaying(true);
           }}
         >
@@ -176,6 +216,32 @@ export default function AnimationEditor({
           ))}
         </select>
       </label>
+      <section className="ready-made-pet" aria-label="Ready-made blink frames">
+        <div className="preset-expressions">
+          {LAPTOP_BUDDY.expressions.map(({ label, image }) => (
+            <div key={label}>
+              <img src={image} alt={`Laptop buddy with ${label.toLowerCase()} eyes`} />
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
+        <div className="preset-description">
+          <div>
+            <h4>Laptop buddy</h4>
+            <p>Your ready-made blink frames. No AI connection needed.</p>
+          </div>
+          <button disabled={busy} onClick={() => void useLaptopBuddy()}>
+            {busy ? <LoaderCircle size={13} className="spin" /> : <Plus size={13} />}
+            Use laptop buddy
+          </button>
+        </div>
+        <small>Replaces the selected animation with a slow blink. Adjust its timing below.</small>
+      </section>
+      {notice && (
+        <p className="studio-notice" role="status">
+          {notice}
+        </p>
+      )}
       <button
         className="animation-add"
         disabled={busy || (clip?.frames.length || 0) >= MAX_FRAMES}

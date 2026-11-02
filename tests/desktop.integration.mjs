@@ -301,7 +301,7 @@ try {
       ),
     ),
   ).toBe('denied');
-  // Captured pointer events must move the native window and persist its location.
+  // Follow the OS cursor, including rightward and vertical drags near screen edges.
   await companion.locator('.companion-drag').hover();
   const bar = await companion.locator('.companion-drag').boundingBox();
   const beforeMove = await desktop.evaluate(({ BrowserWindow }) =>
@@ -309,28 +309,69 @@ try {
       .find((w) => w.webContents.getURL().includes('#companion'))
       .getBounds(),
   );
+  const anchor = { x: bar.x + bar.width / 2, y: bar.y + bar.height / 2 };
+  const grab = { x: Math.round(beforeMove.x + anchor.x), y: Math.round(beforeMove.y + anchor.y) };
+  execFileSync(xdotool, ['mousemove', '--sync', String(grab.x), String(grab.y)], { env: xenv });
   await companion.mouse.move(bar.x + bar.width / 2, bar.y + bar.height / 2);
   await companion.mouse.down();
   await companion.waitForTimeout(100);
-  await companion.mouse.move(bar.x + bar.width / 2 - 80, bar.y + bar.height / 2 - 40);
-  await companion.waitForTimeout(150);
+  execFileSync(xdotool, ['mousedown', '1'], { env: xenv });
+  const nativePosition = () =>
+    desktop.evaluate(({ BrowserWindow }) => {
+      const { x, y } = BrowserWindow.getAllWindows()
+        .find((w) => w.webContents.getURL().includes('#companion'))
+        .getBounds();
+      return { x, y };
+    });
+  for (const [dx, dy] of [
+    [40, 0],
+    [80, 20],
+    [120, 40],
+    [40, 10],
+    [-80, -40],
+  ]) {
+    execFileSync(xdotool, ['mousemove', '--sync', String(grab.x + dx), String(grab.y + dy)], {
+      env: xenv,
+    });
+    await expect.poll(nativePosition).toEqual({ x: beforeMove.x + dx, y: beforeMove.y + dy });
+  }
+  const stationary = await nativePosition();
+  await companion.locator('.companion-drag').dispatchEvent('pointermove', {
+    screenX: -5000,
+    screenY: 5000,
+    isPrimary: true,
+    pointerId: 1,
+    buttons: 1,
+  });
+  await companion.waitForTimeout(120);
+  expect(await nativePosition()).toEqual(stationary);
+  const sprite = await companion.locator('.companion-sprite').boundingBox();
+  const expectedPosition = { x: beforeMove.x - 80, y: 12 - Math.round(sprite.y) };
+  execFileSync(
+    xdotool,
+    ['mousemove', '--sync', String(grab.x - 80), String(Math.round(anchor.y) + expectedPosition.y)],
+    { env: xenv },
+  );
+  await expect.poll(nativePosition).toEqual(expectedPosition);
+  execFileSync(xdotool, ['mouseup', '1'], { env: xenv });
   await companion.mouse.up();
-  const expectedPosition = { x: beforeMove.x - 80, y: beforeMove.y - 40 };
-  await expect
-    .poll(() =>
-      desktop.evaluate(({ BrowserWindow }) => {
-        const { x, y } = BrowserWindow.getAllWindows()
-          .find((w) => w.webContents.getURL().includes('#companion'))
-          .getBounds();
-        return { x, y };
-      }),
-    )
-    .toEqual(expectedPosition);
+  execFileSync(
+    xdotool,
+    [
+      'mousemove',
+      '--sync',
+      String(grab.x - 100),
+      String(Math.round(anchor.y) + expectedPosition.y + 20),
+    ],
+    { env: xenv },
+  );
+  await companion.waitForTimeout(120);
+  expect(await nativePosition()).toEqual(expectedPosition);
   await expect
     .poll(
       async () => JSON.parse(await readFile(join(profile, 'pet-settings.json'), 'utf8')).position,
     )
-    .toEqual(expectedPosition);
+    .toMatchObject({ ...expectedPosition, anchor });
   await designer.getByRole('button', { name: 'Upload', exact: true }).click();
   await designer.getByRole('button', { name: 'Save pet', exact: true }).click();
   await designer.screenshot({ path: '/tmp/keycritter-desktop-designer.png', fullPage: true });

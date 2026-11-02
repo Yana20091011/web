@@ -2,7 +2,7 @@ KEYCRITTER - WINDOWS DESKTOP PET
 
 For Windows 10/11, 64-bit (x64).
 
-This download is version 1.3.0. The logo and window title show v1.3.0.
+This download is version 1.3.1. The logo and window title show v1.3.1.
 Quit any older KeyCritter from the system tray before opening this update.
 The included verified-ui.png, verified-ai-ui.png, and verified-animation-ui.png
 are screenshots captured while testing this exact portable executable on Windows.
@@ -79,6 +79,8 @@ gentle movement or 0% to keep the body still while blinking frames keep playing.
 Reset restores 100%. The setting is saved with each pet.
 Click and hold the floating pet's name bar marked Drag to move, then drag it
 to another place on the screen. Your new position is saved for the next launch.
+Dragging follows the actual mouse position. Transparent padding may go off-screen;
+when you release, the name bar is kept reachable so you can move the pet again.
 
 This is an unsigned development build. Its behavior in your Windows desktop
 session still needs to be checked, even when the Windows build succeeds.

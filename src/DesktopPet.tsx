@@ -109,21 +109,30 @@ export default function DesktopPet({ initial }: { initial: DesktopState }) {
           className="companion-drag"
           title="Drag to move your pet"
           onPointerDown={(event) => {
-            if (event.button !== 0 || !event.isPrimary) return;
+            if (event.button !== 0 || !event.isPrimary || dragging.current) return;
             event.preventDefault();
             const element = event.currentTarget;
             const pointer = event.pointerId;
             element.setPointerCapture(pointer);
             dragging.current = true;
-            void window.keycritter!.startDrag({ x: event.screenX, y: event.screenY }).catch(() => {
-              dragging.current = false;
-              if (element.hasPointerCapture(pointer)) element.releasePointerCapture(pointer);
-              setError('Could not start moving the pet. Try again.');
-            });
+            const bounds = element.getBoundingClientRect();
+            void window
+              .keycritter!.startDrag({
+                x: (bounds.left + bounds.width / 2) / innerWidth,
+                y: (bounds.top + bounds.height / 2) / innerHeight,
+              })
+              .catch(() => {
+                dragging.current = false;
+                if (element.hasPointerCapture(pointer)) element.releasePointerCapture(pointer);
+                setError('Could not start moving the pet. Try again.');
+              });
           }}
           onPointerMove={(event) => {
-            if (dragging.current)
-              window.keycritter!.moveDrag({ x: event.screenX, y: event.screenY });
+            if (dragging.current && event.pointerType === 'mouse' && event.buttons === 0) {
+              stopDrag(event, false);
+              return;
+            }
+            if (dragging.current) window.keycritter!.moveDrag();
           }}
           onPointerUp={(event) => {
             const bounds = event.currentTarget.getBoundingClientRect();

@@ -16,7 +16,14 @@ const {
 } = require('electron');
 const { readFile, writeFile, rename, mkdir } = require('node:fs/promises');
 const { join, extname } = require('node:path');
-const { DEFAULT_PET, cleanPet, clampPosition, assetPath, ACTIONS } = require('./shared.cjs');
+const {
+  DEFAULT_PET,
+  cleanPet,
+  validDragAnchor,
+  clampAnchoredPosition,
+  assetPath,
+  ACTIONS,
+} = require('./shared.cjs');
 const { generateImage } = require('./ai.cjs');
 const { createKeyStore } = require('./ai-key-store.cjs');
 
@@ -36,7 +43,7 @@ let starting = false;
 let visible = true;
 let pinned = true;
 let pinTimer;
-let dragOrigin, dragTimer;
+let dragOrigin, dragTimer, dragInterval;
 let error = '';
 let saveTimer, hookTimer;
 let keyStore, generation;
@@ -83,7 +90,7 @@ function sendReaction(reaction) {
   if (companion && !companion.isDestroyed()) companion.webContents.send('pet:reaction', reaction);
 }
 function applyPetPin(refresh = false) {
-  if (quitting || !companion || companion.isDestroyed()) return;
+  if (quitting || dragOrigin || !companion || companion.isDestroyed()) return;
   // A Windows foreground/fullscreen transition can leave Chromium's cached
   // topmost state out of sync with the native window. Reset the native level
   // without activating the window, then raise it within the topmost group.
@@ -101,9 +108,16 @@ function setPetPin(value) {
 }
 function finishDrag(keepInteractive = false) {
   clearTimeout(dragTimer);
+  clearInterval(dragInterval);
   if (dragOrigin && companion && !companion.isDestroyed()) {
+    moveDrag();
     const [x, y] = companion.getPosition();
-    position = { x, y };
+    const [width, height] = companion.getSize();
+    const placement = { x, y, anchor: dragOrigin.anchor };
+    const area = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
+    const target = clampAnchoredPosition(placement, area, width, height);
+    if (x !== target.x || y !== target.y) companion.setPosition(target.x, target.y, false);
+    position = { ...target, anchor: dragOrigin.anchor };
     queueSave();
   }
   dragOrigin = undefined;
@@ -112,30 +126,17 @@ function finishDrag(keepInteractive = false) {
     applyPetPin(true);
   }
 }
-function validDragPoint(point) {
-  return (
-    point &&
-    Number.isFinite(point.x) &&
-    Number.isFinite(point.y) &&
-    Math.abs(point.x) <= 1000000 &&
-    Math.abs(point.y) <= 1000000
-  );
-}
-function moveDrag(point) {
-  if (quitting || !dragOrigin || !companion || companion.isDestroyed() || !validDragPoint(point))
-    return;
-  const cursor = { x: Math.round(point.x), y: Math.round(point.y) };
-  const [width, height] = companion.getSize();
-  const target = clampPosition(
-    {
-      x: dragOrigin.x + cursor.x - dragOrigin.cursor.x,
-      y: dragOrigin.y + cursor.y - dragOrigin.cursor.y,
-    },
-    screen.getDisplayNearestPoint(cursor).workArea,
-    width,
-    height,
-  );
-  companion.setPosition(target.x, target.y, false);
+function moveDrag() {
+  if (quitting || !dragOrigin || !companion || companion.isDestroyed()) return;
+  // Renderer screen coordinates can change as the window itself moves. Read the
+  // OS cursor directly, so stale pointer events cannot pull the pet backwards.
+  const cursor = screen.getCursorScreenPoint();
+  const target = {
+    x: Math.round(dragOrigin.x + cursor.x - dragOrigin.cursor.x),
+    y: Math.round(dragOrigin.y + cursor.y - dragOrigin.cursor.y),
+  };
+  const [x, y] = companion.getPosition();
+  if (x !== target.x || y !== target.y) companion.setPosition(target.x, target.y, false);
 }
 function stopListening() {
   clearTimeout(hookTimer);
@@ -270,8 +271,15 @@ function createDesigner() {
   designer.on('blur', () => applyPetPin(true));
 }
 function createCompanion() {
-  const display = position ? screen.getDisplayNearestPoint(position) : screen.getPrimaryDisplay();
-  const point = clampPosition(position, display.workArea);
+  const anchor = validDragAnchor(position?.anchor) ? position.anchor : { x: 0, y: 0 };
+  const display = position
+    ? screen.getDisplayNearestPoint({
+        x: Math.round(position.x + anchor.x),
+        y: Math.round(position.y + anchor.y),
+      })
+    : screen.getPrimaryDisplay();
+  const point = clampAnchoredPosition(position, display.workArea);
+  if (position) position = { ...position, ...point };
   companion = new BrowserWindow({
     ...point,
     width: 290,
@@ -316,8 +324,9 @@ function createCompanion() {
   pinTimer.unref();
   companion.on('moved', () => {
     const [x, y] = companion.getPosition();
-    position = { x, y };
-    queueSave();
+    const anchor = dragOrigin?.anchor || position?.anchor;
+    position = { x, y, ...(anchor ? { anchor } : {}) };
+    if (!dragOrigin) queueSave();
   });
   companion.on('hide', () => finishDrag());
   companion.on('close', (event) => {
@@ -362,11 +371,20 @@ handle('pet:enabled', ['designer', 'companion'], (enabled) => {
   return state();
 });
 handle('pet:pin', ['designer', 'companion'], setPetPin);
-handle('pet:drag-start', ['companion'], (point) => {
-  if (!validDragPoint(point)) throw new Error('Invalid drag point');
+handle('pet:drag-start', ['companion'], (anchor) => {
+  const [width, height] = companion.getSize();
+  if (!validDragAnchor(anchor, 1, 1)) throw new Error('Invalid drag anchor');
   const [x, y] = companion.getPosition();
-  dragOrigin = { x, y, cursor: { x: Math.round(point.x), y: Math.round(point.y) } };
+  dragOrigin = {
+    x,
+    y,
+    cursor: screen.getCursorScreenPoint(),
+    anchor: { x: Math.round(anchor.x * width), y: Math.round(anchor.y * height) },
+  };
   companion.setIgnoreMouseEvents(false, { forward: true });
+  clearInterval(dragInterval);
+  dragInterval = setInterval(moveDrag, 16);
+  dragInterval.unref();
   clearTimeout(dragTimer);
   dragTimer = setTimeout(() => finishDrag(), 30000);
   dragTimer.unref();
@@ -454,8 +472,8 @@ ipcMain.on('pet:interactive', (event, interactive) => {
   if (allowed(event, ['companion']) && typeof interactive === 'boolean')
     companion.setIgnoreMouseEvents(!interactive && !dragOrigin, { forward: true });
 });
-ipcMain.on('pet:drag-move', (event, point) => {
-  if (allowed(event, ['companion'])) moveDrag(point);
+ipcMain.on('pet:drag-move', (event) => {
+  if (allowed(event, ['companion'])) moveDrag();
 });
 
 const ownsInstanceLock = app.requestSingleInstanceLock();

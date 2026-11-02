@@ -42,8 +42,9 @@ export interface DesktopBridge {
   openDesigner(): Promise<void>;
   preview(reaction: { action: Action; phrase: string }): Promise<void>;
   setInteractive(interactive: boolean): void;
-  startDrag(point: { x: number; y: number }): Promise<void>;
-  moveDrag(point: { x: number; y: number }): void;
+  /** Name-bar anchor as fractions of the viewport, independent of zoom or display scaling. */
+  startDrag(anchor: { x: number; y: number }): Promise<void>;
+  moveDrag(): void;
   endDrag(interactive: boolean): Promise<void>;
   quit(): Promise<void>;
   onState(callback: (state: DesktopState) => void): () => void;

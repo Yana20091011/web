@@ -173,7 +173,7 @@ try {
     const pinInfo = await page.evaluate(() => window.keycritter.getPinInfo());
     expect(pinInfo.visible).toBe(true);
     const drag = await companion.locator('.companion-drag').boundingBox();
-    const nativePosition = () =>
+    const nativePosition = (cursor, button) =>
       JSON.parse(
         execFileSync(
           'pwsh',
@@ -184,32 +184,95 @@ try {
             resolve('tests/windows-position-check.ps1'),
             '-PetHandle',
             pinInfo.nativeHandle,
+            ...(cursor ? ['-CursorX', String(cursor.x), '-CursorY', String(cursor.y)] : []),
+            ...(button ? ['-Button', button] : []),
           ],
           { encoding: 'utf8' },
         ).trim(),
       );
     const beforeDrag = nativePosition();
+    const viewport = await companion.evaluate(() => ({ width: innerWidth, height: innerHeight }));
+    const scale = { x: beforeDrag.width / viewport.width, y: beforeDrag.height / viewport.height };
+    const grab = {
+      x: Math.round(beforeDrag.x + (drag.x + drag.width / 2) * scale.x),
+      y: Math.round(beforeDrag.y + (drag.y + drag.height / 2) * scale.y),
+    };
+    const setCursor = (point) => {
+      const result = nativePosition(point);
+      expect(result.hasCursor, `Cursor result: ${JSON.stringify(result)}`).toBe(true);
+      expect({ x: result.cursorX, y: result.cursorY }).toEqual(point);
+    };
+    setCursor(grab);
     await companion.mouse.move(drag.x + drag.width / 2, drag.y + drag.height / 2);
     await companion.mouse.down();
     await companion.waitForTimeout(100);
-    await companion.mouse.move(drag.x + drag.width / 2 - 80, drag.y + drag.height / 2 - 40);
-    await companion.mouse.up();
-    await expect
-      .poll(
-        () => {
-          const afterDrag = nativePosition();
-          return afterDrag.x < beforeDrag.x - 20 && afterDrag.y < beforeDrag.y - 10;
-        },
-        { message: 'Pointer dragging must move the actual native Windows window', timeout: 10000 },
-      )
-      .toBe(true);
+    try {
+      const pressed = nativePosition(undefined, 'Down');
+      expect(pressed.leftPressed, `Mouse-button result: ${JSON.stringify(pressed)}`).toBe(true);
+      for (const [dx, dy] of [
+        [40, 0],
+        [80, 20],
+        [-80, -40],
+      ]) {
+        setCursor({ x: Math.round(grab.x + dx * scale.x), y: Math.round(grab.y + dy * scale.y) });
+        await expect
+          .poll(
+            () => {
+              const current = nativePosition();
+              return (
+                Math.abs(current.x - beforeDrag.x - dx * scale.x) <= 2 &&
+                Math.abs(current.y - beforeDrag.y - dy * scale.y) <= 2
+              );
+            },
+            {
+              message: 'The native window must follow OS cursor movement one to one',
+              timeout: 10000,
+            },
+          )
+          .toBe(true);
+      }
+      const stationary = nativePosition();
+      await companion.locator('.companion-drag').dispatchEvent('pointermove', {
+        screenX: -5000,
+        screenY: 5000,
+        pointerId: 1,
+        isPrimary: true,
+        buttons: 1,
+      });
+      await companion.waitForTimeout(120);
+      expect({ x: nativePosition().x, y: nativePosition().y }).toEqual({
+        x: stationary.x,
+        y: stationary.y,
+      });
+      const sprite = await companion.locator('.companion-sprite').boundingBox();
+      const targetY = (12 - sprite.y) * scale.y;
+      setCursor({
+        x: Math.round(grab.x - 80 * scale.x),
+        y: Math.round(grab.y + targetY - beforeDrag.y),
+      });
+      await expect
+        .poll(() => Math.abs(nativePosition().y - targetY) <= 2, {
+          message: 'Transparent top padding must not block placement near the screen top',
+        })
+        .toBe(true);
+    } finally {
+      nativePosition(undefined, 'Up');
+      await companion.mouse.up();
+    }
     await expect
       .poll(async () => {
         const settings = JSON.parse(await readFile(join(profile, 'pet-settings.json'), 'utf8'));
         return Number.isFinite(settings.position?.x) && Number.isFinite(settings.position?.y);
       })
       .toBe(true);
-    position = { tested: true, nativeNameBarDrag: true, positionSaved: true };
+    position = {
+      tested: true,
+      nativeNameBarDrag: true,
+      osCursorTracking: true,
+      noStationaryDrift: true,
+      edgePlacement: true,
+      positionSaved: true,
+    };
     foregroundBrowser = await chromium.launch({
       channel: 'msedge',
       headless: false,

@@ -13,7 +13,14 @@ const UiohookKey = {
   Shift: 42,
   1: 2,
 };
-const { DEFAULT_PET, cleanPet, clampPosition, assetPath } = require('../desktop/shared.cjs');
+const {
+  DEFAULT_PET,
+  cleanPet,
+  clampPosition,
+  clampAnchoredPosition,
+  validDragAnchor,
+  assetPath,
+} = require('../desktop/shared.cjs');
 const { createKeyDecoder, createReactionFilter } = require('../desktop/keys.cjs');
 const decode = createKeyDecoder(UiohookKey);
 
@@ -111,6 +118,27 @@ test('restored window positions remain visible on offset monitors and small disp
     clampPosition({ x: NaN, y: Infinity }, { x: 0, y: 0, width: 200, height: 200 }),
     { x: 0, y: 0 },
   );
+});
+
+test('anchored placement allows transparent margins off-screen and recovers a reachable name bar', () => {
+  const area = { x: 0, y: 0, width: 1440, height: 1100 };
+  const placement = { x: -60, y: -140, anchor: { x: 145, y: 348 } };
+  assert.deepEqual(clampAnchoredPosition(placement, area), { x: -60, y: -140 });
+  assert.deepEqual(clampAnchoredPosition({ ...placement, x: -9000, y: 9000 }, area), {
+    x: -137,
+    y: 744,
+  });
+  assert.deepEqual(
+    clampAnchoredPosition({ x: -9000, y: 9000 }, area),
+    clampPosition({ x: -9000, y: 9000 }, area),
+  );
+  for (const anchor of [null, { x: -1, y: 348 }, { x: 145, y: 391 }, { x: '145', y: 348 }]) {
+    assert.ok(!validDragAnchor(anchor));
+    assert.deepEqual(
+      clampAnchoredPosition({ ...placement, anchor }, area),
+      clampPosition(placement, area),
+    );
+  }
 });
 test('the desktop asset protocol rejects other origins and path escapes', () => {
   const root = join(tmpdir(), 'keycritter-test', 'dist');

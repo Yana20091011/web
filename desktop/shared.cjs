@@ -153,6 +153,46 @@ function clampPosition(position, workArea, width = 290, height = 390) {
   };
 }
 
+function validDragAnchor(anchor, width = 290, height = 390) {
+  return (
+    anchor &&
+    Number.isFinite(anchor.x) &&
+    Number.isFinite(anchor.y) &&
+    anchor.x >= 0 &&
+    anchor.x <= width &&
+    anchor.y >= 0 &&
+    anchor.y <= height
+  );
+}
+
+// Saved placements may put transparent padding off-screen. Keep the name bar's
+// anchor reachable instead of moving the entire 290 x 390 window onto the screen.
+function clampAnchoredPosition(position, workArea, width = 290, height = 390) {
+  if (
+    !validDragAnchor(position?.anchor, width, height) ||
+    !Number.isFinite(position?.x) ||
+    !Number.isFinite(position?.y)
+  )
+    return clampPosition(position, workArea, width, height);
+  const anchor = position.anchor;
+  const padX = Math.min(8, workArea.width / 2);
+  const padY = Math.min(8, workArea.height / 2);
+  return {
+    x: Math.round(
+      Math.max(
+        workArea.x + padX,
+        Math.min(position.x + anchor.x, workArea.x + workArea.width - padX),
+      ) - anchor.x,
+    ),
+    y: Math.round(
+      Math.max(
+        workArea.y + padY,
+        Math.min(position.y + anchor.y, workArea.y + workArea.height - padY),
+      ) - anchor.y,
+    ),
+  };
+}
+
 function assetPath(root, url) {
   const u = new URL(url);
   if (u.protocol !== 'keycritter:' || u.host !== 'app') return null;
@@ -174,5 +214,7 @@ module.exports = {
   validPet,
   cleanPet,
   clampPosition,
+  validDragAnchor,
+  clampAnchoredPosition,
   assetPath,
 };

@@ -98,6 +98,7 @@ export default function DesktopPet({ initial }: { initial: DesktopState }) {
             <Pet
               design={state.pet.design}
               action={action === 'tap' ? undefined : action}
+              typing={action === 'tap'}
               playbackId={reaction.n}
             />
           </div>

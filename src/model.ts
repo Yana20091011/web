@@ -50,6 +50,7 @@ export function validDesign(v: unknown): v is PetDesign {
     v.name.length <= 24 &&
     ['cat', 'bunny', 'blob', 'custom'].includes(v.species as string) &&
     (v.images === undefined || validPetImages(v.images)) &&
+    (v.typingImage === undefined || validPetImages({ idle: v.typingImage })) &&
     (v.animations === undefined || validAnimations(v.animations)) &&
     (v.species !== 'custom' || (validPetImages(v.images) && typeof v.images.idle === 'string')) &&
     COLORS.some((c) => c.value === v.color) &&

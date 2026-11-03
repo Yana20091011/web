@@ -8,6 +8,7 @@ const mimeTypes = {
   '.png': 'image/png',
   '.svg': 'image/svg+xml',
   '.woff2': 'font/woff2',
+  '.js': 'text/javascript',
 };
 
 function assetPath(asset, base = root) {
@@ -27,7 +28,18 @@ const scriptTag = html.match(/<script\b[^>]*src="([^"]+)"[^>]*><\/script>/);
 const styleTag = html.match(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/);
 if (!scriptTag || !styleTag) throw new Error('Build the app before exporting it.');
 
-const script = await readFile(assetPath(scriptTag[1]), 'utf8');
+// Lazy library chunks must travel with the standalone HTML too.
+async function inlineModule(path) {
+  let source = await readFile(path, 'utf8');
+  const imports = [...source.matchAll(/import\(["'](\.[^"']+\.js)["']\)/g)];
+  for (const match of imports) {
+    const dependency = await inlineModule(assetPath(match[1], dirname(path)));
+    const url = `data:text/javascript;base64,${Buffer.from(dependency).toString('base64')}`;
+    source = source.replace(match[0], `import("${url}")`);
+  }
+  return source;
+}
+const script = await inlineModule(assetPath(scriptTag[1]));
 const cssPath = assetPath(styleTag[1]);
 let css = await readFile(cssPath, 'utf8');
 const assets = [...css.matchAll(/url\((['"]?)([^)'"\s]+)\1\)/g)];

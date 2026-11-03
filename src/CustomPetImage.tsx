@@ -5,19 +5,22 @@ import { frameAt } from './framePlayback';
 export default function CustomPetImage({
   design,
   action,
+  typing = false,
   mini,
   playbackId,
   playing,
 }: {
   design: PetDesign;
   action?: Action;
+  typing?: boolean;
   mini: boolean;
   playbackId: number;
   playing: boolean;
 }) {
   const pose =
     action && (design.images?.[action] || design.animations?.[action]?.enabled) ? action : 'idle';
-  const clip = design.animations?.[pose];
+  const isTyping = typing && Boolean(design.typingImage);
+  const clip = isTyping ? undefined : design.animations?.[pose];
   // Settings broadcasts can contain fresh objects with the same frames. Keep the clock running.
   const signature = useMemo(() => JSON.stringify(clip), [clip]);
   const restart = pose === 'idle' ? 0 : playbackId;
@@ -70,11 +73,14 @@ export default function CustomPetImage({
     <img
       className={`pixel-pet custom-pet ${mini ? 'mini-pet' : ''}`}
       src={
-        (clip?.enabled && clip.frames[index]?.image) || design.images?.[pose] || design.images?.idle
+        (isTyping && design.typingImage) ||
+        (clip?.enabled && clip.frames[index]?.image) ||
+        design.images?.[pose] ||
+        design.images?.idle
       }
       alt=""
       draggable={false}
-      data-pose={pose}
+      data-pose={isTyping ? 'typing' : pose}
       data-frame-index={index}
       data-animated={Boolean(clip?.enabled && !mini && playing && !reduced)}
     />

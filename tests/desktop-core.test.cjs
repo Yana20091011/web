@@ -148,3 +148,31 @@ test('the desktop asset protocol rejects other origins and path escapes', () => 
   assert.equal(assetPath(root, 'keycritter://app/%2f..%2fsecrets'), null);
   assert.equal(assetPath(root, 'keycritter://app/%ZZ'), null);
 });
+
+test('library typing poses survive desktop sanitization and reject unsafe sources', () => {
+  const characters = require('../src/assets/character-library/characters.json');
+  for (const character of characters) {
+    const pet = {
+      ...DEFAULT_PET,
+      design: {
+        ...DEFAULT_PET.design,
+        species: 'custom',
+        name: character.name,
+        images: { idle: character.poses.idle },
+        typingImage: character.poses.typing,
+      },
+    };
+    assert.equal(cleanPet(pet).design.typingImage, character.poses.typing);
+  }
+  for (const typingImage of [
+    'https://example.com/pet.png',
+    'data:image/svg+xml;base64,PHN2Zz4=',
+    123,
+    null,
+  ]) {
+    assert.equal(
+      cleanPet({ ...DEFAULT_PET, design: { ...DEFAULT_PET.design, typingImage } }),
+      null,
+    );
+  }
+});

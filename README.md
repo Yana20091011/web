@@ -135,3 +135,25 @@ This HTML version cannot create a desktop overlay or receive typing from other a
 In the browser version, drafts save automatically; **Save pet** adds or updates the current pet in **My Pets**. Both are local to this browser and origin. Clearing browser storage removes them. The browser page must be focused for typing reactions.
 
 Desktop renderers load bundled files through an origin-restricted local protocol, with a content security policy, sandboxing, no Node integration, and external navigation disabled. No web server is required by the packaged app.
+
+## Built-in character library
+
+Open **My Pets → Character library** to browse 50 companions: the original laptop
+buddy, 25 anime characters, and 24 game characters. Search by name or series,
+filter by category, and preview **Idle**, **Blinking**, **Typing**, and **Happy**.
+**Choose** loads a copy into the existing playground; **Save pet** adds it to your
+personal collection without changing the built-in library or your other saved pets.
+Pets blink automatically, show their typing pose for ordinary playground keys, and
+use their happy pose for Enter or affection. Existing custom key reactions take
+priority. Reduced-motion preferences keep idle frames still.
+
+The first entry reuses `src/assets/laptop-buddy` artwork. The other entries are
+original stylized fan-art sprites drawn by `scripts/create-character-library.mjs`.
+The checked-in, self-contained WebP data keeps the library available without image
+hosts or API keys and supports the standalone export. To regenerate it, run
+`node scripts/create-character-library.mjs` with Chromium installed (or set
+`CHROMIUM_PATH`). `npm test` includes desktop/mobile library coverage and decodes
+all 200 pose images. Character names belong to their respective creators.
+
+The existing `.github/workflows/website.yml` builds and deploys the website to
+GitHub Pages on pushes to `main`.

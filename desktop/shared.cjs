@@ -78,6 +78,7 @@ function validPet(pet) {
     d.name.length <= 24 &&
     ['cat', 'bunny', 'blob', 'custom'].includes(d.species) &&
     (d.images === undefined || validImages(d.images)) &&
+    (d.typingImage === undefined || validImages({ idle: d.typingImage })) &&
     (d.animations === undefined || validAnimations(d.animations)) &&
     (d.species !== 'custom' || (validImages(d.images) && typeof d.images.idle === 'string')) &&
     COLORS.includes(d.color) &&
@@ -119,6 +120,7 @@ function cleanPet(pet) {
       ...(pet.design.motionStrength !== undefined
         ? { motionStrength: pet.design.motionStrength }
         : {}),
+      ...(pet.design.typingImage ? { typingImage: pet.design.typingImage } : {}),
       ...(pet.design.images ? { images: { ...pet.design.images } } : {}),
       ...(pet.design.animations
         ? {

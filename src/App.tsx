@@ -30,6 +30,7 @@ import Pet, { type Accessory, type Action, type PetDesign, type Species } from '
 import DesktopPanel from './DesktopPanel';
 import CustomPetStudio from './CustomPetStudio';
 import MotionControls from './MotionControls';
+import CharacterLibrary from './CharacterLibrary';
 import { reactionDuration } from './framePlayback';
 import { usePetMotion } from './usePetMotion';
 import type { DesktopState } from './desktop';
@@ -58,6 +59,8 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
   const [pets, setPets] = useState<SavedPet[]>(readPets);
   const [tab, setTab] = useState<'playground' | 'pets'>('playground');
   const [text, setText] = useState('');
+  const [typing, setTyping] = useState(false);
+  const typingTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [triggered, setTriggered] = useState(0);
   const [animation, setAnimation] = useState<{ action?: Action; n: number }>({ n: 0 });
   const petMotion = usePetMotion(animation.n);
@@ -100,6 +103,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
   useEffect(
     () => () => {
       clearTimeout(timer.current);
+      clearTimeout(typingTimer.current);
       void audio.current?.close();
     },
     [],
@@ -407,7 +411,12 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
                         } as React.CSSProperties
                       }
                     >
-                      <Pet design={design} action={animation.action} playbackId={animation.n} />
+                      <Pet
+                        design={design}
+                        action={animation.action}
+                        typing={typing && !animation.action}
+                        playbackId={animation.n}
+                      />
                     </div>
                   </button>
                   {animation.action && (
@@ -465,6 +474,11 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
                         (r) => normalizeKey(r.key) === normalizeKey(e.key),
                       );
                       if (reaction) react(reaction.action, reaction.phrase);
+                      else if (e.key.length === 1 || e.key === 'Backspace') {
+                        setTyping(true);
+                        clearTimeout(typingTimer.current);
+                        typingTimer.current = setTimeout(() => setTyping(false), 300);
+                      }
                     }}
                     spellCheck={false}
                   />
@@ -853,6 +867,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
               Create a pet
             </button>
           </div>
+          <h2>My saved pets</h2>
           {pets.length === 0 ? (
             <div className="card empty-library">
               <div className="empty-pet">
@@ -900,6 +915,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
               ))}
             </div>
           )}
+          <CharacterLibrary onChoose={loadPet} />
         </main>
       )}
 

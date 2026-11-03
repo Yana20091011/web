@@ -26,18 +26,21 @@ export interface PetDesign {
   motionStrength?: number;
   accessory: Accessory;
   images?: PetImages;
+  typingImage?: string;
   animations?: PetAnimations;
 }
 
 export default function Pet({
   design,
   action,
+  typing = false,
   mini = false,
   playbackId = 0,
   animationPlaying = true,
 }: {
   design: PetDesign;
   action?: Action;
+  typing?: boolean;
   mini?: boolean;
   playbackId?: number;
   animationPlaying?: boolean;
@@ -48,6 +51,7 @@ export default function Pet({
       <CustomPetImage
         design={design}
         action={action}
+        typing={typing}
         mini={mini}
         playbackId={playbackId}
         playing={animationPlaying}

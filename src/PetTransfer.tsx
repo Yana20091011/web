@@ -6,7 +6,7 @@ import {
   MAX_PET_FILE_BYTES,
   petFileName,
   type PortablePet,
-} from './petTransfer';
+} from './petTransferFormat';
 import './pet-transfer.css';
 
 export default function PetTransfer({

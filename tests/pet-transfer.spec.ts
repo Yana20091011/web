@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
-import { exportPetFile, importPetFile, MAX_PET_FILE_BYTES } from '../src/petTransfer';
+import { exportPetFile, importPetFile, MAX_PET_FILE_BYTES } from '../src/petTransferFormat';
 import { DEFAULT_PET, DEFAULT_REACTIONS } from '../src/model';
 import { characterDesign } from '../src/characterLibraryModel';
 import characters from '../src/assets/character-library/characters.json' with { type: 'json' };

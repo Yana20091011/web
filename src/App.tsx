@@ -30,7 +30,7 @@ import Pet, { type Accessory, type Action, type PetDesign, type Species } from '
 import DesktopPanel from './DesktopPanel';
 import DesktopDownload from './DesktopDownload';
 import PetTransfer from './PetTransfer';
-import type { PortablePet } from './petTransfer';
+import type { PortablePet } from './petTransferFormat';
 import CustomPetStudio from './CustomPetStudio';
 import MotionControls from './MotionControls';
 import CharacterLibrary from './CharacterLibrary';

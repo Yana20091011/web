@@ -11,7 +11,11 @@ test('all 50 characters have valid, decodable artwork and persistable designs', 
   expect(characters[0].id).toBe('laptop-buddy');
   expect(characters.filter((c) => c.category === 'Anime')).toHaveLength(25);
   expect(characters.filter((c) => c.category === 'Game')).toHaveLength(24);
-  for (const character of characters) expect(validDesign(characterDesign(character))).toBe(true);
+  for (const character of characters) {
+    expect(validDesign(characterDesign(character))).toBe(true);
+    if (character.id !== 'laptop-buddy')
+      expect(new Set(Object.values(character.poses)).size).toBe(4);
+  }
   await page.goto('/');
   const decoded = await page.evaluate(async (characters) => {
     const images = characters.flatMap((c) => Object.values(c.poses));
@@ -38,15 +42,15 @@ test('browse, filter, and preview the library without changing saved pets', asyn
   await expect(cards).toHaveCount(25);
   await page.getByRole('button', { name: 'Game', exact: true }).click();
   await expect(cards).toHaveCount(24);
-  await page.getByRole('searchbox', { name: 'Search characters' }).fill('zelda');
+  await page.getByRole('searchbox', { name: 'Search characters' }).fill('Undertale');
   await expect(cards).toHaveCount(2);
-  await page.getByRole('searchbox', { name: 'Search characters' }).fill('Pikachu');
+  await page.getByRole('searchbox', { name: 'Search characters' }).fill('Tails');
   await expect(cards).toHaveCount(1);
   const image = cards.locator('img');
   const idle = await image.getAttribute('src');
   for (const pose of ['blinking', 'typing', 'happy']) {
     await cards.getByRole('button', { name: pose, exact: true }).click();
-    await expect(image).toHaveAttribute('alt', `Pikachu ${pose} pose`);
+    await expect(image).toHaveAttribute('alt', `Tails ${pose} pose`);
     expect(await image.getAttribute('src')).not.toBe(idle);
   }
   await page.getByRole('searchbox', { name: 'Search characters' }).fill('no such pet');
@@ -63,7 +67,9 @@ test('choose, blink, type, celebrate, save and reload a library pet', async ({ p
   const image = page.getByTestId('active-pet').locator('img');
   await expect(page.getByRole('heading', { name: 'Meet Naruto' })).toBeVisible();
   await expect(image).toHaveAttribute('data-animated', 'true');
-  await expect.poll(() => image.getAttribute('data-frame-index')).not.toBe('0');
+  await expect
+    .poll(() => image.getAttribute('data-frame-index'), { intervals: [25], timeout: 6000 })
+    .not.toBe('0');
   await page.getByRole('textbox', { name: 'Typing playground' }).press('a');
   await expect(image).toHaveAttribute('data-pose', 'typing');
   await expect(image).toHaveAttribute(

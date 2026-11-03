@@ -1,0 +1,91 @@
+[
+  {
+    "file": "01-anime.png",
+    "characters": [
+      ["Naruto", "Naruto", "Anime"],
+      ["Sasuke", "Naruto", "Anime"],
+      ["Sakura", "Naruto", "Anime"],
+      ["Kakashi", "Naruto", "Anime"],
+      ["Hinata", "Naruto", "Anime"],
+      ["Luffy", "One Piece", "Anime"],
+      ["Zoro", "One Piece", "Anime"]
+    ]
+  },
+  {
+    "file": "02-anime.png",
+    "characters": [
+      ["Nami", "One Piece", "Anime"],
+      ["Chopper", "One Piece", "Anime"],
+      ["Goku", "Dragon Ball", "Anime"],
+      ["Vegeta", "Dragon Ball", "Anime"],
+      ["Sailor Moon", "Sailor Moon", "Anime"],
+      ["Luna", "Sailor Moon", "Anime"],
+      ["Totoro", "My Neighbor Totoro", "Anime"]
+    ]
+  },
+  {
+    "file": "03-anime.png",
+    "characters": [
+      ["Kiki", "Kiki\u2019s Delivery Service", "Anime"],
+      ["Howl", "Howl\u2019s Moving Castle", "Anime"],
+      ["Chihiro", "Spirited Away", "Anime"],
+      ["Tanjiro", "Demon Slayer", "Anime"],
+      ["Nezuko", "Demon Slayer", "Anime"],
+      ["Zenitsu", "Demon Slayer", "Anime"],
+      ["Gojo", "Jujutsu Kaisen", "Anime"]
+    ]
+  },
+  {
+    "file": "04-anime.png",
+    "characters": [
+      ["Yuji", "Jujutsu Kaisen", "Anime"],
+      ["Anya", "Spy \u00d7 Family", "Anime"],
+      ["Levi", "Attack on Titan", "Anime"],
+      ["Edward", "Fullmetal Alchemist", "Anime"]
+    ]
+  },
+  {
+    "file": "08-games.png",
+    "characters": [
+      ["Amy Rose", "Sonic the Hedgehog", "Game"],
+      ["Silver", "Sonic the Hedgehog", "Game"],
+      ["Blaze", "Sonic the Hedgehog", "Game"],
+      ["Rouge", "Sonic the Hedgehog", "Game"],
+      ["Mega Man", "Mega Man", "Game"],
+      ["Cloud", "Final Fantasy VII", "Game"],
+      ["Aerith", "Final Fantasy VII", "Game"]
+    ]
+  },
+  {
+    "file": "09-games.png",
+    "characters": [
+      ["Sora", "Kingdom Hearts", "Game"],
+      ["Ralsei", "Deltarune", "Game"],
+      ["Toriel", "Undertale", "Game"]
+    ]
+  },
+  {
+    "file": "06-games.png",
+    "characters": [
+      ["Bulbasaur", "Pok\u00e9mon", "Game"],
+      ["Squirtle", "Pok\u00e9mon", "Game"],
+      ["Charmander", "Pok\u00e9mon", "Game"],
+      ["Sonic", "Sonic the Hedgehog", "Game"],
+      ["Tails", "Sonic the Hedgehog", "Game"],
+      ["Shadow", "Sonic the Hedgehog", "Game"],
+      ["Isabelle", "Animal Crossing", "Game"]
+    ]
+  },
+  {
+    "file": "07-games.png",
+    "characters": [
+      ["Tom Nook", "Animal Crossing", "Game"],
+      ["Knuckles", "Sonic the Hedgehog", "Game"],
+      ["Steve", "Minecraft", "Game"],
+      ["Alex", "Minecraft", "Game"],
+      ["Creeper", "Minecraft", "Game"],
+      ["Sans", "Undertale", "Game"],
+      ["Hollow Knight", "Hollow Knight", "Game"]
+    ]
+  }
+]

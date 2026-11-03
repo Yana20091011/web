@@ -147,10 +147,12 @@ Pets blink automatically, show their typing pose for ordinary playground keys, a
 use their happy pose for Enter or affection. Existing custom key reactions take
 priority. Reduced-motion preferences keep idle frames still.
 
-The first entry reuses `src/assets/laptop-buddy` artwork. The other entries are
-original stylized fan-art sprites drawn by `scripts/create-character-library.mjs`.
+The first entry reuses `src/assets/laptop-buddy` artwork. The other entries use detailed generated chibi pixel-art sheets: each character sits
+at a laptop, blinks, types, and waves happily. The source sheets and roster are in
+`src/assets/character-library/sheets`. `scripts/create-character-library.mjs`
+extracts aligned, transparent sprites from those sheets.
 The checked-in, self-contained WebP data keeps the library available without image
-hosts or API keys and supports the standalone export. To regenerate it, run
+hosts or API keys and supports the standalone export. To rebuild the embedded sprites from the source sheets, run
 `node scripts/create-character-library.mjs` with Chromium installed (or set
 `CHROMIUM_PATH`). `npm test` includes desktop/mobile library coverage and decodes
 all 200 pose images. Character names belong to their respective creators.

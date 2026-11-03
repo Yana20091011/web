@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import Pet, { type Accessory, type Action, type PetDesign, type Species } from './Pet';
 import DesktopPanel from './DesktopPanel';
+import DesktopDownload from './DesktopDownload';
 import CustomPetStudio from './CustomPetStudio';
 import MotionControls from './MotionControls';
 import CharacterLibrary from './CharacterLibrary';
@@ -330,6 +331,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
           Save pet
         </button>
       </header>
+      {!desktopState && <DesktopDownload />}
 
       {tab === 'playground' ? (
         <main className="main-content">

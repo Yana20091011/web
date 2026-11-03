@@ -159,3 +159,16 @@ all 200 pose images. Character names belong to their respective creators.
 
 The existing `.github/workflows/website.yml` builds and deploys the website to
 GitHub Pages on pushes to `main`.
+
+## Public Windows download
+
+The website's **Download for Windows** button links directly to the latest public
+release's `KeyCritter-Windows.exe`. Users need no GitHub account or installer.
+Release notes, the optional ZIP, and SHA-256 checksums are also available at
+<https://github.com/Yana20091011/web/releases/latest>.
+
+The Windows workflow builds and tests the actual portable executable, uploads its
+verified artifact, checks its checksum after transfer, and publishes public EXE/ZIP
+assets only after those checks pass. Each release has its own build tag; the fixed
+asset name keeps the website button current. Release publication needs the
+workflow's `contents: write` permission; no personal token is required.

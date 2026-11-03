@@ -112,7 +112,18 @@ try {
     .poll(() => page.evaluate(async () => (await window.keycritter.getState()).pet))
     .toEqual(transferPet);
   await expect
-    .poll(async () => JSON.parse(await readFile(join(profile, 'pet-settings.json'), 'utf8')).pet)
+    .poll(
+      async () => {
+        try {
+          return JSON.parse(await readFile(join(profile, 'pet-settings.json'), 'utf8')).pet;
+        } catch (error) {
+          // The first save is debounced; wait for an actual complete settings file.
+          if (error.code === 'ENOENT' || error instanceof SyntaxError) return null;
+          throw error;
+        }
+      },
+      { timeout: 10000 },
+    )
     .toEqual(transferPet);
   const transferredCompanion = browser
     .contexts()

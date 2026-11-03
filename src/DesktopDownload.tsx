@@ -41,7 +41,8 @@ export default function DesktopDownload() {
         </p>
         <p>
           The app is unsigned, so Windows may show a security warning. Only open a download you
-          trust. Browser-saved pets stay in your browser; choose your pet again in the desktop app.
+          trust. To transfer a website pet, choose Export pet here, then Import pet in the latest
+          desktop app.
         </p>
         <a
           href="https://github.com/Yana20091011/web/releases/latest"

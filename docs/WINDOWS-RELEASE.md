@@ -8,8 +8,9 @@ or Node.js is required. This portable app supports Windows 10/11, 64-bit (x64).
 
 The app includes the 50-character library, uploads, blinking frames, and key
 reactions. Ordinary typing works offline. AI generation is optional and needs your
-own OpenAI API key. Website saves remain in your browser; choose your pet again in
-the desktop app.
+own OpenAI API key. Use **Export pet** on the website, then **Import pet** in this desktop app to
+transfer your customized design, images, animation frames, and key reactions.
+Imports save as a new pet; existing pets remain in your collection.
 
 This development build is unsigned. Windows may display a security warning; only
 open a download you trust. Keyboard reactions start paused until you enable them.

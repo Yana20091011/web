@@ -29,6 +29,8 @@ import {
 import Pet, { type Accessory, type Action, type PetDesign, type Species } from './Pet';
 import DesktopPanel from './DesktopPanel';
 import DesktopDownload from './DesktopDownload';
+import PetTransfer from './PetTransfer';
+import type { PortablePet } from './petTransfer';
 import CustomPetStudio from './CustomPetStudio';
 import MotionControls from './MotionControls';
 import CharacterLibrary from './CharacterLibrary';
@@ -220,6 +222,19 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
     resetEditor();
     setToast(`${p.design.name} is ready to keep you company.`);
   }
+  function importPet(incoming: PortablePet) {
+    const saved = { ...incoming, id: uid() };
+    const next = [...pets, saved];
+    try {
+      localStorage.setItem('keycritter-pets', JSON.stringify(next));
+    } catch {
+      throw new Error(
+        'Could not save this pet. Free some browser storage and try importing again. Your current pet is unchanged.',
+      );
+    }
+    setPets(next);
+    loadPet(saved);
+  }
   function deletePet() {
     const next = pets.filter((p) => p.id !== deleteId);
     try {
@@ -350,6 +365,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
               Made to be yours
             </span>
           </div>
+          <PetTransfer pet={{ design, reactions }} onImport={importPet} />
           {desktopState && (
             <DesktopPanel initial={desktopState} design={design} reactions={reactions} />
           )}

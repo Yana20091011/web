@@ -70,12 +70,16 @@ test('choose, blink, type, celebrate, save and reload a library pet', async ({ p
   await expect
     .poll(() => image.getAttribute('data-frame-index'), { intervals: [25], timeout: 6000 })
     .not.toBe('0');
+  // Freeze timers while inspecting the brief typing pose, then advance explicitly.
+  await page.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
+  await page.clock.pauseAt(new Date('2026-01-01T00:00:01Z'));
   await page.getByRole('textbox', { name: 'Typing playground' }).press('a');
   await expect(image).toHaveAttribute('data-pose', 'typing');
   await expect(image).toHaveAttribute(
     'src',
     characters.find((c) => c.id === 'naruto')!.poses.typing,
   );
+  await page.clock.runFor(350);
   await expect(image).toHaveAttribute('data-pose', 'idle');
   await page.getByRole('textbox', { name: 'Typing playground' }).press('Enter');
   await expect(image).toHaveAttribute('data-pose', 'cheer');

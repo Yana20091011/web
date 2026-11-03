@@ -72,6 +72,85 @@ try {
   expect(state.pinned).toBe(true);
   await expect(page.getByRole('button', { name: 'Upload', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Create with AI', exact: true })).toBeVisible();
+  // Import a self-contained website pet and verify native synchronization and export.
+  const originalPet = state.pet;
+  const characters = JSON.parse(
+    await readFile('src/assets/character-library/characters.json', 'utf8'),
+  );
+  const sprite = characters.find((character) => character.id === 'naruto');
+  const transferPet = {
+    design: {
+      ...originalPet.design,
+      name: 'Portable transfer',
+      species: 'custom',
+      accessory: 'none',
+      motionStrength: 25,
+      images: { idle: sprite.poses.idle, cheer: sprite.poses.happy },
+      typingImage: sprite.poses.typing,
+      animations: {
+        idle: {
+          enabled: true,
+          loop: true,
+          pauseMs: 3000,
+          frames: [
+            { id: 'open', image: sprite.poses.idle, duration: 180 },
+            { id: 'closed', image: sprite.poses.blinking, duration: 120 },
+          ],
+        },
+      },
+    },
+    reactions: originalPet.reactions,
+  };
+  const transferFile = JSON.stringify({ format: 'keycritter-pet', version: 1, pet: transferPet });
+  await page.getByLabel('Import pet file').setInputFiles({
+    name: 'portable-transfer.keycritter.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(transferFile),
+  });
+  await expect(page.getByRole('heading', { name: 'Meet Portable transfer' })).toBeVisible();
+  await expect
+    .poll(() => page.evaluate(async () => (await window.keycritter.getState()).pet))
+    .toEqual(transferPet);
+  await expect
+    .poll(async () => JSON.parse(await readFile(join(profile, 'pet-settings.json'), 'utf8')).pet)
+    .toEqual(transferPet);
+  const transferredCompanion = browser
+    .contexts()
+    .flatMap((context) => context.pages())
+    .find((candidate) => candidate.url().includes('#companion'));
+  await expect(transferredCompanion.getByTestId('desktop-pet').locator('img')).toHaveAttribute(
+    'data-animated',
+    'true',
+  );
+  const exportDirectory = join(profile, 'export-check');
+  await mkdir(exportDirectory, { recursive: true });
+  const downloadControl = await browser.newBrowserCDPSession();
+  await downloadControl.send('Browser.setDownloadBehavior', {
+    behavior: 'allow',
+    downloadPath: exportDirectory,
+  });
+  await page.getByRole('button', { name: 'Export pet', exact: true }).click();
+  const exportedFile = join(exportDirectory, 'Portable-transfer.keycritter.json');
+  await expect
+    .poll(async () => {
+      try {
+        return JSON.parse(await readFile(exportedFile, 'utf8')).pet;
+      } catch {
+        return null;
+      }
+    })
+    .toEqual(transferPet);
+  await downloadControl.send('Browser.setDownloadBehavior', { behavior: 'default' });
+  await downloadControl.detach();
+  // Restore the default pet before the existing native window checks.
+  await page.getByLabel('Import pet file').setInputFiles({
+    name: 'original.keycritter.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify({ format: 'keycritter-pet', version: 1, pet: originalPet })),
+  });
+  await expect
+    .poll(() => page.evaluate(async () => (await window.keycritter.getState()).pet))
+    .toEqual(originalPet);
   await mkdir('release', { recursive: true });
   await page.screenshot({ path: 'release/verified-ui.png', fullPage: true });
   await page.getByRole('button', { name: 'Upload', exact: true }).click();
@@ -383,7 +462,7 @@ try {
   if (!exited) throw new Error('The packaged app did not quit normally.');
   expect(child.exitCode).toBe(0);
   console.log(
-    `PASS: ${prefix.length ? 'local runtime' : 'actual portable executable'} v${version} launched; native/renderer versions match; Upload, AI, and frame animation work; screenshots and verification report saved.`,
+    `PASS: ${prefix.length ? 'local runtime' : 'actual portable executable'} v${version} launched; native/renderer versions match; pet import/export, Upload, AI, and frame animation work; screenshots and verification report saved.`,
   );
 } catch (error) {
   const detail =

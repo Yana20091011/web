@@ -1,0 +1,56 @@
+.pet-transfer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  border: 1px solid #e7dfed;
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  background: #fffcfa;
+}
+.pet-transfer-copy {
+  flex: 1;
+  min-width: 200px;
+}
+.pet-transfer h2 {
+  font-size: 14px;
+  margin: 0 0 4px;
+}
+.pet-transfer p {
+  font-size: 12px;
+  color: #8b8197;
+  line-height: 1.6;
+  margin: 0;
+}
+.pet-transfer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pet-transfer .pet-transfer-message {
+  width: 100%;
+  color: #6c558d;
+}
+.pet-transfer .pet-transfer-error {
+  color: #a14b64;
+}
+.pet-transfer button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.focus-mode .pet-transfer {
+  display: none;
+}
+@media (max-width: 700px) {
+  .pet-transfer {
+    padding: 16px;
+  }
+  .pet-transfer-actions {
+    width: 100%;
+  }
+  .pet-transfer-actions button {
+    flex: 1;
+  }
+}

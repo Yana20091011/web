@@ -4,7 +4,7 @@ A floating typing pet for Windows, with a cozy React designer. Customize a pixel
 
 ## Use the Windows desktop pet
 
-1. Open `KeyCritter-Windows-1.3.1.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
+1. Open `KeyCritter-Windows-1.4.0.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
 2. Design your pet, then click **Enable keyboard reactions**. Ordinary typing makes it bounce; Space, Enter, and Backspace have special reactions by default. Add more in the reaction editor.
 3. Drag the little name label beneath your desktop pet to move it. The pet stays above other windows without taking keyboard focus.
 4. Close the designer to keep just the pet. Reopen it from the pet's **Designer** button or the KeyCritter system-tray menu, which may be under Windows' hidden-icons arrow.
@@ -102,13 +102,13 @@ Windows-specific transparency, tray behavior, and native key handling should als
 
 Windows verification checks 0% movement with blinking still active, scaled reaction movement at 25%, and persistence of that setting. It also moves the OS cursor during a captured drag, checks rightward and vertical movement against actual Win32 window positions, verifies no drift from stale renderer events, and checks that edge placement is saved. Drag movement is sampled in the main process, independently of coordinates reported by the moving renderer window.
 
-The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions, Upload/AI panels, and uploaded frames playing on the floating pet, and saves screenshots before uploading the download. It also opens Microsoft Edge, switches tabs, and uses Win32 window order/styles to check that the pet stays above the browser without taking focus, recovers from an intentional native topmost reset, and respects unpinning. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.3.1** artifact. Extract that ZIP and follow `START-HERE.txt`. The three `verified-*-ui.png` screenshots and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
+The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions, Upload/AI panels, and uploaded frames playing on the floating pet, and saves screenshots before uploading the download. It also opens Microsoft Edge, switches tabs, and uses Win32 window order/styles to check that the pet stays above the browser without taking focus, recovers from an intentional native topmost reset, and respects unpinning. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.4.0** artifact. Extract that ZIP and follow `START-HERE.txt`. The three `verified-*-ui.png` screenshots and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
 
 ```sh
 npm run desktop:win
 ```
 
-The result is `release/KeyCritter-Windows-1.3.1.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges. Run `npm run test:portable` on Windows to verify this exact executable, or `npm run test:second-instance` with Linux X11/xdotool to exercise the duplicate-launch message and saved-data protection.
+The result is `release/KeyCritter-Windows-1.4.0.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges. Run `npm run test:portable` on Windows to verify this exact executable, or `npm run test:second-instance` with Linux X11/xdotool to exercise the duplicate-launch message and saved-data protection.
 
 ## Open without installing anything
 
@@ -172,3 +172,22 @@ verified artifact, checks its checksum after transfer, and publishes public EXE/
 assets only after those checks pass. Each release has its own build tag; the fixed
 asset name keeps the website button current. Release publication needs the
 workflow's `contents: write` permission; no personal token is required.
+
+## Transfer a pet between website and desktop
+
+In the playground, choose **Export pet** under **Take this pet with you**. Open the
+latest desktop app (v1.4.0 or newer) and choose **Import pet**, then select the
+`.keycritter.json` file. The same steps work from desktop to website or between
+browsers and computers. The file includes the current design, custom images,
+typing pose, animation frames and timing, movement strength, and key reactions.
+No account, cloud connection, or API key is needed.
+
+Importing saves a **new** pet in My Pets and makes it active. Existing saved pets
+are preserved; repeated imports create separate copies. Malformed, unsupported,
+unsafe, oversized, or unreadable files are rejected before changing the active
+pet. If storage is full, importing reports an error and leaves the current pet
+unchanged. The maximum transfer file size is 3 MB.
+
+Transfer files contain pet artwork and settings only. API keys, typed playground
+text, desktop position, and keyboard-monitoring permissions are not transferred.
+Keyboard reactions remain paused on desktop startup until explicitly enabled.

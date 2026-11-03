@@ -8,10 +8,16 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: windows-desktop-release
+  cancel-in-progress: true
+
 jobs:
   windows:
     runs-on: windows-latest
     timeout-minutes: 20
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Check out project
         uses: actions/checkout@v4
@@ -73,3 +79,49 @@ jobs:
           if-no-files-found: error
           compression-level: 0
           retention-days: 14
+
+  publish:
+    name: Publish public Windows download
+    needs: windows
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download the verified Windows build
+        uses: actions/download-artifact@v4
+        with:
+          name: KeyCritter-Windows-v${{ needs.windows.outputs.version }}
+          path: windows-download
+
+      - name: Prepare stable public download names
+        env:
+          APP_VERSION: ${{ needs.windows.outputs.version }}
+        run: |
+          set -euo pipefail
+          # Check the executable transferred from the Windows verification job.
+          (cd windows-download && sha256sum --check SHA256SUMS.txt)
+          mkdir -p public-download
+          cp "windows-download/KeyCritter-Windows-${APP_VERSION}.exe" public-download/KeyCritter-Windows.exe
+          zip -j public-download/KeyCritter-Windows.zip windows-download/*
+          (cd public-download && sha256sum KeyCritter-Windows.exe KeyCritter-Windows.zip > SHA256SUMS.txt)
+
+      - name: Publish verified executable and ZIP
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APP_VERSION: ${{ needs.windows.outputs.version }}
+        run: |
+          set -euo pipefail
+          tag="windows-build-${GITHUB_RUN_NUMBER}"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$tag" public-download/* --clobber --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$tag" public-download/* \
+              --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+              --title "KeyCritter for Windows v${APP_VERSION} (build ${GITHUB_RUN_NUMBER})" \
+              --notes-file docs/WINDOWS-RELEASE.md --draft
+          fi
+          # Only make this the public latest release once all assets are uploaded.
+          gh release edit "$tag" --draft=false --latest --repo "$GITHUB_REPOSITORY"

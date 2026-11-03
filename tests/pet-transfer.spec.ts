@@ -21,6 +21,15 @@ test('transfer format round-trips complete pet data while excluding unrelated fi
   expect(text).not.toContain('not-a-real-key');
   expect(text).not.toContain('unrelated');
   expect(importPetFile(text)).toEqual(pet);
+  expect(() =>
+    exportPetFile({
+      ...pet,
+      reactions: [
+        { ...DEFAULT_REACTIONS[1], id: 'one', key: 'Enter' },
+        { ...DEFAULT_REACTIONS[1], id: 'two', key: 'enter' },
+      ],
+    }),
+  ).toThrow('key reactions');
   for (const c of characters)
     expect(
       importPetFile(exportPetFile({ design: characterDesign(c), reactions: DEFAULT_REACTIONS }))

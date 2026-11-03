@@ -1,5 +1,5 @@
 import type { PetDesign } from './Pet';
-import { validDesign, validReactions, normalizeKey, type Reaction } from './model';
+import { validDesign, validReactions, type Reaction } from './model';
 
 export const MAX_PET_FILE_BYTES = 3 * 1024 * 1024;
 export interface PortablePet {
@@ -17,7 +17,7 @@ function cleanPet(value: unknown): PortablePet {
     !validReactions(reactions) ||
     reactions.some((r) => !r.id.length || r.id.length > 100) ||
     new Set(reactions.map((r) => r.id)).size !== reactions.length ||
-    new Set(reactions.map((r) => normalizeKey(r.key))).size !== reactions.length
+    new Set(reactions.map((r) => r.key.toLowerCase())).size !== reactions.length
   ) {
     throw new Error('This pet has invalid images, animation frames, settings, or key reactions.');
   }

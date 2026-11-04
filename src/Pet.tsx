@@ -24,6 +24,8 @@ export interface PetDesign {
   color: string;
   size: number;
   motionStrength?: number;
+  backgroundId?: string;
+  libraryCharacterId?: string;
   accessory: Accessory;
   images?: PetImages;
   typingImage?: string;

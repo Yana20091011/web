@@ -1,6 +1,8 @@
 import type { Action, PetDesign } from './Pet';
 import { validPetImages } from './petImages';
 import { validAnimations } from './framePlayback';
+import backgroundCatalog from '../desktop/background-catalog.json' with { type: 'json' };
+const backgroundIds = new Set(backgroundCatalog.map((background) => background.id));
 
 export interface Reaction {
   id: string;
@@ -47,6 +49,11 @@ export function validDesign(v: unknown): v is PetDesign {
   return (
     isObject(v) &&
     typeof v.name === 'string' &&
+    (v.backgroundId === undefined ||
+      (typeof v.backgroundId === 'string' && backgroundIds.has(v.backgroundId))) &&
+    (v.libraryCharacterId === undefined ||
+      (typeof v.libraryCharacterId === 'string' &&
+        /^[a-z0-9().-]{1,100}$/.test(v.libraryCharacterId))) &&
     v.name.length <= 24 &&
     ['cat', 'bunny', 'blob', 'custom'].includes(v.species as string) &&
     (v.images === undefined || validPetImages(v.images)) &&

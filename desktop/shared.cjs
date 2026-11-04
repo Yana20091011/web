@@ -2,6 +2,9 @@ const { resolve, sep } = require('node:path');
 
 const COLORS = ['#b5dbb3', '#c7b5ee', '#f1b2cb', '#f5d793', '#a9cce9'];
 const ACTIONS = ['jump', 'cheer', 'surprise', 'dance', 'sleep'];
+const backgroundIds = new Set(
+  require('./background-catalog.json').map((background) => background.id),
+);
 function validAnimations(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   let length = 0;
@@ -75,6 +78,11 @@ function validPet(pet) {
   return (
     !!d &&
     typeof d.name === 'string' &&
+    (d.backgroundId === undefined ||
+      (typeof d.backgroundId === 'string' && backgroundIds.has(d.backgroundId))) &&
+    (d.libraryCharacterId === undefined ||
+      (typeof d.libraryCharacterId === 'string' &&
+        /^[a-z0-9().-]{1,100}$/.test(d.libraryCharacterId))) &&
     d.name.length <= 24 &&
     ['cat', 'bunny', 'blob', 'custom'].includes(d.species) &&
     (d.images === undefined || validImages(d.images)) &&
@@ -117,6 +125,10 @@ function cleanPet(pet) {
       color,
       size,
       accessory,
+      ...(pet.design.backgroundId === undefined ? {} : { backgroundId: pet.design.backgroundId }),
+      ...(pet.design.libraryCharacterId === undefined
+        ? {}
+        : { libraryCharacterId: pet.design.libraryCharacterId }),
       ...(pet.design.motionStrength !== undefined
         ? { motionStrength: pet.design.motionStrength }
         : {}),

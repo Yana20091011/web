@@ -31,3 +31,8 @@ full library. Choose a character to make it your active typing companion.
 The classified library includes 250 anime characters, 249 game characters, and
 laptop buddy. Filter by type, franchise/collection, and series; sort by name or
 series and clear all filters at any time. All artwork remains available offline.
+
+Choose **Change background** beneath the room for 22 illustrated scenes. Library
+pets get series-based suggestions, and Anime/Game filters let you explore other
+worlds. Background choices save with your pet and transfer through export/import.
+All backgrounds work offline in the desktop designer.

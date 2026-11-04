@@ -106,6 +106,29 @@ try {
   await expect
     .poll(() => page.evaluate(async () => (await window.keycritter.getState()).pet.design.name))
     .toBe('Boruto');
+  await page.getByRole('button', { name: 'Change background', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'Use Leaf village rooftop background', exact: true })
+    .click();
+  await expect(page.getByTestId('room-background')).toHaveAttribute(
+    'data-background-id',
+    'leaf-village',
+  );
+  const backgroundDecoded = await page.getByTestId('room-background').evaluate(async (element) => {
+    const source = getComputedStyle(element)
+      .backgroundImage.slice(4, -1)
+      .replace(/^["']|["']$/g, '');
+    const image = new Image();
+    image.src = source;
+    await image.decode();
+    return image.naturalWidth >= 900;
+  });
+  expect(backgroundDecoded).toBe(true);
+  await expect
+    .poll(() =>
+      page.evaluate(async () => (await window.keycritter.getState()).pet.design.backgroundId),
+    )
+    .toBe('leaf-village');
   await libraryPreview
     .getByRole('button', { name: `Browse all ${characters.length} pets`, exact: true })
     .click();
@@ -125,6 +148,8 @@ try {
     design: {
       ...originalPet.design,
       name: 'Portable transfer',
+      backgroundId: 'leaf-village',
+      libraryCharacterId: sprite.id,
       species: 'custom',
       accessory: 'none',
       motionStrength: 25,

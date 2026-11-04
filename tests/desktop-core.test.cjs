@@ -24,6 +24,25 @@ const {
 const { createKeyDecoder, createReactionFilter } = require('../desktop/keys.cjs');
 const decode = createKeyDecoder(UiohookKey);
 
+test('background and character identity survive native cleaning and reject unsafe values', () => {
+  const pet = {
+    ...DEFAULT_PET,
+    design: { ...DEFAULT_PET.design, backgroundId: 'leaf-village', libraryCharacterId: 'naruto' },
+  };
+  assert.deepEqual(cleanPet(pet), pet);
+  for (const backgroundId of [
+    'unknown-scene',
+    'https://example.com/background.png',
+    '../private',
+    null,
+    {},
+  ])
+    assert.equal(cleanPet({ ...pet, design: { ...pet.design, backgroundId } }), null);
+  for (const libraryCharacterId of ['../private', '', null, {}])
+    assert.equal(cleanPet({ ...pet, design: { ...pet.design, libraryCharacterId } }), null);
+  assert.deepEqual(cleanPet(DEFAULT_PET), DEFAULT_PET);
+});
+
 test('movement strength preserves old pets and validates the complete range', () => {
   assert.ok(cleanPet(DEFAULT_PET));
   for (const motionStrength of [0, 25, 100]) {

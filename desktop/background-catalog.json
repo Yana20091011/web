@@ -1,0 +1,250 @@
+[
+  {
+    "id": "cozy-room",
+    "name": "Cozy studio",
+    "categories": ["Cozy"],
+    "series": []
+  },
+  {
+    "id": "leaf-village",
+    "name": "Leaf village rooftop",
+    "categories": ["Anime"],
+    "series": ["Naruto", "Boruto"]
+  },
+  {
+    "id": "pirate-harbor",
+    "name": "Sunny pirate harbour",
+    "categories": ["Anime", "Game"],
+    "series": ["One Piece", "Spiritfarer", "Samba de Amigo", "Super Monkey Ball"]
+  },
+  {
+    "id": "wisteria-garden",
+    "name": "Wisteria tea garden",
+    "categories": ["Anime"],
+    "series": ["Demon Slayer", "Naruto", "Inuyasha", "The Apothecary Diaries", "Gintama"]
+  },
+  {
+    "id": "tokyo-study",
+    "name": "Rainy Tokyo study",
+    "categories": ["Anime", "Game"],
+    "series": [
+      "Jujutsu Kaisen",
+      "Chainsaw Man",
+      "Dandadan",
+      "Mob Psycho 100",
+      "My Hero Academia",
+      "Detective Conan",
+      "Steins;Gate",
+      "JoJo’s Bizarre Adventure",
+      "Devil May Cry",
+      "Resident Evil",
+      "Valorant"
+    ]
+  },
+  {
+    "id": "island-retreat",
+    "name": "Island lookout",
+    "categories": ["Anime", "Game"],
+    "series": ["Dragon Ball", "Crash Bandicoot", "Slime Rancher", "Animal Crossing"]
+  },
+  {
+    "id": "storybook-meadow",
+    "name": "Storybook meadow",
+    "categories": ["Anime", "Game"],
+    "series": [
+      "Studio Ghibli",
+      "Frieren: Beyond Journey’s End",
+      "Violet Evergarden",
+      "Ori",
+      "The Witcher",
+      "Rayman",
+      "Bastion",
+      "Attack on Titan"
+    ]
+  },
+  {
+    "id": "city-apartment",
+    "name": "Elegant city apartment",
+    "categories": ["Anime", "Game"],
+    "series": [
+      "Spy × Family",
+      "Black Butler",
+      "Violet Evergarden",
+      "Ace Attorney",
+      "Cuphead",
+      "Street Fighter"
+    ]
+  },
+  {
+    "id": "moon-observatory",
+    "name": "Moonlit observatory",
+    "categories": ["Anime", "Game"],
+    "series": [
+      "Sailor Moon",
+      "Cardcaptor Sakura",
+      "Puella Magi Madoka Magica",
+      "NiGHTS into Dreams",
+      "Kingdom Hearts",
+      "Ristar"
+    ]
+  },
+  {
+    "id": "school-clubroom",
+    "name": "Sunlit school clubroom",
+    "categories": ["Anime", "Game"],
+    "series": [
+      "Haikyu!!",
+      "Kuroko’s Basketball",
+      "Blue Lock",
+      "Bocchi the Rock!",
+      "Komi Can’t Communicate",
+      "My Dress-Up Darling",
+      "Ouran High School Host Club",
+      "Fruits Basket",
+      "OMORI",
+      "Danganronpa"
+    ]
+  },
+  {
+    "id": "monster-village",
+    "name": "Lakeside creature village",
+    "categories": ["Anime", "Game"],
+    "series": ["Pokémon", "Animal Crossing", "Slime Rancher"]
+  },
+  {
+    "id": "forest-shrine",
+    "name": "Ancient forest shrine",
+    "categories": ["Game"],
+    "series": [
+      "The Legend of Zelda",
+      "Fire Emblem",
+      "Xenoblade Chronicles",
+      "League of Legends",
+      "The Witcher",
+      "Spyro the Dragon",
+      "Shovel Knight"
+    ]
+  },
+  {
+    "id": "emerald-hills",
+    "name": "Emerald hill terrace",
+    "categories": ["Game"],
+    "series": ["Sonic the Hedgehog", "Klonoa", "Rayman", "Crash Bandicoot", "Ristar"]
+  },
+  {
+    "id": "star-meadow",
+    "name": "Starlight cloud meadow",
+    "categories": ["Game"],
+    "series": [
+      "Kirby",
+      "Cookie Run: Kingdom",
+      "A Hat in Time",
+      "LittleBigPlanet",
+      "Sonic the Hedgehog",
+      "NiGHTS into Dreams",
+      "Celeste",
+      "Klonoa"
+    ]
+  },
+  {
+    "id": "block-cabin",
+    "name": "Blocky garden cabin",
+    "categories": ["Game"],
+    "series": ["Minecraft", "Terraria"]
+  },
+  {
+    "id": "harvest-cottage",
+    "name": "Harvest cottage garden",
+    "categories": ["Game"],
+    "series": ["Stardew Valley", "Animal Crossing", "Terraria", "Slime Rancher", "Spiritfarer"]
+  },
+  {
+    "id": "windmill-balcony",
+    "name": "Windmill city balcony",
+    "categories": ["Anime", "Game"],
+    "series": [
+      "Genshin Impact",
+      "Fire Emblem",
+      "Xenoblade Chronicles",
+      "Fairy Tail",
+      "Re:Zero",
+      "KonoSuba"
+    ]
+  },
+  {
+    "id": "astral-lounge",
+    "name": "Astral train lounge",
+    "categories": ["Anime", "Game"],
+    "series": [
+      "Honkai",
+      "Cowboy Bebop",
+      "Space Channel 5",
+      "Astro Bot",
+      "Ratchet & Clank",
+      "Mega Man",
+      "Overwatch",
+      "Bomberman",
+      "Neon Genesis Evangelion"
+    ]
+  },
+  {
+    "id": "mako-overlook",
+    "name": "Luminous city overlook",
+    "categories": ["Game"],
+    "series": ["Final Fantasy", "NieR", "Transistor", "Mega Man", "Ratchet & Clank", "Overwatch"]
+  },
+  {
+    "id": "underground-lanterns",
+    "name": "Lantern-lit underground",
+    "categories": ["Game"],
+    "series": [
+      "Undertale",
+      "Deltarune",
+      "Hollow Knight",
+      "Dark Souls",
+      "Cave Story",
+      "OneShot",
+      "Ori",
+      "Cult of the Lamb",
+      "Hades"
+    ]
+  },
+  {
+    "id": "after-school-cafe",
+    "name": "After-school cafe",
+    "categories": ["Game"],
+    "series": [
+      "Persona",
+      "Danganronpa",
+      "OMORI",
+      "Jet Set Radio",
+      "Splatoon",
+      "Sly Cooper",
+      "Pac-Man",
+      "Street Fighter",
+      "Ace Attorney"
+    ]
+  },
+  {
+    "id": "enchanted-library",
+    "name": "Enchanted library",
+    "categories": ["Anime", "Game"],
+    "series": [
+      "Bleach",
+      "Hunter × Hunter",
+      "Fullmetal Alchemist",
+      "Sword Art Online",
+      "That Time I Got Reincarnated as a Slime",
+      "Delicious in Dungeon",
+      "Fairy Tail",
+      "Re:Zero",
+      "KonoSuba",
+      "Frieren: Beyond Journey’s End",
+      "The Witcher",
+      "Jak and Daxter",
+      "The Legend of Zelda",
+      "Kingdom Hearts",
+      "League of Legends"
+    ]
+  }
+]

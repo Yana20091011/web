@@ -7,7 +7,7 @@ import characters from '../src/assets/character-library/characters.json' with { 
 
 test('transfer format round-trips complete pet data while excluding unrelated fields', () => {
   const pet = {
-    design: { ...characterDesign(characters[1]), motionStrength: 25 },
+    design: { ...characterDesign(characters[1]), motionStrength: 25, backgroundId: 'leaf-village' },
     reactions: DEFAULT_REACTIONS,
   };
   expect(importPetFile(exportPetFile(pet))).toEqual(pet);
@@ -44,6 +44,10 @@ test('exported pet imports into a fresh browser with its artwork, frames, reacti
   await page.goto('/');
   await page.getByRole('button', { name: /My Pets/ }).click();
   await page.getByRole('button', { name: 'Choose Naruto', exact: true }).click();
+  await page.getByRole('button', { name: 'Change background', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'Use Leaf village rooftop background', exact: true })
+    .click();
   await page.getByLabel('Name', { exact: true }).fill('Travel buddy');
   const expected = await page.evaluate(
     () => JSON.parse(localStorage.getItem('keycritter-draft')!).design,
@@ -66,6 +70,10 @@ test('exported pet imports into a fresh browser with its artwork, frames, reacti
       buffer: Buffer.from(contents),
     });
     await expect(destination.getByRole('heading', { name: 'Meet Travel buddy' })).toBeVisible();
+    await expect(destination.getByTestId('room-background')).toHaveAttribute(
+      'data-background-id',
+      'leaf-village',
+    );
     await expect(
       destination.getByRole('status').filter({ hasText: 'imported and saved' }),
     ).toBeVisible();

@@ -34,6 +34,8 @@ import type { PortablePet } from './petTransferFormat';
 import CustomPetStudio from './CustomPetStudio';
 import MotionControls from './MotionControls';
 import CharacterLibrary, { type LibraryCategory } from './CharacterLibrary';
+import BackgroundPicker from './BackgroundPicker';
+import { backgroundFor, backgroundImageFor } from './backgrounds';
 import { reactionDuration } from './framePlayback';
 import { usePetMotion } from './usePetMotion';
 import type { DesktopState } from './desktop';
@@ -374,7 +376,18 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
           <div className="workspace-grid">
             <section className="playground-column" aria-label="Pet playground">
               <div className={`room ${night ? 'night' : ''}`}>
-                <div className="room-art" />
+                <div
+                  className="room-art"
+                  data-testid="room-background"
+                  data-background-id={backgroundFor(design.backgroundId).id}
+                  role="img"
+                  aria-label={`${backgroundFor(design.backgroundId).name} background`}
+                  style={
+                    design.backgroundId && design.backgroundId !== 'cozy-room'
+                      ? { backgroundImage: `url("${backgroundImageFor(design.backgroundId)}")` }
+                      : undefined
+                  }
+                />
                 <div className="room-toolbar">
                   <span className="room-label">
                     <span className="green-dot" />
@@ -463,6 +476,11 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
                   <Heart size={12} fill="currentColor" />A happy place for your little companion
                 </div>
               </div>
+
+              <BackgroundPicker
+                design={design}
+                onChange={(backgroundId) => setDesign((current) => ({ ...current, backgroundId }))}
+              />
 
               <section className="card typing-card">
                 <div className="section-heading">

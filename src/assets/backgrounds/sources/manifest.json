@@ -1,0 +1,289 @@
+[
+  {
+    "id": "leaf-village",
+    "name": "Leaf village rooftop",
+    "description": "a peaceful ninja village of warm tiled rooftops, wooden tea terrace, distant green mountains with carved stone faces, hanging leaves and orange morning light",
+    "series": [
+      "Naruto",
+      "Boruto"
+    ]
+  },
+  {
+    "id": "pirate-harbor",
+    "name": "Sunny pirate harbour",
+    "description": "a cheerful seaside pirate harbour, wooden deck terrace, colourful coastal cottages, round sailing ships far away, turquoise sea and fluffy summer clouds",
+    "series": [
+      "One Piece",
+      "Spiritfarer",
+      "Samba de Amigo",
+      "Super Monkey Ball"
+    ]
+  },
+  {
+    "id": "wisteria-garden",
+    "name": "Wisteria tea garden",
+    "description": "a serene Japanese tea veranda surrounded by cascading violet wisteria, red bridge over a koi pond, lanterns and soft golden morning light",
+    "series": [
+      "Demon Slayer",
+      "Naruto",
+      "Inuyasha",
+      "The Apothecary Diaries",
+      "Gintama"
+    ]
+  },
+  {
+    "id": "tokyo-study",
+    "name": "Rainy Tokyo study",
+    "description": "a cosy modern Japanese study with tall rain-streaked windows overlooking Tokyo, soft violet neon, books and plants, warm desk lamps and blue evening sky",
+    "series": [
+      "Jujutsu Kaisen",
+      "Chainsaw Man",
+      "Dandadan",
+      "Mob Psycho 100",
+      "My Hero Academia",
+      "Detective Conan",
+      "Steins;Gate",
+      "JoJo’s Bizarre Adventure",
+      "Devil May Cry",
+      "Resident Evil",
+      "Valorant"
+    ]
+  },
+  {
+    "id": "island-retreat",
+    "name": "Island lookout",
+    "description": "a peaceful tropical island veranda, a tiny pink seaside cottage, palm trees, blue ocean, distant islands and bright gentle sunshine",
+    "series": [
+      "Dragon Ball",
+      "Crash Bandicoot",
+      "Slime Rancher",
+      "Animal Crossing"
+    ]
+  },
+  {
+    "id": "storybook-meadow",
+    "name": "Storybook meadow",
+    "description": "a warm storybook cottage terrace above lush green meadows, wildflowers and old windmills, fluffy clouds, distant alpine village, gentle painterly Japanese animation atmosphere",
+    "series": [
+      "Studio Ghibli",
+      "Frieren: Beyond Journey’s End",
+      "Violet Evergarden",
+      "Ori",
+      "The Witcher",
+      "Rayman",
+      "Bastion",
+      "Attack on Titan"
+    ]
+  },
+  {
+    "id": "city-apartment",
+    "name": "Elegant city apartment",
+    "description": "a warm elegant 1930s European city apartment with velvet sofa, walnut bookshelves, flowering plants, tall windows showing a quiet old town, afternoon sunlight",
+    "series": [
+      "Spy × Family",
+      "Black Butler",
+      "Violet Evergarden",
+      "Ace Attorney",
+      "Cuphead",
+      "Street Fighter"
+    ]
+  },
+  {
+    "id": "moon-observatory",
+    "name": "Moonlit observatory",
+    "description": "a dreamy magical observatory balcony with crescent moon, huge starry sky, pastel celestial globe, soft lavender curtains, flower pots and moonlit clouds",
+    "series": [
+      "Sailor Moon",
+      "Cardcaptor Sakura",
+      "Puella Magi Madoka Magica",
+      "NiGHTS into Dreams",
+      "Kingdom Hearts",
+      "Ristar"
+    ]
+  },
+  {
+    "id": "school-clubroom",
+    "name": "Sunlit school clubroom",
+    "description": "a cosy Japanese school clubroom with wooden desks, books and a volleyball on a shelf, broad open windows facing trees and a sports field, golden after-school sunlight",
+    "series": [
+      "Haikyu!!",
+      "Kuroko’s Basketball",
+      "Blue Lock",
+      "Bocchi the Rock!",
+      "Komi Can’t Communicate",
+      "My Dress-Up Darling",
+      "Ouran High School Host Club",
+      "Fruits Basket",
+      "OMORI",
+      "Danganronpa"
+    ]
+  },
+  {
+    "id": "monster-village",
+    "name": "Lakeside creature village",
+    "description": "a bright idyllic small village for friendly creatures with red-roofed pastel cottages, lakeside footpath, flower beds and grassy hills, cosy porch in foreground",
+    "series": [
+      "Pokémon",
+      "Animal Crossing",
+      "Slime Rancher"
+    ]
+  },
+  {
+    "id": "forest-shrine",
+    "name": "Ancient forest shrine",
+    "description": "a sunlit enchanted forest clearing with ancient mossy stone shrine arches, turquoise carvings, tiny luminous fireflies, lush ferns, soft rays and a wooden platform in foreground",
+    "series": [
+      "The Legend of Zelda",
+      "Fire Emblem",
+      "Xenoblade Chronicles",
+      "League of Legends",
+      "The Witcher",
+      "Spyro the Dragon",
+      "Shovel Knight"
+    ]
+  },
+  {
+    "id": "emerald-hills",
+    "name": "Emerald hill terrace",
+    "description": "joyful emerald grassy hills, stylized checker-pattern earth cliffs, looping distant stone path, sunflowers, bright turquoise lake and palm trees, clean wooden lookout platform foreground",
+    "series": [
+      "Sonic the Hedgehog",
+      "Klonoa",
+      "Rayman",
+      "Crash Bandicoot",
+      "Ristar"
+    ]
+  },
+  {
+    "id": "star-meadow",
+    "name": "Starlight cloud meadow",
+    "description": "an adorable pastel meadow floating among peach and lavender clouds, soft rounded star-shaped flowers, tiny crescent hills, distant candy-coloured cottages, cosy grassy ledge foreground",
+    "series": [
+      "Kirby",
+      "Cookie Run: Kingdom",
+      "A Hat in Time",
+      "LittleBigPlanet",
+      "Sonic the Hedgehog",
+      "NiGHTS into Dreams",
+      "Celeste",
+      "Klonoa"
+    ]
+  },
+  {
+    "id": "block-cabin",
+    "name": "Blocky garden cabin",
+    "description": "a cosy voxel block-built wooden cabin porch, block-shaped oak trees and flower garden, cubic mountain lake beyond, pixel-textured golden sunrise, familiar blockcraft game atmosphere",
+    "series": [
+      "Minecraft",
+      "Terraria"
+    ]
+  },
+  {
+    "id": "harvest-cottage",
+    "name": "Harvest cottage garden",
+    "description": "a richly detailed cosy pixel-art farming cottage porch, neat vegetable beds, pumpkin patch, apple trees, wooden fence, a distant mountain lake and warm late-summer sunshine",
+    "series": [
+      "Stardew Valley",
+      "Animal Crossing",
+      "Terraria",
+      "Slime Rancher",
+      "Spiritfarer"
+    ]
+  },
+  {
+    "id": "windmill-balcony",
+    "name": "Windmill city balcony",
+    "description": "a sunny fantasy European windmill city viewed from a flower-filled balcony, red tiled roofs, broad stone bridge, lake and rolling green hills, glowing dandelions",
+    "series": [
+      "Genshin Impact",
+      "Fire Emblem",
+      "Xenoblade Chronicles",
+      "Fairy Tail",
+      "Re:Zero",
+      "KonoSuba"
+    ]
+  },
+  {
+    "id": "astral-lounge",
+    "name": "Astral train lounge",
+    "description": "a cosy luxurious space-train lounge with huge arched windows showing stars and a blue planet, navy velvet seats, brass lamps, books and little plants, warm cream wood trim",
+    "series": [
+      "Honkai",
+      "Cowboy Bebop",
+      "Space Channel 5",
+      "Astro Bot",
+      "Ratchet & Clank",
+      "Mega Man",
+      "Overwatch",
+      "Bomberman",
+      "Neon Genesis Evangelion"
+    ]
+  },
+  {
+    "id": "mako-overlook",
+    "name": "Luminous city overlook",
+    "description": "a cosy industrial loft balcony overlooking a vast layered sci-fi city with jade glowing energy towers, rain haze, warm houseplants and amber desk lights, calm blue evening",
+    "series": [
+      "Final Fantasy",
+      "NieR",
+      "Transistor",
+      "Mega Man",
+      "Ratchet & Clank",
+      "Overwatch"
+    ]
+  },
+  {
+    "id": "underground-lanterns",
+    "name": "Lantern-lit underground",
+    "description": "a beautiful cosy underground stone sanctuary with tall arched pillars, glowing blue flowers, little golden lanterns, gentle bioluminescent moss, quiet stream and comfortable wooden ledge",
+    "series": [
+      "Undertale",
+      "Deltarune",
+      "Hollow Knight",
+      "Dark Souls",
+      "Cave Story",
+      "OneShot",
+      "Ori",
+      "Cult of the Lamb",
+      "Hades"
+    ]
+  },
+  {
+    "id": "after-school-cafe",
+    "name": "After-school cafe",
+    "description": "a cosy Japanese backstreet cafe booth, warm coffee bar, shelves of cups, potted plants, rain-speckled windows with colourful evening city lights, relaxed retro atmosphere",
+    "series": [
+      "Persona",
+      "Danganronpa",
+      "OMORI",
+      "Jet Set Radio",
+      "Splatoon",
+      "Sly Cooper",
+      "Pac-Man",
+      "Street Fighter",
+      "Ace Attorney"
+    ]
+  },
+  {
+    "id": "enchanted-library",
+    "name": "Enchanted library",
+    "description": "a cosy magical stone library with spiralling wooden shelves, warm lamps, floating dust motes, vines, arched windows showing a forest and distant castle, welcoming gentle fantasy atmosphere",
+    "series": [
+      "Bleach",
+      "Hunter × Hunter",
+      "Fullmetal Alchemist",
+      "Sword Art Online",
+      "That Time I Got Reincarnated as a Slime",
+      "Delicious in Dungeon",
+      "Fairy Tail",
+      "Re:Zero",
+      "KonoSuba",
+      "Frieren: Beyond Journey’s End",
+      "The Witcher",
+      "Jak and Daxter",
+      "The Legend of Zelda",
+      "Kingdom Hearts",
+      "League of Legends"
+    ]
+  }
+]

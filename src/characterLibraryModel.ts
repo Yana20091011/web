@@ -21,6 +21,7 @@ export function characterDesign(character: LibraryCharacter): PetDesign {
   return {
     ...DEFAULT_PET,
     name: character.name,
+    libraryCharacterId: character.id,
     species: 'custom',
     accessory: 'none',
     images: { idle, jump: typing, cheer: happy, surprise: blinking, dance: happy, sleep: blinking },

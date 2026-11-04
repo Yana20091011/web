@@ -1,0 +1,141 @@
+.background-picker {
+  padding: 16px 20px;
+}
+.background-picker-toggle {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--text, #393047);
+  text-align: left;
+  font: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+.background-picker-toggle strong {
+  display: block;
+  font-size: 14px;
+}
+.background-picker-toggle small {
+  display: block;
+  color: #8e7d9d;
+  margin-top: 4px;
+  font-size: 11px;
+}
+.background-chevron {
+  margin-left: auto;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.background-chevron.open {
+  transform: rotate(180deg);
+}
+.background-intro,
+.background-status,
+.background-note {
+  color: #8e7d9d;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.background-intro {
+  margin: 18px 0 12px;
+}
+.background-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.background-filters .button {
+  font-size: 11px;
+  padding: 8px 10px;
+}
+.background-filters .button[aria-pressed='true'] {
+  background: #e8def2;
+  color: #65527d;
+  border-color: #b9a7ce;
+}
+.background-series-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #78688b;
+  font-size: 12px;
+  font-weight: 700;
+}
+.background-series-label select {
+  max-width: 100%;
+  min-width: 0;
+  padding: 10px;
+  background: #fffdfb;
+  border: 1px solid #e3dbea;
+  border-radius: 9px;
+  font: inherit;
+  color: #584968;
+}
+.background-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.background-option {
+  padding: 0;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e3dbea;
+  border-radius: 10px;
+  background: #fffdfb;
+  font: inherit;
+  cursor: pointer;
+  color: #65527d;
+  text-align: left;
+}
+.background-option[aria-pressed='true'] {
+  border-color: #9274bc;
+  box-shadow: 0 0 0 2px #e8def2;
+}
+.background-option img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.6;
+  object-fit: cover;
+}
+.background-option > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 10px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.background-option svg {
+  flex-shrink: 0;
+}
+.background-reset {
+  margin-top: 14px;
+  font-size: 12px;
+}
+.background-note {
+  font-size: 10px;
+  margin-bottom: 0;
+}
+.background-picker button:focus-visible,
+.background-picker select:focus-visible {
+  outline: 2px solid #9274bc;
+  outline-offset: 3px;
+}
+.focus-mode .background-picker {
+  display: none;
+}
+@media (max-width: 700px) {
+  .background-picker {
+    padding: 16px;
+  }
+  .background-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -28,6 +28,10 @@ function cleanPet(value: unknown): PortablePet {
       color: design.color,
       size: design.size,
       accessory: design.accessory,
+      ...(design.backgroundId === undefined ? {} : { backgroundId: design.backgroundId }),
+      ...(design.libraryCharacterId === undefined
+        ? {}
+        : { libraryCharacterId: design.libraryCharacterId }),
       ...(design.motionStrength === undefined ? {} : { motionStrength: design.motionStrength }),
       ...(design.images ? { images: Object.fromEntries(Object.entries(design.images)) } : {}),
       ...(design.typingImage ? { typingImage: design.typingImage } : {}),

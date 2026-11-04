@@ -2,7 +2,7 @@ KEYCRITTER - WINDOWS DESKTOP PET
 
 For Windows 10/11, 64-bit (x64).
 
-This download is version 1.7.0. The logo and window title show v1.7.0.
+This download is version 1.7.1. The logo and window title show v1.7.1.
 Quit any older KeyCritter from the system tray before opening this update.
 The included verified-ui.png, verified-ai-ui.png, and verified-animation-ui.png
 are screenshots captured while testing this exact portable executable on Windows.
@@ -94,5 +94,7 @@ You can also export from the desktop app and import into the website.
 
 BROWSE THE CLASSIFIED LIBRARY
 Use My Pets or Browse all 500 pets below the typing box.
+Choose Anime characters or Game characters to filter the preview first.
+Browse all keeps your category selected; choose a pet to use it.
 Choose Anime or Game, then select a franchise/collection and series.
 Use search and sorting together, or Clear filters to see the entire collection.

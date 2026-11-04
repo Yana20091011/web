@@ -33,7 +33,7 @@ import PetTransfer from './PetTransfer';
 import type { PortablePet } from './petTransferFormat';
 import CustomPetStudio from './CustomPetStudio';
 import MotionControls from './MotionControls';
-import CharacterLibrary from './CharacterLibrary';
+import CharacterLibrary, { type LibraryCategory } from './CharacterLibrary';
 import { reactionDuration } from './framePlayback';
 import { usePetMotion } from './usePetMotion';
 import type { DesktopState } from './desktop';
@@ -61,6 +61,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
   const [activeId, setActiveId] = useState<string | undefined>(initial.id);
   const [pets, setPets] = useState<SavedPet[]>(readPets);
   const [tab, setTab] = useState<'playground' | 'pets'>('playground');
+  const [libraryCategory, setLibraryCategory] = useState<LibraryCategory>('All');
   const [text, setText] = useState('');
   const [typing, setTyping] = useState(false);
   const typingTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -333,6 +334,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
           <button
             className={tab === 'pets' ? 'active' : ''}
             onClick={() => {
+              setLibraryCategory('All');
               setTab('pets');
               setFocus(false);
             }}
@@ -562,7 +564,8 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
                     }),
                   );
                 }}
-                onBrowseAll={() => {
+                onBrowseAll={(category) => {
+                  setLibraryCategory(category);
                   setTab('pets');
                   requestAnimationFrame(() =>
                     document.getElementById('character-library-title')?.scrollIntoView({
@@ -960,7 +963,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
               ))}
             </div>
           )}
-          <CharacterLibrary onChoose={loadPet} />
+          <CharacterLibrary onChoose={loadPet} initialCategory={libraryCategory} />
         </main>
       )}
 

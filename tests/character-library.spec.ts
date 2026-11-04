@@ -7,6 +7,52 @@ import { classifiedSeries, franchiseFor } from '../src/libraryTaxonomy';
 const TOTAL = characters.length;
 const PAGE_SIZE = 24;
 
+test('chooses anime or game pets beneath typing and carries the category into the full library', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const preview = page.getByTestId('character-library-preview');
+  const input = page.getByRole('textbox', { name: 'Typing playground' });
+  await input.fill('Keep my writing while choosing a character');
+  const categories = new Map(characters.map((character) => [character.id, character.category]));
+  for (const category of ['Anime', 'Game']) {
+    await preview.getByRole('button', { name: category, exact: true }).click();
+    await expect(preview.getByRole('button', { name: category, exact: true })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    const ids = await preview
+      .locator('.character-card')
+      .evaluateAll((cards) => cards.map((card) => card.getAttribute('data-character-id')!));
+    expect(ids).toHaveLength(8);
+    expect(ids.every((id) => categories.get(id) === category)).toBe(true);
+  }
+  await expect(input).toHaveValue('Keep my writing while choosing a character');
+  await preview.getByRole('button', { name: `Browse all ${TOTAL} pets`, exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Game', exact: true })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await expect(
+    page.getByRole('combobox', { name: 'Filter by franchise' }).locator('option'),
+  ).not.toContainText(['Haikyu!!']);
+  await page.getByRole('searchbox', { name: 'Search characters' }).fill('Pikachu');
+  await page.getByRole('button', { name: 'Choose Pikachu', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Meet Pikachu' })).toBeVisible();
+  await input.fill('Keep my writing while choosing a character');
+  await preview.getByRole('button', { name: 'Anime', exact: true }).click();
+  await preview.getByRole('button', { name: 'Choose Shoyo Hinata', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Meet Shoyo Hinata' })).toBeVisible();
+  await expect(input).toHaveValue('Keep my writing while choosing a character');
+  await preview.getByRole('button', { name: 'Original', exact: true }).click();
+  await expect(preview.locator('.character-card')).toHaveCount(1);
+  await preview.getByRole('button', { name: 'Choose Laptop buddy', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Meet Laptop buddy' })).toBeVisible();
+  await preview.getByRole('button', { name: 'All', exact: true }).click();
+  await expect(preview.locator('.character-card')).toHaveCount(8);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
 test('500 unique characters have valid, decodable artwork and persistable designs', async ({
   page,
 }) => {

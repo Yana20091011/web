@@ -24,6 +24,10 @@ cards per page, search all characters by name or series, or choose a featured pe
 from the preview beneath the typing box. Pose artwork is loaded in small local
 batches; the Windows app works offline.
 
+Choose **Anime characters** or **Game characters** beneath the typing box to
+filter the preview. **Browse all 500 pets** keeps that category selected in the
+full library. Choose a character to make it your active typing companion.
+
 The classified library includes 250 anime characters, 249 game characters, and
 laptop buddy. Filter by type, franchise/collection, and series; sort by name or
 series and clear all filters at any time. All artwork remains available offline.

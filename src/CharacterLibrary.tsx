@@ -13,17 +13,21 @@ import './character-library.css';
 
 const poses = ['idle', 'blinking', 'typing', 'happy'] as const;
 const PAGE_SIZE = 24;
+const categories = ['All', 'Anime', 'Game', 'Original'] as const;
+export type LibraryCategory = (typeof categories)[number];
 export default function CharacterLibrary({
   onChoose,
   compact = false,
   onBrowseAll,
+  initialCategory = 'All',
 }: {
   onChoose: (pet: SavedPet) => void;
   compact?: boolean;
-  onBrowseAll?: () => void;
+  onBrowseAll?: (category: LibraryCategory) => void;
+  initialCategory?: LibraryCategory;
 }) {
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('All');
+  const [category, setCategory] = useState<LibraryCategory>(initialCategory);
   const [franchise, setFranchise] = useState('All');
   const [series, setSeries] = useState('All');
   const [sort, setSort] = useState('featured');
@@ -79,7 +83,14 @@ export default function CharacterLibrary({
   const pages = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
   const currentPage = Math.min(page, pages);
   const displayed = compact
-    ? featuredEntries
+    ? category === 'All'
+      ? featuredEntries
+      : [
+          ...featuredEntries.filter((entry) => entry.category === category),
+          ...byType.filter(
+            (entry) => !featuredEntries.some((featured) => featured.id === entry.id),
+          ),
+        ].slice(0, 8)
     : visible.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
   const titleId = compact ? 'character-preview-title' : 'character-library-title';
   function goToPage(next: number) {
@@ -135,7 +146,7 @@ export default function CharacterLibrary({
           </h2>
           <p>
             {compact
-              ? 'A few favorites from our growing collection. Choose a buddy for your next typing session.'
+              ? 'Choose Anime or Game, then pick a character to be your typing buddy.'
               : 'Anime favorites, game friends, and our original laptop buddy. Every pet has idle, blinking, typing, and happy poses.'}
           </p>
         </div>
@@ -144,12 +155,50 @@ export default function CharacterLibrary({
             type="button"
             className="button preview-button browse-library"
             disabled={Boolean(busy)}
-            onClick={onBrowseAll}
+            onClick={() => onBrowseAll?.(category)}
           >
             Browse all {libraryEntries.length} pets <ArrowRight size={15} aria-hidden="true" />
           </button>
         )}
       </div>
+      <div className="character-category-picker">
+        <span className="character-category-label">Choose your character</span>
+        <div className="character-filters" role="group" aria-label="Character categories">
+          {categories.map((value) => (
+            <button
+              key={value}
+              type="button"
+              className="button"
+              aria-label={value}
+              aria-pressed={category === value}
+              onClick={() => {
+                setCategory(value);
+                setFranchise('All');
+                setSeries('All');
+                setPage(1);
+              }}
+            >
+              {value === 'All'
+                ? 'All characters'
+                : value === 'Original'
+                  ? 'Original pet'
+                  : `${value} characters`}
+              <span className="category-count" aria-hidden="true">
+                {value === 'All'
+                  ? libraryEntries.length
+                  : libraryEntries.filter((entry) => entry.category === value).length}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+      {compact && (
+        <p className="character-results" role="status">
+          {category === 'All'
+            ? 'Featured companions'
+            : `${byType.length} ${category.toLowerCase()} ${category === 'Original' ? 'pet' : 'characters'} · Showing ${displayed.length}`}
+        </p>
+      )}
       {!compact && (
         <>
           <div className="character-library-tools">
@@ -167,24 +216,6 @@ export default function CharacterLibrary({
                 }}
               />
             </label>
-            <div className="character-filters" aria-label="Character categories">
-              {['All', 'Original', 'Anime', 'Game'].map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  className="button"
-                  aria-pressed={category === value}
-                  onClick={() => {
-                    setCategory(value);
-                    setFranchise('All');
-                    setSeries('All');
-                    setPage(1);
-                  }}
-                >
-                  {value}
-                </button>
-              ))}
-            </div>
           </div>
           <div className="library-classification" aria-label="Classify characters">
             <label>

@@ -99,5 +99,257 @@
       ["Spyro", "Spyro the Dragon", "Game"],
       ["Rayman", "Rayman", "Game"]
     ]
+  },
+  {
+    "file": "11-bleach.png",
+    "characters": [
+      ["Ichigo", "Bleach", "Anime"],
+      ["Rukia", "Bleach", "Anime"],
+      ["Renji", "Bleach", "Anime"],
+      ["Orihime", "Bleach", "Anime"],
+      ["Toshiro", "Bleach", "Anime"],
+      ["Byakuya", "Bleach", "Anime"],
+      ["Yoruichi", "Bleach", "Anime"]
+    ]
+  },
+  {
+    "file": "12-naruto.png",
+    "characters": [
+      ["Boruto", "Naruto", "Anime"],
+      ["Sarada", "Naruto", "Anime"],
+      ["Mitsuki", "Naruto", "Anime"],
+      ["Itachi", "Naruto", "Anime"],
+      ["Gaara", "Naruto", "Anime"],
+      ["Rock Lee", "Naruto", "Anime"],
+      ["Tsunade", "Naruto", "Anime"]
+    ]
+  },
+  {
+    "file": "13-one-piece.png",
+    "characters": [
+      ["Sanji", "One Piece", "Anime"],
+      ["Robin", "One Piece", "Anime"],
+      ["Ace", "One Piece", "Anime"],
+      ["Sabo", "One Piece", "Anime"],
+      ["Law", "One Piece", "Anime"],
+      ["Usopp", "One Piece", "Anime"],
+      ["Brook", "One Piece", "Anime"]
+    ]
+  },
+  {
+    "file": "14-demon-slayer.png",
+    "characters": [
+      ["Inosuke", "Demon Slayer", "Anime"],
+      ["Shinobu", "Demon Slayer", "Anime"],
+      ["Mitsuri", "Demon Slayer", "Anime"],
+      ["Giyu", "Demon Slayer", "Anime"],
+      ["Rengoku", "Demon Slayer", "Anime"],
+      ["Muichiro", "Demon Slayer", "Anime"],
+      ["Kanao", "Demon Slayer", "Anime"]
+    ]
+  },
+  {
+    "file": "15-my-hero.png",
+    "characters": [
+      ["Izuku", "My Hero Academia", "Anime"],
+      ["Bakugo", "My Hero Academia", "Anime"],
+      ["Ochaco", "My Hero Academia", "Anime"],
+      ["Shoto", "My Hero Academia", "Anime"],
+      ["Tsuyu", "My Hero Academia", "Anime"],
+      ["All Might", "My Hero Academia", "Anime"],
+      ["Hawks", "My Hero Academia", "Anime"]
+    ]
+  },
+  {
+    "file": "16-anime-friends.png",
+    "characters": [
+      ["Loid", "Spy \u00d7 Family", "Anime"],
+      ["Yor", "Spy \u00d7 Family", "Anime"],
+      ["Bond", "Spy \u00d7 Family", "Anime"],
+      ["Komi", "Komi Can\u2019t Communicate", "Anime"],
+      ["Tadano", "Komi Can\u2019t Communicate", "Anime"],
+      ["Marin", "My Dress-Up Darling", "Anime"],
+      ["Wakana", "My Dress-Up Darling", "Anime"]
+    ]
+  },
+  {
+    "file": "17-hunters.png",
+    "characters": [
+      ["Gon", "Hunter \u00d7 Hunter", "Anime"],
+      ["Killua", "Hunter \u00d7 Hunter", "Anime"],
+      ["Kurapika", "Hunter \u00d7 Hunter", "Anime"],
+      ["Leorio", "Hunter \u00d7 Hunter", "Anime"],
+      ["Alphonse", "Fullmetal Alchemist", "Anime"],
+      ["Winry", "Fullmetal Alchemist", "Anime"],
+      ["Roy", "Fullmetal Alchemist", "Anime"]
+    ]
+  },
+  {
+    "file": "18-jujutsu.png",
+    "characters": [
+      ["Megumi", "Jujutsu Kaisen", "Anime"],
+      ["Nobara", "Jujutsu Kaisen", "Anime"],
+      ["Nanami", "Jujutsu Kaisen", "Anime"],
+      ["Inumaki", "Jujutsu Kaisen", "Anime"],
+      ["Panda", "Jujutsu Kaisen", "Anime"],
+      ["Armin", "Attack on Titan", "Anime"],
+      ["Mikasa", "Attack on Titan", "Anime"]
+    ]
+  },
+  {
+    "file": "19-dragon-ball.png",
+    "characters": [
+      ["Gohan", "Dragon Ball", "Anime"],
+      ["Piccolo", "Dragon Ball", "Anime"],
+      ["Trunks", "Dragon Ball", "Anime"],
+      ["Bulma", "Dragon Ball", "Anime"],
+      ["Krillin", "Dragon Ball", "Anime"],
+      ["Android 18", "Dragon Ball", "Anime"],
+      ["Videl", "Dragon Ball", "Anime"]
+    ]
+  },
+  {
+    "file": "20-ghibli.png",
+    "characters": [
+      ["Sophie", "Studio Ghibli", "Anime"],
+      ["Haku", "Studio Ghibli", "Anime"],
+      ["No-Face", "Studio Ghibli", "Anime"],
+      ["Jiji", "Studio Ghibli", "Anime"],
+      ["Ponyo", "Studio Ghibli", "Anime"],
+      ["Calcifer", "Studio Ghibli", "Anime"],
+      ["San", "Studio Ghibli", "Anime"]
+    ]
+  },
+  {
+    "file": "21-anime-journeys.png",
+    "characters": [
+      ["Ash", "Pok\u00e9mon", "Anime"],
+      ["Misty", "Pok\u00e9mon", "Anime"],
+      ["Brock", "Pok\u00e9mon", "Anime"],
+      ["Mob", "Mob Psycho 100", "Anime"],
+      ["Rimuru", "That Time I Got Reincarnated as a Slime", "Anime"],
+      ["Ciel", "Black Butler", "Anime"],
+      ["Sebastian", "Black Butler", "Anime"]
+    ]
+  },
+  {
+    "file": "22-sonic.png",
+    "characters": [
+      ["Metal Sonic", "Sonic the Hedgehog", "Game"],
+      ["Espio", "Sonic the Hedgehog", "Game"],
+      ["Vector", "Sonic the Hedgehog", "Game"],
+      ["Charmy", "Sonic the Hedgehog", "Game"],
+      ["Cream", "Sonic the Hedgehog", "Game"],
+      ["Big", "Sonic the Hedgehog", "Game"],
+      ["Jet", "Sonic the Hedgehog", "Game"]
+    ]
+  },
+  {
+    "file": "23-final-fantasy.png",
+    "characters": [
+      ["Tifa", "Final Fantasy VII", "Game"],
+      ["Barret", "Final Fantasy VII", "Game"],
+      ["Red XIII", "Final Fantasy VII", "Game"],
+      ["Yuffie", "Final Fantasy VII", "Game"],
+      ["Vincent", "Final Fantasy VII", "Game"],
+      ["Zack", "Final Fantasy VII", "Game"],
+      ["Sephiroth", "Final Fantasy VII", "Game"]
+    ]
+  },
+  {
+    "file": "24-kingdom-hearts.png",
+    "characters": [
+      ["Roxas", "Kingdom Hearts", "Game"],
+      ["Axel", "Kingdom Hearts", "Game"],
+      ["Xion", "Kingdom Hearts", "Game"],
+      ["Riku", "Kingdom Hearts", "Game"],
+      ["Kairi", "Kingdom Hearts", "Game"],
+      ["Ventus", "Kingdom Hearts", "Game"],
+      ["Aqua", "Kingdom Hearts", "Game"]
+    ]
+  },
+  {
+    "file": "25-undertale.png",
+    "characters": [
+      ["Papyrus", "Undertale", "Game"],
+      ["Frisk", "Undertale", "Game"],
+      ["Chara", "Undertale", "Game"],
+      ["Undyne", "Undertale", "Game"],
+      ["Alphys", "Undertale", "Game"],
+      ["Susie", "Deltarune", "Game"],
+      ["Lancer", "Deltarune", "Game"]
+    ]
+  },
+  {
+    "file": "26-stardew.png",
+    "characters": [
+      ["Abigail", "Stardew Valley", "Game"],
+      ["Sebastian (Stardew)", "Stardew Valley", "Game"],
+      ["Sam", "Stardew Valley", "Game"],
+      ["Leah", "Stardew Valley", "Game"],
+      ["Shane", "Stardew Valley", "Game"],
+      ["Emily", "Stardew Valley", "Game"],
+      ["Penny", "Stardew Valley", "Game"]
+    ]
+  },
+  {
+    "file": "27-genshin.png",
+    "characters": [
+      ["Venti", "Genshin Impact", "Game"],
+      ["Zhongli", "Genshin Impact", "Game"],
+      ["Raiden Shogun", "Genshin Impact", "Game"],
+      ["Hu Tao", "Genshin Impact", "Game"],
+      ["Klee", "Genshin Impact", "Game"],
+      ["Nahida", "Genshin Impact", "Game"],
+      ["Paimon", "Genshin Impact", "Game"]
+    ]
+  },
+  {
+    "file": "28-star-rail.png",
+    "characters": [
+      ["March 7th", "Honkai: Star Rail", "Game"],
+      ["Dan Heng", "Honkai: Star Rail", "Game"],
+      ["Stelle", "Honkai: Star Rail", "Game"],
+      ["Caelus", "Honkai: Star Rail", "Game"],
+      ["Jing Yuan", "Honkai: Star Rail", "Game"],
+      ["Kafka", "Honkai: Star Rail", "Game"],
+      ["Silver Wolf", "Honkai: Star Rail", "Game"]
+    ]
+  },
+  {
+    "file": "29-arcade.png",
+    "characters": [
+      ["Pac-Man", "Pac-Man", "Game"],
+      ["Ms. Pac-Man", "Pac-Man", "Game"],
+      ["Bomberman", "Bomberman", "Game"],
+      ["Shovel Knight", "Shovel Knight", "Game"],
+      ["Quote", "Cave Story", "Game"],
+      ["Curly Brace", "Cave Story", "Game"],
+      ["Mugman", "Cuphead", "Game"]
+    ]
+  },
+  {
+    "file": "30-classic-games.png",
+    "characters": [
+      ["NiGHTS", "NiGHTS into Dreams", "Game"],
+      ["Amigo", "Samba de Amigo", "Game"],
+      ["AiAi", "Super Monkey Ball", "Game"],
+      ["Ulala", "Space Channel 5", "Game"],
+      ["Beat", "Jet Set Radio", "Game"],
+      ["Klonoa", "Klonoa", "Game"],
+      ["Ristar", "Ristar", "Game"]
+    ]
+  },
+  {
+    "file": "31-indie-friends.png",
+    "characters": [
+      ["Ori", "Ori and the Blind Forest", "Game"],
+      ["Ku", "Ori and the Will of the Wisps", "Game"],
+      ["Hat Kid", "A Hat in Time", "Game"],
+      ["Madeline", "Celeste", "Game"],
+      ["Niko", "OneShot", "Game"],
+      ["Lamb", "Cult of the Lamb", "Game"],
+      ["Cuphead", "Cuphead", "Game"]
+    ]
   }
 ]

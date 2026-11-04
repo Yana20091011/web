@@ -2,15 +2,20 @@ import { test, expect } from '@playwright/test';
 import { validDesign } from '../src/model';
 import { characterDesign } from '../src/characterLibraryModel';
 import characters from '../src/assets/character-library/characters.json' with { type: 'json' };
+import catalog from '../src/assets/character-library/catalog.json' with { type: 'json' };
+const TOTAL = characters.length;
+const PAGE_SIZE = 24;
 
-test('all 57 characters have valid, decodable artwork and persistable designs', async ({
+test('at least 200 unique characters have valid, decodable artwork and persistable designs', async ({
   page,
 }) => {
-  expect(characters).toHaveLength(57);
-  expect(new Set(characters.map((c) => c.id)).size).toBe(57);
+  test.setTimeout(60000);
+  expect(TOTAL).toBeGreaterThanOrEqual(200);
+  expect(catalog.entries).toHaveLength(TOTAL);
+  expect(new Set(characters.map((c) => c.id)).size).toBe(TOTAL);
   expect(characters[0].id).toBe('laptop-buddy');
-  expect(characters.filter((c) => c.category === 'Anime')).toHaveLength(29);
-  expect(characters.filter((c) => c.category === 'Game')).toHaveLength(27);
+  expect(characters.filter((c) => c.category === 'Anime').length).toBeGreaterThanOrEqual(100);
+  expect(characters.filter((c) => c.category === 'Game').length).toBeGreaterThanOrEqual(90);
   for (const character of characters) {
     expect(validDesign(characterDesign(character))).toBe(true);
     if (character.id !== 'laptop-buddy')
@@ -19,16 +24,22 @@ test('all 57 characters have valid, decodable artwork and persistable designs', 
   await page.goto('/');
   const decoded = await page.evaluate(async (characters) => {
     const images = characters.flatMap((c) => Object.values(c.poses));
-    return Promise.all(
-      images.map(async (src) => {
-        const image = new Image();
-        image.src = src;
-        await image.decode();
-        return image.naturalWidth > 0 && image.naturalHeight > 0;
-      }),
-    );
+    const result: boolean[] = [];
+    for (let offset = 0; offset < images.length; offset += 24) {
+      result.push(
+        ...(await Promise.all(
+          images.slice(offset, offset + 24).map(async (src) => {
+            const image = new Image();
+            image.src = src;
+            await image.decode();
+            return image.naturalWidth > 0 && image.naturalHeight > 0;
+          }),
+        )),
+      );
+    }
+    return result;
   }, characters);
-  expect(decoded).toHaveLength(228);
+  expect(decoded).toHaveLength(TOTAL * 4);
   expect(decoded.every(Boolean)).toBe(true);
 });
 
@@ -36,14 +47,21 @@ test('browse, filter, and preview the library without changing saved pets', asyn
   await page.goto('/');
   await page.getByRole('button', { name: /My Pets/ }).click();
   const cards = page.locator('.character-card');
-  await expect(cards).toHaveCount(57);
+  await expect(cards).toHaveCount(PAGE_SIZE);
   await expect(cards.first()).toHaveAttribute('data-character-id', 'laptop-buddy');
   await page.getByRole('button', { name: 'Anime', exact: true }).click();
-  await expect(cards).toHaveCount(29);
+  await expect(cards).toHaveCount(PAGE_SIZE);
   await page.getByRole('button', { name: 'Game', exact: true }).click();
-  await expect(cards).toHaveCount(27);
+  await expect(cards).toHaveCount(PAGE_SIZE);
   await page.getByRole('searchbox', { name: 'Search characters' }).fill('Undertale');
-  await expect(cards).toHaveCount(2);
+  await expect(cards).toHaveCount(
+    Math.min(
+      PAGE_SIZE,
+      characters.filter(
+        (c) => c.category === 'Game' && `${c.name} ${c.series}`.toLowerCase().includes('undertale'),
+      ).length,
+    ),
+  );
   await page.getByRole('searchbox', { name: 'Search characters' }).fill('Tails');
   await expect(cards).toHaveCount(1);
   const image = cards.locator('img');
@@ -94,7 +112,7 @@ test('choose, blink, type, celebrate, save and reload a library pet', async ({ p
   await expect(
     page.locator('.saved-pet-card').filter({ has: page.getByRole('button', { name: 'Hang out' }) }),
   ).toHaveCount(1);
-  await expect(page.locator('.character-card')).toHaveCount(57);
+  await expect(page.locator('.character-card')).toHaveCount(PAGE_SIZE);
 });
 
 test('shows a partial library directly below typing and opens the full collection', async ({
@@ -107,7 +125,7 @@ test('shows a partial library directly below typing and opens the full collectio
     'data-character-id',
     'laptop-buddy',
   );
-  for (const name of ['Frieren', 'Fern', 'Inuyasha', 'Kagome', 'Crash', 'Spyro', 'Rayman'])
+  for (const name of catalog.featured.map((id) => characters.find((c) => c.id === id)!.name))
     await expect(
       preview.getByRole('button', { name: `Choose ${name}`, exact: true }),
     ).toBeVisible();
@@ -117,15 +135,24 @@ test('shows a partial library directly below typing and opens the full collectio
   expect(library!.y - typing!.y - typing!.height).toBeLessThan(40);
   const input = page.getByRole('textbox', { name: 'Typing playground' });
   await input.fill('Keep my writing');
-  await preview.getByRole('button', { name: 'Choose Frieren', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Meet Frieren' })).toBeVisible();
+  await preview
+    .getByRole('button', {
+      name: `Choose ${characters.find((c) => c.id === catalog.featured[1])!.name}`,
+      exact: true,
+    })
+    .click();
+  await expect(
+    page.getByRole('heading', {
+      name: `Meet ${characters.find((c) => c.id === catalog.featured[1])!.name}`,
+    }),
+  ).toBeVisible();
   await expect(input).toHaveValue('Keep my writing');
   await expect(page.getByTestId('active-pet').locator('img')).toHaveAttribute(
     'data-animated',
     'true',
   );
-  await preview.getByRole('button', { name: 'Browse all 57 pets', exact: true }).click();
-  await expect(page.locator('.character-card')).toHaveCount(57);
+  await preview.getByRole('button', { name: `Browse all ${TOTAL} pets`, exact: true }).click();
+  await expect(page.locator('.character-card')).toHaveCount(PAGE_SIZE);
   await expect(page.getByRole('searchbox', { name: 'Search characters' })).toBeVisible();
   await page.getByRole('searchbox', { name: 'Search characters' }).fill('Spyro');
   await expect(page.locator('.character-card')).toHaveCount(1);
@@ -133,4 +160,56 @@ test('shows a partial library directly below typing and opens the full collectio
   await expect(page.getByRole('heading', { name: 'Meet Spyro' })).toBeVisible();
   await expect(page.getByTestId('character-library-preview')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test('paginates every character without duplicates and searches across all pages', async ({
+  page,
+}) => {
+  test.setTimeout(60000);
+  await page.goto('/');
+  await page.getByRole('button', { name: /My Pets/ }).click();
+  const pages = Math.ceil(TOTAL / PAGE_SIZE);
+  const seen: string[] = [];
+  const cards = page.locator('.character-card');
+  for (let n = 1; n <= pages; n++) {
+    await expect(page.locator('.character-results')).toContainText(`Page ${n} of ${pages}`);
+    await expect(cards).toHaveCount(Math.min(PAGE_SIZE, TOTAL - (n - 1) * PAGE_SIZE));
+    seen.push(
+      ...(await cards.evaluateAll((nodes) =>
+        nodes.map((node) => node.getAttribute('data-character-id')!),
+      )),
+    );
+    if (n < pages)
+      await page.getByRole('button', { name: 'Next library page', exact: true }).click();
+  }
+  expect(seen).toHaveLength(TOTAL);
+  expect(new Set(seen).size).toBe(TOTAL);
+  await expect(page.getByRole('button', { name: 'Next library page', exact: true })).toBeDisabled();
+  const last = characters.at(-1)!;
+  await page.getByRole('searchbox', { name: 'Search characters' }).fill(last.name);
+  await expect(page.locator(`.character-card[data-character-id="${last.id}"]`)).toBeVisible();
+  await expect(page.locator('.character-results')).toContainText('Page 1 of 1');
+});
+
+test('does not fetch full pose batches until a pet or pose is selected', async ({ page }) => {
+  const requests: string[] = [];
+  page.on('request', (request) => {
+    if (request.url().includes('/batches/')) requests.push(request.url());
+  });
+  await page.goto('/');
+  await expect(
+    page.getByTestId('character-library-preview').locator('.character-card'),
+  ).toHaveCount(8);
+  expect(requests).toHaveLength(0);
+  await page.getByRole('button', { name: /My Pets/ }).click();
+  await expect(page.locator('.character-card')).toHaveCount(PAGE_SIZE);
+  expect(requests).toHaveLength(0);
+  await page.getByRole('searchbox', { name: 'Search characters' }).fill('Ichigo');
+  await page.getByRole('button', { name: 'Choose Ichigo', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Meet Ichigo' })).toBeVisible();
+  expect(requests.length).toBeGreaterThan(0);
+  await expect(page.getByTestId('active-pet').locator('img')).toHaveAttribute(
+    'data-animated',
+    'true',
+  );
 });

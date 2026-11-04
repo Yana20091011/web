@@ -9,6 +9,7 @@ const mimeTypes = {
   '.svg': 'image/svg+xml',
   '.woff2': 'font/woff2',
   '.js': 'text/javascript',
+  '.webp': 'image/webp',
 };
 
 function assetPath(asset, base = root) {
@@ -36,6 +37,17 @@ async function inlineModule(path) {
     const dependency = await inlineModule(assetPath(match[1], dirname(path)));
     const url = `data:text/javascript;base64,${Buffer.from(dependency).toString('base64')}`;
     source = source.replace(match[0], `import("${url}")`);
+  }
+  // Thumbnails are separate files online; embed their generated URLs offline.
+  const portraits = [...source.matchAll(/(["'])([^"'\\\s]+\.webp)\1/g)];
+  for (const match of portraits) {
+    try {
+      const embedded = await dataUrl(match[2], dirname(path));
+      source = source.replaceAll(match[0], JSON.stringify(embedded));
+    } catch (error) {
+      // Glob lookup keys refer to source paths, not generated files: keep them.
+      if (error.code !== 'ENOENT') throw error;
+    }
   }
   return source;
 }

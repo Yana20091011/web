@@ -214,3 +214,22 @@
 .character-library--compact .character-card .preview-button svg {
   display: none;
 }
+.library-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+  color: #82728d;
+  font-size: 12px;
+}
+.library-pagination button:disabled,
+.character-library button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.character-load-error {
+  color: #a14d67;
+  font-size: 13px;
+}

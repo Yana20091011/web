@@ -78,6 +78,28 @@ try {
     await readFile('src/assets/character-library/characters.json', 'utf8'),
   );
   const sprite = characters.find((character) => character.id === 'naruto');
+  const libraryPreview = page.getByTestId('character-library-preview');
+  await libraryPreview.scrollIntoViewIfNeeded();
+  await expect(libraryPreview.locator('.character-card')).toHaveCount(8);
+  await expect(
+    libraryPreview.getByRole('button', {
+      name: `Browse all ${characters.length} pets`,
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect
+    .poll(() =>
+      libraryPreview
+        .locator('img')
+        .evaluateAll((images) => images.every((image) => image.complete && image.naturalWidth > 0)),
+    )
+    .toBe(true);
+
+  await libraryPreview.getByRole('button', { name: 'Choose Ichigo', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Meet Ichigo' })).toBeVisible();
+  await expect
+    .poll(() => page.evaluate(async () => (await window.keycritter.getState()).pet.design.name))
+    .toBe('Ichigo');
   const transferPet = {
     design: {
       ...originalPet.design,

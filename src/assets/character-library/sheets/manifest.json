@@ -351,5 +351,185 @@
       ["Lamb", "Cult of the Lamb", "Game"],
       ["Cuphead", "Cuphead", "Game"]
     ]
+  },
+  {
+    "file": "32-sailor-guardians.png",
+    "characters": [
+      ["Sailor Mercury", "Sailor Moon", "Anime"],
+      ["Sailor Mars", "Sailor Moon", "Anime"],
+      ["Sailor Jupiter", "Sailor Moon", "Anime"],
+      ["Sailor Venus", "Sailor Moon", "Anime"],
+      ["Sailor Chibi Moon", "Sailor Moon", "Anime"],
+      ["Sailor Uranus", "Sailor Moon", "Anime"],
+      ["Sailor Neptune", "Sailor Moon", "Anime"]
+    ]
+  },
+  {
+    "file": "33-fairy-tail.png",
+    "characters": [
+      ["Natsu", "Fairy Tail", "Anime"],
+      ["Lucy", "Fairy Tail", "Anime"],
+      ["Erza", "Fairy Tail", "Anime"],
+      ["Gray", "Fairy Tail", "Anime"],
+      ["Wendy", "Fairy Tail", "Anime"],
+      ["Juvia", "Fairy Tail", "Anime"],
+      ["Happy", "Fairy Tail", "Anime"]
+    ]
+  },
+  {
+    "file": "34-re-zero.png",
+    "characters": [
+      ["Subaru", "Re:Zero", "Anime"],
+      ["Emilia", "Re:Zero", "Anime"],
+      ["Rem", "Re:Zero", "Anime"],
+      ["Ram", "Re:Zero", "Anime"],
+      ["Beatrice", "Re:Zero", "Anime"],
+      ["Otto", "Re:Zero", "Anime"],
+      ["Roswaal", "Re:Zero", "Anime"]
+    ]
+  },
+  {
+    "file": "35-jojo.png",
+    "characters": [
+      ["Jotaro", "JoJo\u2019s Bizarre Adventure", "Anime"],
+      ["Joseph", "JoJo\u2019s Bizarre Adventure", "Anime"],
+      ["Josuke", "JoJo\u2019s Bizarre Adventure", "Anime"],
+      ["Giorno", "JoJo\u2019s Bizarre Adventure", "Anime"],
+      ["Jolyne", "JoJo\u2019s Bizarre Adventure", "Anime"],
+      ["Dio", "JoJo\u2019s Bizarre Adventure", "Anime"],
+      ["Bruno", "JoJo\u2019s Bizarre Adventure", "Anime"]
+    ]
+  },
+  {
+    "file": "36-detective-conan.png",
+    "characters": [
+      ["Conan", "Detective Conan", "Anime"],
+      ["Ran", "Detective Conan", "Anime"],
+      ["Shinichi", "Detective Conan", "Anime"],
+      ["Haibara", "Detective Conan", "Anime"],
+      ["Kaito Kid", "Detective Conan", "Anime"],
+      ["Heiji", "Detective Conan", "Anime"],
+      ["Amuro", "Detective Conan", "Anime"]
+    ]
+  },
+  {
+    "file": "37-evangelion.png",
+    "characters": [
+      ["Shinji", "Neon Genesis Evangelion", "Anime"],
+      ["Rei", "Neon Genesis Evangelion", "Anime"],
+      ["Asuka", "Neon Genesis Evangelion", "Anime"],
+      ["Kaworu", "Neon Genesis Evangelion", "Anime"],
+      ["Misato", "Neon Genesis Evangelion", "Anime"],
+      ["Mari", "Neon Genesis Evangelion", "Anime"],
+      ["Gendo", "Neon Genesis Evangelion", "Anime"]
+    ]
+  },
+  {
+    "file": "38-anime-favorites.png",
+    "characters": [
+      ["Violet", "Violet Evergarden", "Anime"],
+      ["Maomao", "The Apothecary Diaries", "Anime"],
+      ["Jinshi", "The Apothecary Diaries", "Anime"],
+      ["Bocchi", "Bocchi the Rock!", "Anime"],
+      ["Ryo", "Bocchi the Rock!", "Anime"],
+      ["Nijika", "Bocchi the Rock!", "Anime"],
+      ["Ikuyo", "Bocchi the Rock!", "Anime"]
+    ]
+  },
+  {
+    "file": "39-supernatural-friends.png",
+    "characters": [
+      ["Momo", "Dandadan", "Anime"],
+      ["Okarun", "Dandadan", "Anime"],
+      ["Turbo Granny", "Dandadan", "Anime"],
+      ["Denji", "Chainsaw Man", "Anime"],
+      ["Power", "Chainsaw Man", "Anime"],
+      ["Aki", "Chainsaw Man", "Anime"],
+      ["Pochita", "Chainsaw Man", "Anime"]
+    ]
+  },
+  {
+    "file": "40-fantasy-games.png",
+    "characters": [
+      ["Geralt", "The Witcher", "Game"],
+      ["Yennefer", "The Witcher", "Game"],
+      ["Ciri", "The Witcher", "Game"],
+      ["Triss", "The Witcher", "Game"],
+      ["Solaire", "Dark Souls", "Game"],
+      ["Siegmeyer", "Dark Souls", "Game"],
+      ["Artorias", "Dark Souls", "Game"]
+    ]
+  },
+  {
+    "file": "41-nier-persona.png",
+    "characters": [
+      ["2B", "NieR:Automata", "Game"],
+      ["9S", "NieR:Automata", "Game"],
+      ["A2", "NieR:Automata", "Game"],
+      ["Joker", "Persona 5", "Game"],
+      ["Morgana", "Persona 5", "Game"],
+      ["Futaba", "Persona 5", "Game"],
+      ["Ann", "Persona 5", "Game"]
+    ]
+  },
+  {
+    "file": "42-capcom.png",
+    "characters": [
+      ["Phoenix Wright", "Ace Attorney", "Game"],
+      ["Miles Edgeworth", "Ace Attorney", "Game"],
+      ["Maya Fey", "Ace Attorney", "Game"],
+      ["Chun-Li", "Street Fighter", "Game"],
+      ["Ryu", "Street Fighter", "Game"],
+      ["Ken", "Street Fighter", "Game"],
+      ["Dante", "Devil May Cry", "Game"]
+    ]
+  },
+  {
+    "file": "43-genshin-more.png",
+    "characters": [
+      ["Furina", "Genshin Impact", "Game"],
+      ["Neuvillette", "Genshin Impact", "Game"],
+      ["Diluc", "Genshin Impact", "Game"],
+      ["Kaeya", "Genshin Impact", "Game"],
+      ["Keqing", "Genshin Impact", "Game"],
+      ["Ganyu", "Genshin Impact", "Game"],
+      ["Xiao", "Genshin Impact", "Game"]
+    ]
+  },
+  {
+    "file": "44-crafting-games.png",
+    "characters": [
+      ["Villager", "Minecraft", "Game"],
+      ["Enderman", "Minecraft", "Game"],
+      ["Warden", "Minecraft", "Game"],
+      ["Minecraft Wolf", "Minecraft", "Game"],
+      ["Minecraft Cat", "Minecraft", "Game"],
+      ["Terraria Guide", "Terraria", "Game"],
+      ["Terraria Merchant", "Terraria", "Game"]
+    ]
+  },
+  {
+    "file": "45-platform-adventures.png",
+    "characters": [
+      ["Ratchet", "Ratchet & Clank", "Game"],
+      ["Clank", "Ratchet & Clank", "Game"],
+      ["Jak", "Jak and Daxter", "Game"],
+      ["Daxter", "Jak and Daxter", "Game"],
+      ["Sly Cooper", "Sly Cooper", "Game"],
+      ["Sackboy", "LittleBigPlanet", "Game"],
+      ["Astro Bot", "Astro Bot", "Game"]
+    ]
+  },
+  {
+    "file": "46-supergiant.png",
+    "characters": [
+      ["Zagreus", "Hades", "Game"],
+      ["Hades", "Hades", "Game"],
+      ["Nyx", "Hades", "Game"],
+      ["Melinoe", "Hades II", "Game"],
+      ["Red", "Transistor", "Game"],
+      ["The Kid", "Bastion", "Game"],
+      ["Dusa", "Hades", "Game"]
+    ]
   }
 ]

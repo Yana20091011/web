@@ -95,6 +95,17 @@ try {
     )
     .toBe(true);
 
+  await libraryPreview
+    .getByRole('button', { name: `Browse all ${characters.length} pets`, exact: true })
+    .click();
+  await page.getByRole('combobox', { name: 'Filter by franchise' }).selectOption('Naruto');
+  await page.getByRole('combobox', { name: 'Filter by series' }).selectOption('Boruto');
+  await expect(page.locator('.character-card')).toHaveCount(3);
+  await page.getByRole('button', { name: 'Choose Boruto', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Meet Boruto' })).toBeVisible();
+  await expect
+    .poll(() => page.evaluate(async () => (await window.keycritter.getState()).pet.design.name))
+    .toBe('Boruto');
   await libraryPreview.getByRole('button', { name: 'Choose Ichigo', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Meet Ichigo' })).toBeVisible();
   await expect

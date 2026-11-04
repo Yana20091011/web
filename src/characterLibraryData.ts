@@ -1,7 +1,11 @@
 import catalog from './assets/character-library/catalog.json';
 import type { LibraryCharacter } from './characterLibraryModel';
-export type LibraryEntry = (typeof catalog.entries)[number];
-export const libraryEntries = catalog.entries;
+import { classifiedSeries, franchiseFor } from './libraryTaxonomy';
+export const libraryEntries = catalog.entries.map((entry) => {
+  const series = classifiedSeries(entry.id, entry.series);
+  return { ...entry, series, franchise: franchiseFor(series) };
+});
+export type LibraryEntry = (typeof libraryEntries)[number];
 export const featuredEntries = catalog.featured
   .map((id) => libraryEntries.find((entry) => entry.id === id)!)
   .filter(Boolean);

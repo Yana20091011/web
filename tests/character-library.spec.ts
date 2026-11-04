@@ -3,15 +3,21 @@ import { validDesign } from '../src/model';
 import { characterDesign } from '../src/characterLibraryModel';
 import characters from '../src/assets/character-library/characters.json' with { type: 'json' };
 import catalog from '../src/assets/character-library/catalog.json' with { type: 'json' };
+import { classifiedSeries, franchiseFor } from '../src/libraryTaxonomy';
 const TOTAL = characters.length;
 const PAGE_SIZE = 24;
 
-test('at least 200 unique characters have valid, decodable artwork and persistable designs', async ({
+test('at least 300 unique characters have valid, decodable artwork and persistable designs', async ({
   page,
 }) => {
   test.setTimeout(60000);
-  expect(TOTAL).toBeGreaterThanOrEqual(200);
+  expect(TOTAL).toBeGreaterThanOrEqual(300);
   expect(catalog.entries).toHaveLength(TOTAL);
+  for (const entry of catalog.entries) {
+    const series = classifiedSeries(entry.id, entry.series);
+    expect(series.trim().length).toBeGreaterThan(0);
+    expect(franchiseFor(series).trim().length).toBeGreaterThan(0);
+  }
   expect(new Set(characters.map((c) => c.id)).size).toBe(TOTAL);
   expect(characters[0].id).toBe('laptop-buddy');
   expect(characters.filter((c) => c.category === 'Anime').length).toBeGreaterThanOrEqual(100);
@@ -212,4 +218,55 @@ test('does not fetch full pose batches until a pet or pose is selected', async (
     'data-animated',
     'true',
   );
+});
+
+test('classifies by franchise and series, combines type filters, sorts, and resets cleanly', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: /My Pets/ }).click();
+  const franchise = page.getByRole('combobox', { name: 'Filter by franchise' });
+  const series = page.getByRole('combobox', { name: 'Filter by series' });
+  const cards = page.locator('.character-card');
+  await franchise.selectOption('Studio Ghibli');
+  await expect(cards).toHaveCount(11);
+  await series.selectOption('Howl’s Moving Castle');
+  await expect(cards).toHaveCount(3);
+  await expect(cards.getByRole('heading', { name: 'Howl', exact: true })).toBeVisible();
+  await expect(cards.getByRole('heading', { name: 'Sophie', exact: true })).toBeVisible();
+  await expect(cards.getByRole('heading', { name: 'Calcifer', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Anime', exact: true }).click();
+  await expect(franchise).toHaveValue('All');
+  await expect(series).toHaveValue('All');
+  await franchise.selectOption('Naruto');
+  await expect(cards).toHaveCount(12);
+  await series.selectOption('Boruto');
+  await expect(cards).toHaveCount(3);
+  await page.getByRole('searchbox', { name: 'Search characters' }).fill('Sarada');
+  await expect(cards).toHaveCount(1);
+  await page.getByRole('button', { name: 'Clear filters', exact: true }).click();
+  await expect(franchise).toHaveValue('All');
+  await expect(series).toHaveValue('All');
+  await expect(page.getByRole('searchbox', { name: 'Search characters' })).toHaveValue('');
+  await expect(cards).toHaveCount(PAGE_SIZE);
+  await page.getByRole('combobox', { name: 'Sort characters' }).selectOption('name');
+  const names = await cards.locator('h3').allTextContents();
+  expect(names).toEqual(
+    [...names].sort((a, b) =>
+      a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }),
+    ),
+  );
+  await page.getByRole('combobox', { name: 'Sort characters' }).selectOption('series');
+  await expect(cards).toHaveCount(PAGE_SIZE);
+  await page.getByRole('button', { name: 'Game', exact: true }).click();
+  await franchise.selectOption('Final Fantasy');
+  await expect(cards).toHaveCount(9);
+  await expect(series.locator('option')).toContainText(['All series', 'Final Fantasy VII']);
+  await franchise.selectOption('Hades');
+  await expect(cards).toHaveCount(5);
+  await series.selectOption('Hades II');
+  await expect(cards).toHaveCount(1);
+  await expect(cards.getByRole('heading', { name: 'Melinoe', exact: true })).toBeVisible();
+
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

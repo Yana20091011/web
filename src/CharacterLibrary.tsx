@@ -24,6 +24,9 @@ export default function CharacterLibrary({
 }) {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('All');
+  const [franchise, setFranchise] = useState('All');
+  const [series, setSeries] = useState('All');
+  const [sort, setSort] = useState('featured');
   const [page, setPage] = useState(1);
   const [preview, setPreview] = useState<Record<string, (typeof poses)[number]>>({});
   const [artwork, setArtwork] = useState<Record<string, LibraryCharacter>>({});
@@ -38,11 +41,41 @@ export default function CharacterLibrary({
       active.current = false;
     };
   }, []);
-  const visible = libraryEntries.filter(
-    (c) =>
-      (category === 'All' || c.category === category) &&
-      `${c.name} ${c.series}`.toLowerCase().includes(query.trim().toLowerCase()),
+  const byType = libraryEntries.filter((c) => category === 'All' || c.category === category);
+  const franchiseOptions = [...new Set(byType.map((c) => c.franchise))].sort((a, b) =>
+    a.localeCompare(b),
   );
+  const byFranchise = byType.filter((c) => franchise === 'All' || c.franchise === franchise);
+  const seriesOptions = [...new Set(byFranchise.map((c) => c.series))].sort((a, b) =>
+    a.localeCompare(b),
+  );
+  const visible = byFranchise.filter(
+    (c) =>
+      (series === 'All' || c.series === series) &&
+      `${c.name} ${c.series} ${c.franchise}`.toLowerCase().includes(query.trim().toLowerCase()),
+  );
+  if (sort === 'name')
+    visible.sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }),
+    );
+  if (sort === 'series')
+    visible.sort(
+      (a, b) =>
+        a.franchise.localeCompare(b.franchise) ||
+        a.series.localeCompare(b.series) ||
+        a.name.localeCompare(b.name),
+    );
+  const filtering = Boolean(
+    query || category !== 'All' || franchise !== 'All' || series !== 'All' || sort !== 'featured',
+  );
+  function clearFilters() {
+    setQuery('');
+    setCategory('All');
+    setFranchise('All');
+    setSeries('All');
+    setSort('featured');
+    setPage(1);
+  }
   const pages = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
   const currentPage = Math.min(page, pages);
   const displayed = compact
@@ -143,6 +176,8 @@ export default function CharacterLibrary({
                   aria-pressed={category === value}
                   onClick={() => {
                     setCategory(value);
+                    setFranchise('All');
+                    setSeries('All');
                     setPage(1);
                   }}
                 >
@@ -151,6 +186,70 @@ export default function CharacterLibrary({
               ))}
             </div>
           </div>
+          <div className="library-classification" aria-label="Classify characters">
+            <label>
+              Franchise / collection
+              <select
+                aria-label="Filter by franchise"
+                value={franchise}
+                onChange={(e) => {
+                  setFranchise(e.target.value);
+                  setSeries('All');
+                  setPage(1);
+                }}
+              >
+                <option value="All">All franchises ({byType.length})</option>
+                {franchiseOptions.map((value) => (
+                  <option key={value} value={value}>
+                    {value} ({byType.filter((c) => c.franchise === value).length})
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Series
+              <select
+                aria-label="Filter by series"
+                value={series}
+                onChange={(e) => {
+                  setSeries(e.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="All">All series ({byFranchise.length})</option>
+                {seriesOptions.map((value) => (
+                  <option key={value} value={value}>
+                    {value} ({byFranchise.filter((c) => c.series === value).length})
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Sort
+              <select
+                aria-label="Sort characters"
+                value={sort}
+                onChange={(e) => {
+                  setSort(e.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="featured">Library order</option>
+                <option value="name">Name A–Z</option>
+                <option value="series">Franchise and series A–Z</option>
+              </select>
+            </label>
+            {filtering && (
+              <button type="button" className="button preview-button" onClick={clearFilters}>
+                Clear filters
+              </button>
+            )}
+          </div>
+          <p className="classification-summary">
+            {franchise === 'All'
+              ? `${franchiseOptions.length} franchises and collections · ${seriesOptions.length} series in this category`
+              : `${seriesOptions.length} series in ${franchise}`}
+          </p>
           <p className="character-results" role="status">
             {visible.length} companions to meet · Page {currentPage} of {pages}
           </p>
@@ -186,7 +285,11 @@ export default function CharacterLibrary({
               <div className="saved-pet-info">
                 <span className="eyebrow">{entry.category}</span>
                 <h3>{entry.name}</h3>
-                <p className="character-series">{entry.series}</p>
+                <p className="character-series">
+                  {entry.franchise !== entry.series
+                    ? `${entry.franchise} · ${entry.series}`
+                    : entry.series}
+                </p>
                 {!compact && (
                   <div className="character-poses" role="group" aria-label={`${entry.name} poses`}>
                     {poses.map((value) => (

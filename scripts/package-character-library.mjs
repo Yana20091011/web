@@ -27,15 +27,18 @@ for (let batch = 0; batch < counts.length; batch++) {
 const candidates = [
   'laptop-buddy',
   'ichigo',
-  'izuku',
-  'gon',
-  'metal-sonic',
-  'venti',
-  'ori',
-  'cuphead',
+  'sailor-mercury',
+  'natsu',
+  'geralt',
+  '2b',
+  'phoenix-wright',
+  'ratchet',
 ];
-const featured = candidates.every((id) => entries.some((entry) => entry.id === id))
-  ? candidates
-  : [entries[0].id, ...entries.slice(-7).map((c) => c.id)];
+const featured = [
+  ...new Set([
+    ...candidates.filter((id) => entries.some((entry) => entry.id === id)),
+    ...entries.slice(-7).map((entry) => entry.id),
+  ]),
+].slice(0, 8);
 await writeFile(root + 'catalog.json', JSON.stringify({ featured, entries }));
 console.log(`Packaged ${entries.length} pets in ${counts.length} independently loaded batches.`);

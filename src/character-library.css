@@ -128,3 +128,89 @@
 .character-card {
   overflow: hidden;
 }
+
+/* A small, usable part of the library sits directly below the typing playground. */
+.character-library--compact {
+  margin-top: 0;
+  padding: 20px;
+}
+.character-library--compact > .section-heading {
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.character-library--compact > .section-heading > div {
+  flex: 1;
+  min-width: 180px;
+}
+.character-library--compact h2 {
+  font-size: 18px;
+  margin: 4px 0 6px;
+}
+.character-library--compact .section-heading p {
+  font-size: 12px;
+  margin: 0;
+}
+.character-library--compact .browse-library {
+  width: auto;
+  flex-shrink: 0;
+  font-size: 11px;
+}
+.character-library--compact .pet-library {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.character-library--compact .character-scene {
+  height: 125px;
+}
+.character-library--compact .character-scene img {
+  width: 120px;
+  height: 120px;
+  max-width: 100%;
+}
+.character-library--compact .saved-pet-info {
+  padding: 12px;
+}
+.character-library--compact h3 {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.character-library--compact .character-series {
+  font-size: 10px;
+  min-height: 30px;
+  line-height: 1.5;
+}
+.character-library--compact .eyebrow {
+  font-size: 9px;
+}
+.character-library--compact .saved-sparkle {
+  font-size: 16px;
+}
+.character-library--compact .saved-heart {
+  font-size: 18px;
+}
+.character-library--compact .character-card .preview-button {
+  padding: 8px;
+  font-size: 11px;
+}
+@media (max-width: 700px) {
+  .character-library--compact {
+    padding: 16px;
+  }
+  .character-library--compact .pet-library {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .character-library--compact .character-scene {
+    height: 140px;
+  }
+  .character-library--compact .character-scene img {
+    width: 135px;
+    height: 135px;
+  }
+}
+.focus-mode .character-library--compact {
+  display: none;
+}
+.character-library--compact .character-card .preview-button svg {
+  display: none;
+}

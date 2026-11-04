@@ -6,7 +6,7 @@ or Node.js is required. This portable app supports Windows 10/11, 64-bit (x64).
 3. Click **Enable keyboard reactions**. Close the designer to keep the floating pet.
 4. Drag the name bar to move it. Use the KeyCritter tray menu to reopen the designer or quit.
 
-The app includes the 50-character library, uploads, blinking frames, and key
+The app includes the 57-character library, uploads, blinking frames, and key
 reactions. Ordinary typing works offline. AI generation is optional and needs your
 own OpenAI API key. Use **Export pet** on the website, then **Import pet** in this desktop app to
 transfer your customized design, images, animation frames, and key reactions.

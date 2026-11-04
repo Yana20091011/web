@@ -87,5 +87,17 @@
       ["Sans", "Undertale", "Game"],
       ["Hollow Knight", "Hollow Knight", "Game"]
     ]
+  },
+  {
+    "file": "10-new-arrivals.png",
+    "characters": [
+      ["Frieren", "Frieren: Beyond Journey\u2019s End", "Anime"],
+      ["Fern", "Frieren: Beyond Journey\u2019s End", "Anime"],
+      ["Inuyasha", "Inuyasha", "Anime"],
+      ["Kagome", "Inuyasha", "Anime"],
+      ["Crash", "Crash Bandicoot", "Game"],
+      ["Spyro", "Spyro the Dragon", "Game"],
+      ["Rayman", "Rayman", "Game"]
+    ]
   }
 ]

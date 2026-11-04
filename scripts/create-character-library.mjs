@@ -112,7 +112,9 @@ try {
       });
     }
   }
-  if (characters.length !== 50) throw new Error(`Expected 50 characters, got ${characters.length}`);
+  const expected = 1 + manifest.reduce((total, sheet) => total + sheet.characters.length, 0);
+  if (characters.length !== expected || new Set(characters.map((c) => c.id)).size !== expected)
+    throw new Error(`Expected ${expected} unique characters, got ${characters.length}`);
   await writeFile(root + 'characters.json', JSON.stringify(characters));
   console.log(`Prepared ${characters.length} detailed laptop pets with four embedded poses each.`);
 } finally {

@@ -547,6 +547,33 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
                   ))}
                 </div>
               </section>
+              <CharacterLibrary
+                compact
+                onChoose={(pet) => {
+                  const currentText = text;
+                  loadPet(pet);
+                  setText(currentText);
+                  requestAnimationFrame(() =>
+                    document.querySelector('.pet-position')?.scrollIntoView({
+                      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches
+                        ? 'instant'
+                        : 'smooth',
+                      block: 'center',
+                    }),
+                  );
+                }}
+                onBrowseAll={() => {
+                  setTab('pets');
+                  requestAnimationFrame(() =>
+                    document.getElementById('character-library-title')?.scrollIntoView({
+                      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches
+                        ? 'instant'
+                        : 'smooth',
+                      block: 'start',
+                    }),
+                  );
+                }}
+              />
             </section>
 
             <aside className="design-column">

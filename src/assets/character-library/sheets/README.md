@@ -12,7 +12,7 @@ Run `node scripts/create-character-library.mjs` from the repository root to rebu
 `../characters.json` using the checked-in sheets and the original laptop buddy.
 Chromium is required. No image service or API key is needed to rebuild the assets.
 
-The roster includes 25 anime characters and 24 game characters, plus laptop buddy.
+The roster includes 29 anime characters and 27 game characters, plus laptop buddy.
 Some original game choices could not be generated; Amy Rose, Silver, Blaze, Rouge,
 Mega Man, Cloud, Aerith, Sora, Ralsei, and Toriel fill those slots. Knuckles replaces
 Villager to include another character from the user's style reference.

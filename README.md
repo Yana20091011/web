@@ -4,7 +4,7 @@ A floating typing pet for Windows, with a cozy React designer. Customize a pixel
 
 ## Use the Windows desktop pet
 
-1. Open `KeyCritter-Windows-1.4.0.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
+1. Open `KeyCritter-Windows-1.4.1.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
 2. Design your pet, then click **Enable keyboard reactions**. Ordinary typing makes it bounce; Space, Enter, and Backspace have special reactions by default. Add more in the reaction editor.
 3. Drag the little name label beneath your desktop pet to move it. The pet stays above other windows without taking keyboard focus.
 4. Close the designer to keep just the pet. Reopen it from the pet's **Designer** button or the KeyCritter system-tray menu, which may be under Windows' hidden-icons arrow.
@@ -102,13 +102,13 @@ Windows-specific transparency, tray behavior, and native key handling should als
 
 Windows verification checks 0% movement with blinking still active, scaled reaction movement at 25%, and persistence of that setting. It also moves the OS cursor during a captured drag, checks rightward and vertical movement against actual Win32 window positions, verifies no drift from stale renderer events, and checks that edge placement is saved. Drag movement is sampled in the main process, independently of coordinates reported by the moving renderer window.
 
-The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions, Upload/AI panels, and uploaded frames playing on the floating pet, and saves screenshots before uploading the download. It also opens Microsoft Edge, switches tabs, and uses Win32 window order/styles to check that the pet stays above the browser without taking focus, recovers from an intentional native topmost reset, and respects unpinning. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.4.0** artifact. Extract that ZIP and follow `START-HERE.txt`. The three `verified-*-ui.png` screenshots and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
+The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions, Upload/AI panels, and uploaded frames playing on the floating pet, and saves screenshots before uploading the download. It also opens Microsoft Edge, switches tabs, and uses Win32 window order/styles to check that the pet stays above the browser without taking focus, recovers from an intentional native topmost reset, and respects unpinning. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.4.1** artifact. Extract that ZIP and follow `START-HERE.txt`. The three `verified-*-ui.png` screenshots and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
 
 ```sh
 npm run desktop:win
 ```
 
-The result is `release/KeyCritter-Windows-1.4.0.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges. Run `npm run test:portable` on Windows to verify this exact executable, or `npm run test:second-instance` with Linux X11/xdotool to exercise the duplicate-launch message and saved-data protection.
+The result is `release/KeyCritter-Windows-1.4.1.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges. Run `npm run test:portable` on Windows to verify this exact executable, or `npm run test:second-instance` with Linux X11/xdotool to exercise the duplicate-launch message and saved-data protection.
 
 ## Open without installing anything
 
@@ -138,8 +138,12 @@ Desktop renderers load bundled files through an origin-restricted local protocol
 
 ## Built-in character library
 
-Open **My Pets → Character library** to browse 50 companions: the original laptop
-buddy, 25 anime characters, and 24 game characters. Search by name or series,
+A compact preview sits directly below the typing playground, featuring laptop buddy
+and seven new arrivals: Frieren, Fern, Inuyasha, Kagome, Crash, Spyro, and Rayman.
+Choose a pet without losing your typed text, or click **Browse all 57 pets**.
+
+Open **My Pets → Character library** to browse 57 companions: the original laptop
+buddy, 29 anime characters, and 27 game characters. Search by name or series,
 filter by category, and preview **Idle**, **Blinking**, **Typing**, and **Happy**.
 **Choose** loads a copy into the existing playground; **Save pet** adds it to your
 personal collection without changing the built-in library or your other saved pets.
@@ -155,7 +159,7 @@ The checked-in, self-contained WebP data keeps the library available without ima
 hosts or API keys and supports the standalone export. To rebuild the embedded sprites from the source sheets, run
 `node scripts/create-character-library.mjs` with Chromium installed (or set
 `CHROMIUM_PATH`). `npm test` includes desktop/mobile library coverage and decodes
-all 200 pose images. Character names belong to their respective creators.
+all 228 pose images. Character names belong to their respective creators.
 
 The existing `.github/workflows/website.yml` builds and deploys the website to
 GitHub Pages on pushes to `main`.

@@ -7,11 +7,11 @@ import { classifiedSeries, franchiseFor } from '../src/libraryTaxonomy';
 const TOTAL = characters.length;
 const PAGE_SIZE = 24;
 
-test('at least 300 unique characters have valid, decodable artwork and persistable designs', async ({
+test('500 unique characters have valid, decodable artwork and persistable designs', async ({
   page,
 }) => {
   test.setTimeout(60000);
-  expect(TOTAL).toBeGreaterThanOrEqual(300);
+  expect(TOTAL).toBe(500);
   expect(catalog.entries).toHaveLength(TOTAL);
   for (const entry of catalog.entries) {
     const series = classifiedSeries(entry.id, entry.series);
@@ -19,9 +19,10 @@ test('at least 300 unique characters have valid, decodable artwork and persistab
     expect(franchiseFor(series).trim().length).toBeGreaterThan(0);
   }
   expect(new Set(characters.map((c) => c.id)).size).toBe(TOTAL);
+  expect(new Set(characters.map((c) => c.poses.idle)).size).toBe(TOTAL);
   expect(characters[0].id).toBe('laptop-buddy');
-  expect(characters.filter((c) => c.category === 'Anime').length).toBeGreaterThanOrEqual(100);
-  expect(characters.filter((c) => c.category === 'Game').length).toBeGreaterThanOrEqual(90);
+  expect(characters.filter((c) => c.category === 'Anime').length).toBe(250);
+  expect(characters.filter((c) => c.category === 'Game').length).toBe(249);
   for (const character of characters) {
     expect(validDesign(characterDesign(character))).toBe(true);
     if (character.id !== 'laptop-buddy')
@@ -47,6 +48,41 @@ test('at least 300 unique characters have valid, decodable artwork and persistab
   }, characters);
   expect(decoded).toHaveLength(TOTAL * 4);
   expect(decoded.every(Boolean)).toBe(true);
+});
+
+test('finds new anime and game collections and saves a pet from the final artwork batch', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: /My Pets/ }).click();
+  const franchise = page.getByRole('combobox', { name: 'Filter by franchise' });
+  const series = page.getByRole('combobox', { name: 'Filter by series' });
+  const cards = page.locator('.character-card');
+  await page.getByRole('button', { name: 'Anime', exact: true }).click();
+  await franchise.selectOption('Haikyu!!');
+  await expect(cards).toHaveCount(7);
+  await expect(cards.getByRole('heading', { name: 'Shoyo Hinata', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Game', exact: true }).click();
+  await franchise.selectOption('Pokémon');
+  await expect(cards).toHaveCount(17);
+  await expect(cards.getByRole('heading', { name: 'Pikachu', exact: true })).toBeVisible();
+  await franchise.selectOption('Xenoblade Chronicles');
+  await expect(cards).toHaveCount(7);
+  await series.selectOption('Xenoblade Chronicles 2');
+  await expect(cards).toHaveCount(4);
+  await expect(cards.getByRole('heading', { name: 'Pyra', exact: true })).toBeVisible();
+  await franchise.selectOption('Spiritfarer');
+  await expect(cards).toHaveCount(1);
+  const pet = characters.find((c) => c.series === 'Spiritfarer')!;
+  await cards.getByRole('button', { name: `Choose ${pet.name}`, exact: true }).click();
+  await expect(page.getByRole('heading', { name: `Meet ${pet.name}` })).toBeVisible();
+  await expect(page.getByTestId('active-pet').locator('img')).toHaveAttribute(
+    'data-animated',
+    'true',
+  );
+  await page.getByRole('button', { name: 'Save pet', exact: true }).click();
+  await page.reload();
+  await expect(page.getByRole('heading', { name: `Meet ${pet.name}` })).toBeVisible();
 });
 
 test('browse, filter, and preview the library without changing saved pets', async ({ page }) => {

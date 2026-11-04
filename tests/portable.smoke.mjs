@@ -106,6 +106,16 @@ try {
   await expect
     .poll(() => page.evaluate(async () => (await window.keycritter.getState()).pet.design.name))
     .toBe('Boruto');
+  await libraryPreview
+    .getByRole('button', { name: `Browse all ${characters.length} pets`, exact: true })
+    .click();
+  await page.getByRole('combobox', { name: 'Filter by franchise' }).selectOption('Spiritfarer');
+  await expect(page.locator('.character-card')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Choose Stella', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Meet Stella' })).toBeVisible();
+  await expect
+    .poll(() => page.evaluate(async () => (await window.keycritter.getState()).pet.design.name))
+    .toBe('Stella');
   await libraryPreview.getByRole('button', { name: 'Choose Ichigo', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Meet Ichigo' })).toBeVisible();
   await expect

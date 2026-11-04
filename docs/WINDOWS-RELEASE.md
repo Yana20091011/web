@@ -6,7 +6,7 @@ or Node.js is required. This portable app supports Windows 10/11, 64-bit (x64).
 3. Click **Enable keyboard reactions**. Close the designer to keep the floating pet.
 4. Drag the name bar to move it. Use the KeyCritter tray menu to reopen the designer or quit.
 
-The app includes the 309-character library, uploads, blinking frames, and key
+The app includes the 500-character library, uploads, blinking frames, and key
 reactions. Ordinary typing works offline. AI generation is optional and needs your
 own OpenAI API key. Use **Export pet** on the website, then **Import pet** in this desktop app to
 transfer your customized design, images, animation frames, and key reactions.
@@ -19,11 +19,11 @@ The optional **KeyCritter-Windows.zip** also includes instructions, screenshots,
 and verification results from testing this exact executable on Windows.
 **SHA256SUMS.txt** contains checksums for both public downloads.
 
-The library now includes 309 companions across anime and game series. Browse 24
+The library now includes 500 companions across anime and game series. Browse 24
 cards per page, search all characters by name or series, or choose a featured pet
 from the preview beneath the typing box. Pose artwork is loaded in small local
 batches; the Windows app works offline.
 
-The classified library includes 162 anime characters, 146 game characters, and
+The classified library includes 250 anime characters, 249 game characters, and
 laptop buddy. Filter by type, franchise/collection, and series; sort by name or
 series and clear all filters at any time. All artwork remains available offline.

@@ -4,7 +4,7 @@ A floating typing pet for Windows, with a cozy React designer. Customize a pixel
 
 ## Use the Windows desktop pet
 
-1. Open `KeyCritter-Windows-1.6.0.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
+1. Open `KeyCritter-Windows-1.7.0.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
 2. Design your pet, then click **Enable keyboard reactions**. Ordinary typing makes it bounce; Space, Enter, and Backspace have special reactions by default. Add more in the reaction editor.
 3. Drag the little name label beneath your desktop pet to move it. The pet stays above other windows without taking keyboard focus.
 4. Close the designer to keep just the pet. Reopen it from the pet's **Designer** button or the KeyCritter system-tray menu, which may be under Windows' hidden-icons arrow.
@@ -102,13 +102,13 @@ Windows-specific transparency, tray behavior, and native key handling should als
 
 Windows verification checks 0% movement with blinking still active, scaled reaction movement at 25%, and persistence of that setting. It also moves the OS cursor during a captured drag, checks rightward and vertical movement against actual Win32 window positions, verifies no drift from stale renderer events, and checks that edge placement is saved. Drag movement is sampled in the main process, independently of coordinates reported by the moving renderer window.
 
-The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions, Upload/AI panels, and uploaded frames playing on the floating pet, and saves screenshots before uploading the download. It also opens Microsoft Edge, switches tabs, and uses Win32 window order/styles to check that the pet stays above the browser without taking focus, recovers from an intentional native topmost reset, and respects unpinning. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.6.0** artifact. Extract that ZIP and follow `START-HERE.txt`. The three `verified-*-ui.png` screenshots and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
+The GitHub Actions workflow in `.github/workflows/windows-desktop.yml` builds on `windows-latest` when code is pushed to `main`, or when started manually. It opens the actual portable executable on the Windows runner, verifies matching native and interface versions, Upload/AI panels, and uploaded frames playing on the floating pet, and saves screenshots before uploading the download. It also opens Microsoft Edge, switches tabs, and uses Win32 window order/styles to check that the pet stays above the browser without taking focus, recovers from an intentional native topmost reset, and respects unpinning. After a successful run, sign in to GitHub, open the repository's **Actions** tab, select **Build Windows desktop pet**, open the latest completed run, and download the versioned **KeyCritter-Windows-v1.7.0** artifact. Extract that ZIP and follow `START-HERE.txt`. The three `verified-*-ui.png` screenshots and `package-verification.json` show what was tested. Artifacts are retained for 14 days.
 
 ```sh
 npm run desktop:win
 ```
 
-The result is `release/KeyCritter-Windows-1.6.0.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges. Run `npm run test:portable` on Windows to verify this exact executable, or `npm run test:second-instance` with Linux X11/xdotool to exercise the duplicate-launch message and saved-data protection.
+The result is `release/KeyCritter-Windows-1.7.0.exe`. Packaging downloads official Electron and NSIS resources; it does not publish anything. The native keyboard package includes Windows x64 N-API prebuilds, which remain unpacked outside the app archive. The portable launcher requests ordinary user privileges. Run `npm run test:portable` on Windows to verify this exact executable, or `npm run test:second-instance` with Linux X11/xdotool to exercise the duplicate-launch message and saved-data protection.
 
 ## Open without installing anything
 
@@ -139,13 +139,13 @@ Desktop renderers load bundled files through an origin-restricted local protocol
 ## Built-in character library
 
 A compact preview sits directly below the typing playground. Choose a featured
-anime or game pet without losing your typed text, or click **Browse all 309 pets**.
+anime or game pet without losing your typed text, or click **Browse all 500 pets**.
 The full gallery shows 24 cards per page; search and category filters cover the
 entire collection. Portraits load separately, and full artwork batches load only
 when you preview a pose or choose a pet.
 
-Open **My Pets → Character library** to browse 309 companions: the original laptop
-buddy, 162 anime characters, and 146 game characters. Search by name or series,
+Open **My Pets → Character library** to browse 500 companions: the original laptop
+buddy, 250 anime characters, and 249 game characters. Search by name or series,
 filter by Anime/Game/Original, then narrow by **Franchise / collection** and
 **Series**. Franchise groups collect related titles, such as Naruto/Boruto, the
 Studio Ghibli films, Final Fantasy, NieR, Persona, and Hades. Counts show the size
@@ -159,14 +159,14 @@ use their happy pose for Enter or affection. Existing custom key reactions take
 priority. Reduced-motion preferences keep idle frames still.
 
 The first entry reuses `src/assets/laptop-buddy` artwork. The other entries use detailed generated chibi pixel-art sheets: each character sits
-at a laptop, blinks, types, and waves happily. The source sheets and roster are in
+at a laptop, blinks, types, and celebrates with a happy pose. The source sheets and roster are in
 `src/assets/character-library/sheets`. `scripts/create-character-library.mjs`
 extracts aligned, transparent sprites from those sheets.
 The checked-in, self-contained WebP data keeps the library available without image
 hosts or API keys and supports the standalone export. To rebuild the embedded sprites from the source sheets, run
 `node scripts/create-character-library.mjs` with Chromium installed (or set
 `CHROMIUM_PATH`). `npm test` includes desktop/mobile library coverage and decodes
-all 1236 pose images. Character names belong to their respective creators.
+all 2000 pose images. Character names belong to their respective creators.
 
 The existing `.github/workflows/website.yml` builds and deploys the website to
 GitHub Pages on pushes to `main`.

@@ -23,6 +23,10 @@ const SERIES_OVERRIDES: Record<string, string> = {
   ponyo: 'Ponyo',
   san: 'Princess Mononoke',
   totoro: 'My Neighbor Totoro',
+  rex: 'Xenoblade Chronicles 2',
+  pyra: 'Xenoblade Chronicles 2',
+  mythra: 'Xenoblade Chronicles 2',
+  nia: 'Xenoblade Chronicles 2',
 };
 export function classifiedSeries(id: string, series: string): string {
   return SERIES_OVERRIDES[id] || series;
@@ -37,6 +41,8 @@ export function franchiseFor(series: string): string {
   if (series.startsWith('NieR')) return 'NieR';
   if (series.startsWith('Honkai')) return 'Honkai';
   if (series.startsWith('Ace Attorney')) return 'Ace Attorney';
+  if (series.startsWith('Fire Emblem')) return 'Fire Emblem';
+  if (series.startsWith('Xenoblade Chronicles')) return 'Xenoblade Chronicles';
   if (series === 'KeyCritter original') return 'KeyCritter';
   return series;
 }

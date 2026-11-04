@@ -27,12 +27,12 @@ for (let batch = 0; batch < counts.length; batch++) {
 const candidates = [
   'laptop-buddy',
   'ichigo',
-  'sailor-mercury',
-  'natsu',
-  'geralt',
-  '2b',
-  'phoenix-wright',
-  'ratchet',
+  'shoyo-hinata',
+  'madoka-kaname',
+  'gingerbrave',
+  'kirby',
+  'pikachu',
+  'stella',
 ];
 const featured = [
   ...new Set([

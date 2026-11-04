@@ -4,7 +4,7 @@ These generated fan-art sheets follow the user's detailed chibi pixel-art laptop
 reference. The original `../../laptop-buddy` assets remain the first pet unchanged.
 
 `manifest.json` records each sheet's row order, character names, series, and
-categories. Each row has four columns: idle, blinking, typing, and happy/waving.
+categories. Each row has four columns: idle, blinking, typing, and happy.
 All sheets have transparent backgrounds; the generator retains one transform per
 row to keep pose changes aligned.
 
@@ -12,13 +12,13 @@ Run `node scripts/create-character-library.mjs` from the repository root to rebu
 `../characters.json` using the checked-in sheets and the original laptop buddy.
 Chromium is required. No image service or API key is needed to rebuild the assets.
 
-The roster includes 162 anime characters and 146 game characters, plus laptop buddy.
-Some original game choices could not be generated; Amy Rose, Silver, Blaze, Rouge,
-Mega Man, Cloud, Aerith, Sora, Ralsei, and Toriel fill those slots. Knuckles replaces
-Villager to include another character from the user's style reference.
+The roster includes 250 anime characters and 249 game characters, plus laptop buddy.
+The expansion to 500 adds 88 anime and 103 game companions. Every added character
+has separate idle, blinking, typing, and happy artwork; happy gestures include
+stretches, heart hands, head tilts, and fist pumps.
 Character names belong to their respective creators.
 
-The expanded roster contains 309 distinct companions. `characters.json` is the
+The expanded roster contains 500 distinct companions. `characters.json` is the
 complete source dataset used for validation. The packaging step also generates
 `catalog.json`, separate WebP portraits, and small JSON pose batches. The website
 uses the catalog and loads pose batches on demand; the offline HTML exporter

@@ -9,10 +9,10 @@ export function validAnimations(value: unknown): value is PetAnimations {
   let length = 0;
   const entries = Object.entries(value);
   return (
-    entries.length <= 6 &&
+    entries.length <= 8 &&
     entries.every(([pose, clip]) => {
       if (
-        !['idle', 'jump', 'cheer', 'surprise', 'dance', 'sleep'].includes(pose) ||
+        !['idle', 'jump', 'cheer', 'surprise', 'dance', 'sleep', 'tired', 'drink'].includes(pose) ||
         !clip ||
         typeof clip !== 'object' ||
         typeof clip.enabled !== 'boolean' ||

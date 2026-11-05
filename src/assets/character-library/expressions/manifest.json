@@ -1,0 +1,956 @@
+{
+  "columns": [
+    "wave",
+    "peace",
+    "shy",
+    "sleep",
+    "tired",
+    "drink"
+  ],
+  "sheets": [
+    {
+      "key": "poses-00",
+      "file": "poses-00.png",
+      "ids": [
+        "laptop-buddy"
+      ]
+    },
+    {
+      "key": "poses-01",
+      "file": "poses-01.png",
+      "ids": [
+        "naruto",
+        "sasuke",
+        "sakura",
+        "kakashi",
+        "hinata",
+        "luffy",
+        "zoro"
+      ]
+    },
+    {
+      "key": "poses-02",
+      "file": "poses-02.png",
+      "ids": [
+        "nami",
+        "chopper",
+        "goku",
+        "vegeta",
+        "sailor-moon",
+        "luna",
+        "totoro"
+      ]
+    },
+    {
+      "key": "poses-03",
+      "file": "poses-03.png",
+      "ids": [
+        "kiki",
+        "howl",
+        "chihiro",
+        "tanjiro",
+        "nezuko",
+        "zenitsu",
+        "gojo"
+      ]
+    },
+    {
+      "key": "poses-04",
+      "file": "poses-04.png",
+      "ids": [
+        "yuji",
+        "anya",
+        "levi",
+        "edward"
+      ]
+    },
+    {
+      "key": "poses-05",
+      "file": "poses-05.png",
+      "ids": [
+        "amy-rose",
+        "silver",
+        "blaze",
+        "rouge",
+        "mega-man",
+        "cloud",
+        "aerith"
+      ]
+    },
+    {
+      "key": "poses-06",
+      "file": "poses-06.png",
+      "ids": [
+        "sora",
+        "ralsei",
+        "toriel"
+      ]
+    },
+    {
+      "key": "poses-07",
+      "file": "poses-07.png",
+      "ids": [
+        "bulbasaur",
+        "squirtle",
+        "charmander",
+        "sonic",
+        "tails",
+        "shadow",
+        "isabelle"
+      ]
+    },
+    {
+      "key": "poses-08",
+      "file": "poses-08.png",
+      "ids": [
+        "tom-nook",
+        "knuckles",
+        "steve",
+        "alex",
+        "creeper",
+        "sans",
+        "hollow-knight"
+      ]
+    },
+    {
+      "key": "poses-09",
+      "file": "poses-09.png",
+      "ids": [
+        "frieren",
+        "fern",
+        "inuyasha",
+        "kagome",
+        "crash",
+        "spyro",
+        "rayman"
+      ]
+    },
+    {
+      "key": "poses-10",
+      "file": "poses-10.png",
+      "ids": [
+        "ichigo",
+        "rukia",
+        "renji",
+        "orihime",
+        "toshiro",
+        "byakuya",
+        "yoruichi"
+      ]
+    },
+    {
+      "key": "poses-11",
+      "file": "poses-11.png",
+      "ids": [
+        "boruto",
+        "sarada",
+        "mitsuki",
+        "itachi",
+        "gaara",
+        "rock-lee",
+        "tsunade"
+      ]
+    },
+    {
+      "key": "poses-12",
+      "file": "poses-12.png",
+      "ids": [
+        "sanji",
+        "robin",
+        "ace",
+        "sabo",
+        "law",
+        "usopp",
+        "brook"
+      ]
+    },
+    {
+      "key": "poses-13",
+      "file": "poses-13.png",
+      "ids": [
+        "inosuke",
+        "shinobu",
+        "mitsuri",
+        "giyu",
+        "rengoku",
+        "muichiro",
+        "kanao"
+      ]
+    },
+    {
+      "key": "poses-14",
+      "file": "poses-14.png",
+      "ids": [
+        "izuku",
+        "bakugo",
+        "ochaco",
+        "shoto",
+        "tsuyu",
+        "all-might",
+        "hawks"
+      ]
+    },
+    {
+      "key": "poses-15",
+      "file": "poses-15.png",
+      "ids": [
+        "loid",
+        "yor",
+        "bond",
+        "komi",
+        "tadano",
+        "marin",
+        "wakana"
+      ]
+    },
+    {
+      "key": "poses-16",
+      "file": "poses-16.png",
+      "ids": [
+        "gon",
+        "killua",
+        "kurapika",
+        "leorio",
+        "alphonse",
+        "winry",
+        "roy"
+      ]
+    },
+    {
+      "key": "poses-17",
+      "file": "poses-17.png",
+      "ids": [
+        "megumi",
+        "nobara",
+        "nanami",
+        "inumaki",
+        "panda",
+        "armin",
+        "mikasa"
+      ]
+    },
+    {
+      "key": "poses-18",
+      "file": "poses-18.png",
+      "ids": [
+        "gohan",
+        "piccolo",
+        "trunks",
+        "bulma",
+        "krillin",
+        "android-18",
+        "videl"
+      ]
+    },
+    {
+      "key": "poses-19",
+      "file": "poses-19.png",
+      "ids": [
+        "sophie",
+        "haku",
+        "no-face",
+        "jiji",
+        "ponyo",
+        "calcifer",
+        "san"
+      ]
+    },
+    {
+      "key": "poses-20",
+      "file": "poses-20.png",
+      "ids": [
+        "ash",
+        "misty",
+        "brock",
+        "mob",
+        "rimuru",
+        "ciel",
+        "sebastian"
+      ]
+    },
+    {
+      "key": "poses-21",
+      "file": "poses-21.png",
+      "ids": [
+        "metal-sonic",
+        "espio",
+        "vector",
+        "charmy",
+        "cream",
+        "big",
+        "jet"
+      ]
+    },
+    {
+      "key": "poses-22",
+      "file": "poses-22.png",
+      "ids": [
+        "tifa",
+        "barret",
+        "red-xiii",
+        "yuffie",
+        "vincent",
+        "zack",
+        "sephiroth"
+      ]
+    },
+    {
+      "key": "poses-23",
+      "file": "poses-23.png",
+      "ids": [
+        "roxas",
+        "axel",
+        "xion",
+        "riku",
+        "kairi",
+        "ventus",
+        "aqua"
+      ]
+    },
+    {
+      "key": "poses-24",
+      "file": "poses-24.png",
+      "ids": [
+        "papyrus",
+        "frisk",
+        "chara",
+        "undyne",
+        "alphys",
+        "susie",
+        "lancer"
+      ]
+    },
+    {
+      "key": "poses-25",
+      "file": "poses-25.png",
+      "ids": [
+        "abigail",
+        "sebastian-(stardew)",
+        "sam",
+        "leah",
+        "shane",
+        "emily",
+        "penny"
+      ]
+    },
+    {
+      "key": "poses-26",
+      "file": "poses-26.png",
+      "ids": [
+        "venti",
+        "zhongli",
+        "raiden-shogun",
+        "hu-tao",
+        "klee",
+        "nahida",
+        "paimon"
+      ]
+    },
+    {
+      "key": "poses-27",
+      "file": "poses-27.png",
+      "ids": [
+        "march-7th",
+        "dan-heng",
+        "stelle",
+        "caelus",
+        "jing-yuan",
+        "kafka",
+        "silver-wolf"
+      ]
+    },
+    {
+      "key": "poses-28",
+      "file": "poses-28.png",
+      "ids": [
+        "pac-man",
+        "ms.-pac-man",
+        "bomberman",
+        "shovel-knight",
+        "quote",
+        "curly-brace",
+        "mugman"
+      ]
+    },
+    {
+      "key": "poses-29",
+      "file": "poses-29.png",
+      "ids": [
+        "nights",
+        "amigo",
+        "aiai",
+        "ulala",
+        "beat",
+        "klonoa",
+        "ristar"
+      ]
+    },
+    {
+      "key": "poses-30",
+      "file": "poses-30.png",
+      "ids": [
+        "ori",
+        "ku",
+        "hat-kid",
+        "madeline",
+        "niko",
+        "lamb",
+        "cuphead"
+      ]
+    },
+    {
+      "key": "poses-31",
+      "file": "poses-31.png",
+      "ids": [
+        "sailor-mercury",
+        "sailor-mars",
+        "sailor-jupiter",
+        "sailor-venus",
+        "sailor-chibi-moon",
+        "sailor-uranus",
+        "sailor-neptune"
+      ]
+    },
+    {
+      "key": "poses-32",
+      "file": "poses-32.png",
+      "ids": [
+        "natsu",
+        "lucy",
+        "erza",
+        "gray",
+        "wendy",
+        "juvia",
+        "happy"
+      ]
+    },
+    {
+      "key": "poses-33",
+      "file": "poses-33.png",
+      "ids": [
+        "subaru",
+        "emilia",
+        "rem",
+        "ram",
+        "beatrice",
+        "otto",
+        "roswaal"
+      ]
+    },
+    {
+      "key": "poses-34",
+      "file": "poses-34.png",
+      "ids": [
+        "jotaro",
+        "joseph",
+        "josuke",
+        "giorno",
+        "jolyne",
+        "dio",
+        "bruno"
+      ]
+    },
+    {
+      "key": "poses-35",
+      "file": "poses-35.png",
+      "ids": [
+        "conan",
+        "ran",
+        "shinichi",
+        "haibara",
+        "kaito-kid",
+        "heiji",
+        "amuro"
+      ]
+    },
+    {
+      "key": "poses-36",
+      "file": "poses-36.png",
+      "ids": [
+        "shinji",
+        "rei",
+        "asuka",
+        "kaworu",
+        "misato",
+        "mari",
+        "gendo"
+      ]
+    },
+    {
+      "key": "poses-37",
+      "file": "poses-37.png",
+      "ids": [
+        "violet",
+        "maomao",
+        "jinshi",
+        "bocchi",
+        "ryo",
+        "nijika",
+        "ikuyo"
+      ]
+    },
+    {
+      "key": "poses-38",
+      "file": "poses-38.png",
+      "ids": [
+        "momo",
+        "okarun",
+        "turbo-granny",
+        "denji",
+        "power",
+        "aki",
+        "pochita"
+      ]
+    },
+    {
+      "key": "poses-39",
+      "file": "poses-39.png",
+      "ids": [
+        "geralt",
+        "yennefer",
+        "ciri",
+        "triss",
+        "solaire",
+        "siegmeyer",
+        "artorias"
+      ]
+    },
+    {
+      "key": "poses-40",
+      "file": "poses-40.png",
+      "ids": [
+        "2b",
+        "9s",
+        "a2",
+        "joker",
+        "morgana",
+        "futaba",
+        "ann"
+      ]
+    },
+    {
+      "key": "poses-41",
+      "file": "poses-41.png",
+      "ids": [
+        "phoenix-wright",
+        "miles-edgeworth",
+        "maya-fey",
+        "chun-li",
+        "ryu",
+        "ken",
+        "dante"
+      ]
+    },
+    {
+      "key": "poses-42",
+      "file": "poses-42.png",
+      "ids": [
+        "furina",
+        "neuvillette",
+        "diluc",
+        "kaeya",
+        "keqing",
+        "ganyu",
+        "xiao"
+      ]
+    },
+    {
+      "key": "poses-43",
+      "file": "poses-43.png",
+      "ids": [
+        "villager",
+        "enderman",
+        "warden",
+        "minecraft-wolf",
+        "minecraft-cat",
+        "terraria-guide",
+        "terraria-merchant"
+      ]
+    },
+    {
+      "key": "poses-44",
+      "file": "poses-44.png",
+      "ids": [
+        "ratchet",
+        "clank",
+        "jak",
+        "daxter",
+        "sly-cooper",
+        "sackboy",
+        "astro-bot"
+      ]
+    },
+    {
+      "key": "poses-45",
+      "file": "poses-45.png",
+      "ids": [
+        "zagreus",
+        "hades",
+        "nyx",
+        "melinoe",
+        "red",
+        "the-kid",
+        "dusa"
+      ]
+    },
+    {
+      "key": "poses-46",
+      "file": "poses-46.png",
+      "ids": [
+        "shoyo-hinata",
+        "tobio-kageyama",
+        "kei-tsukishima",
+        "tadashi-yamaguchi",
+        "yu-nishinoya",
+        "toru-oikawa",
+        "kenma-kozume"
+      ]
+    },
+    {
+      "key": "poses-47",
+      "file": "poses-47.png",
+      "ids": [
+        "tetsuya-kuroko",
+        "taiga-kagami",
+        "ryota-kise",
+        "shintaro-midorima",
+        "daiki-aomine",
+        "atsushi-murasakibara",
+        "seijuro-akashi"
+      ]
+    },
+    {
+      "key": "poses-48",
+      "file": "poses-48.png",
+      "ids": [
+        "yoichi-isagi",
+        "meguru-bachira",
+        "hyoma-chigiri",
+        "rensuke-kunigami",
+        "seishiro-nagi",
+        "reo-mikage",
+        "rin-itoshi"
+      ]
+    },
+    {
+      "key": "poses-49",
+      "file": "poses-49.png",
+      "ids": [
+        "tohru-honda",
+        "yuki-sohma",
+        "kyo-sohma",
+        "shigure-sohma",
+        "momiji-sohma",
+        "hatsuharu-sohma",
+        "kisa-sohma"
+      ]
+    },
+    {
+      "key": "poses-50",
+      "file": "poses-50.png",
+      "ids": [
+        "haruhi-fujioka",
+        "tamaki-suoh",
+        "kyoya-ootori",
+        "hikaru-hitachiin",
+        "kaoru-hitachiin",
+        "mitsukuni-haninozuka",
+        "takashi-morinozuka"
+      ]
+    },
+    {
+      "key": "poses-51",
+      "file": "poses-51.png",
+      "ids": [
+        "madoka-kaname",
+        "homura-akemi",
+        "sayaka-miki",
+        "kyoko-sakura",
+        "mami-tomoe",
+        "nagisa-momoe",
+        "kyubey"
+      ]
+    },
+    {
+      "key": "poses-52",
+      "file": "poses-52.png",
+      "ids": [
+        "sakura-kinomoto",
+        "syaoran-li",
+        "tomoyo-daidouji",
+        "kero",
+        "yue",
+        "toya-kinomoto",
+        "yukito-tsukishiro"
+      ]
+    },
+    {
+      "key": "poses-53",
+      "file": "poses-53.png",
+      "ids": [
+        "kirito",
+        "asuna",
+        "sinon",
+        "leafa",
+        "yui",
+        "silica",
+        "lisbeth"
+      ]
+    },
+    {
+      "key": "poses-54",
+      "file": "poses-54.png",
+      "ids": [
+        "kazuma",
+        "aqua-(konosuba)",
+        "megumin",
+        "darkness",
+        "wiz",
+        "yunyun",
+        "chomusuke"
+      ]
+    },
+    {
+      "key": "poses-55",
+      "file": "poses-55.png",
+      "ids": [
+        "rintaro-okabe",
+        "kurisu-makise",
+        "mayuri-shiina",
+        "itaru-hashida",
+        "suzuha-amane",
+        "faris-nyannyan",
+        "luka-urushibara"
+      ]
+    },
+    {
+      "key": "poses-56",
+      "file": "poses-56.png",
+      "ids": [
+        "spike-spiegel",
+        "faye-valentine",
+        "jet-black",
+        "edward-wong",
+        "ein",
+        "julia-(bebop)",
+        "vicious"
+      ]
+    },
+    {
+      "key": "poses-57",
+      "file": "poses-57.png",
+      "ids": [
+        "gintoki-sakata",
+        "shinpachi-shimura",
+        "kagura",
+        "sadaharu",
+        "toshiro-hijikata",
+        "sogo-okita",
+        "kotaro-katsura"
+      ]
+    },
+    {
+      "key": "poses-58",
+      "file": "poses-58.png",
+      "ids": [
+        "laios",
+        "marcille",
+        "chilchuck",
+        "senshi"
+      ]
+    },
+    {
+      "key": "poses-59",
+      "file": "poses-59.png",
+      "ids": [
+        "gingerbrave",
+        "strawberry-cookie",
+        "wizard-cookie",
+        "pure-vanilla-cookie",
+        "hollyberry-cookie",
+        "dark-cacao-cookie",
+        "golden-cheese-cookie"
+      ]
+    },
+    {
+      "key": "poses-60",
+      "file": "poses-60.png",
+      "ids": [
+        "link",
+        "princess-zelda",
+        "ganondorf",
+        "midna",
+        "sidon",
+        "mipha",
+        "tulin"
+      ]
+    },
+    {
+      "key": "poses-61",
+      "file": "poses-61.png",
+      "ids": [
+        "kirby",
+        "meta-knight",
+        "king-dedede",
+        "bandana-waddle-dee",
+        "elfilin",
+        "magolor",
+        "marx"
+      ]
+    },
+    {
+      "key": "poses-62",
+      "file": "poses-62.png",
+      "ids": [
+        "pikachu",
+        "eevee",
+        "jigglypuff",
+        "snorlax",
+        "gengar",
+        "mew",
+        "psyduck"
+      ]
+    },
+    {
+      "key": "poses-63",
+      "file": "poses-63.png",
+      "ids": [
+        "vulpix",
+        "growlithe",
+        "togepi",
+        "piplup",
+        "rowlet",
+        "mimikyu",
+        "sylveon"
+      ]
+    },
+    {
+      "key": "poses-64",
+      "file": "poses-64.png",
+      "ids": [
+        "byleth",
+        "edelgard",
+        "dimitri",
+        "claude",
+        "bernadetta",
+        "marianne",
+        "sothis"
+      ]
+    },
+    {
+      "key": "poses-65",
+      "file": "poses-65.png",
+      "ids": [
+        "callie",
+        "marie",
+        "pearl",
+        "marina",
+        "shiver",
+        "frye",
+        "big-man"
+      ]
+    },
+    {
+      "key": "poses-66",
+      "file": "poses-66.png",
+      "ids": [
+        "shulk",
+        "fiora",
+        "melia",
+        "rex",
+        "pyra",
+        "mythra",
+        "nia"
+      ]
+    },
+    {
+      "key": "poses-67",
+      "file": "poses-67.png",
+      "ids": [
+        "leon-kennedy",
+        "claire-redfield",
+        "jill-valentine",
+        "chris-redfield",
+        "ada-wong",
+        "rebecca-chambers",
+        "ashley-graham"
+      ]
+    },
+    {
+      "key": "poses-68",
+      "file": "poses-68.png",
+      "ids": [
+        "d.va",
+        "mei",
+        "mercy",
+        "kiriko",
+        "tracer",
+        "lucio",
+        "winston"
+      ]
+    },
+    {
+      "key": "poses-69",
+      "file": "poses-69.png",
+      "ids": [
+        "ahri",
+        "lux",
+        "jinx",
+        "ekko",
+        "neeko",
+        "lulu",
+        "teemo"
+      ]
+    },
+    {
+      "key": "poses-70",
+      "file": "poses-70.png",
+      "ids": [
+        "jett",
+        "sage",
+        "killjoy",
+        "raze",
+        "neon",
+        "gekko",
+        "omen"
+      ]
+    },
+    {
+      "key": "poses-71",
+      "file": "poses-71.png",
+      "ids": [
+        "makoto-naegi",
+        "kyoko-kirigiri",
+        "byakuya-togami",
+        "aoi-asahina",
+        "chiaki-nanami",
+        "nagito-komaeda",
+        "monokuma"
+      ]
+    },
+    {
+      "key": "poses-72",
+      "file": "poses-72.png",
+      "ids": [
+        "omori",
+        "sunny",
+        "aubrey",
+        "kel",
+        "hero",
+        "mari-(omori)",
+        "basil"
+      ]
+    },
+    {
+      "key": "poses-73",
+      "file": "poses-73.png",
+      "ids": [
+        "beatrix-lebeau",
+        "krobus",
+        "hornet",
+        "alula",
+        "stella"
+      ]
+    }
+  ]
+}

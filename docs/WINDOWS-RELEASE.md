@@ -36,3 +36,13 @@ Choose **Change background** beneath the room for 22 illustrated scenes. Library
 pets get series-based suggestions, and Anime/Game filters let you explore other
 worlds. Background choices save with your pet and transfer through export/import.
 All backgrounds work offline in the desktop designer.
+
+Every character now has six new reference-guided expressions: Paw raise, Peace
+signs, Shy, Desk nap, Tired, and Drink. Preview them under More poses in the
+library, and assign Drink or Tired in the reaction editor. Saved library pets
+can use Replace with latest library poses while retaining their other settings.
+New poses and key bindings travel through pet export/import.
+
+Male characters use a cool, confident pose set: thumbs up, a casual V sign, head
+scratch, folded-arm desk nap, neck stretch, and a drink. The reference-style set
+remains available for the other characters, with natural paw gestures for creatures.

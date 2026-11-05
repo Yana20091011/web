@@ -78,6 +78,13 @@ try {
     await readFile('src/assets/character-library/characters.json', 'utf8'),
   );
   const sprite = characters.find((character) => character.id === 'naruto');
+  const libraryCatalog = JSON.parse(
+    await readFile('src/assets/character-library/catalog.json', 'utf8'),
+  );
+  const spriteEntry = libraryCatalog.entries.find((entry) => entry.id === 'naruto');
+  const expressiveSprite = JSON.parse(
+    await readFile('src/assets/character-library/batches/' + spriteEntry.batch + '.json', 'utf8'),
+  ).find((character) => character.id === 'naruto');
   const libraryPreview = page.getByTestId('character-library-preview');
   await libraryPreview.scrollIntoViewIfNeeded();
   await expect(libraryPreview.locator('.character-card')).toHaveCount(8);
@@ -153,7 +160,13 @@ try {
       species: 'custom',
       accessory: 'none',
       motionStrength: 25,
-      images: { idle: sprite.poses.idle, cheer: sprite.poses.happy },
+      images: {
+        idle: sprite.poses.idle,
+        cheer: sprite.poses.happy,
+        sleep: expressiveSprite.poses.sleep,
+        tired: expressiveSprite.poses.tired,
+        drink: expressiveSprite.poses.drink,
+      },
       typingImage: sprite.poses.typing,
       animations: {
         idle: {
@@ -167,7 +180,10 @@ try {
         },
       },
     },
-    reactions: originalPet.reactions,
+    reactions: [
+      ...originalPet.reactions,
+      { id: 'sip', key: 'd', action: 'drink', phrase: 'A little sip!' },
+    ],
   };
   const transferFile = JSON.stringify({ format: 'keycritter-pet', version: 1, pet: transferPet });
   await page.getByLabel('Import pet file').setInputFiles({
@@ -202,6 +218,22 @@ try {
     'true',
   );
   const exportDirectory = join(profile, 'export-check');
+  await page.getByRole('textbox', { name: 'Typing playground' }).press('d');
+  const sipCompanion = browser
+    .contexts()
+    .flatMap((context) => context.pages())
+    .find((candidate) => candidate.url().includes('#companion'));
+  await expect(sipCompanion.getByTestId('desktop-pet').locator('img')).toHaveAttribute(
+    'data-pose',
+    'drink',
+  );
+  await expect
+    .poll(
+      async () =>
+        (await sipCompanion.getByTestId('desktop-pet').locator('img').getAttribute('src')) ===
+        expressiveSprite.poses.drink,
+    )
+    .toBe(true);
   await mkdir(exportDirectory, { recursive: true });
   const downloadControl = await browser.newBrowserCDPSession();
   await downloadControl.send('Browser.setDownloadBehavior', {

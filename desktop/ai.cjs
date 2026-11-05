@@ -1,6 +1,6 @@
 const { validImages } = require('./shared.cjs');
 const MODELS = ['gpt-image-1.5', 'gpt-image-2.5-flare', 'gpt-image-2.5-sunburst'];
-const POSES = ['idle', 'jump', 'cheer', 'surprise', 'dance', 'sleep'];
+const POSES = ['idle', 'jump', 'cheer', 'surprise', 'dance', 'sleep', 'tired', 'drink'];
 const POSE_PROMPTS = {
   idle: 'Standing in a relaxed, friendly idle pose, looking toward the viewer.',
   jump: 'An excited jumping pose, feet tucked slightly up, playful expression.',
@@ -8,6 +8,8 @@ const POSE_PROMPTS = {
   surprise: 'A surprised expression with wide eyes and a small open mouth.',
   dance: 'A joyful dancing pose, tilted slightly with a playful expression.',
   sleep: 'Sleeping peacefully, curled up or sitting with closed eyes.',
+  tired: 'Looking tired, with head resting in one hand and gently closed eyes.',
+  drink: 'Taking a sip from a plain cup or an unbranded drink can.',
 };
 
 function validRequest(value) {

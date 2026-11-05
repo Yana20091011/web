@@ -12,6 +12,23 @@ import {
 import './character-library.css';
 
 const poses = ['idle', 'blinking', 'typing', 'happy'] as const;
+const extraPoses = [
+  ['wave', 'Paw raise'],
+  ['peace', 'Peace signs'],
+  ['shy', 'Shy'],
+  ['sleep', 'Desk nap'],
+  ['tired', 'Tired'],
+  ['drink', 'Drink'],
+] as const;
+const confidentPoses = [
+  ['wave', 'Thumbs up'],
+  ['peace', 'Casual V sign'],
+  ['shy', 'Head scratch'],
+  ['sleep', 'Folded-arm nap'],
+  ['tired', 'Neck stretch'],
+  ['drink', 'Drink'],
+] as const;
+type PreviewPose = (typeof poses)[number] | (typeof extraPoses)[number][0];
 const PAGE_SIZE = 24;
 const categories = ['All', 'Anime', 'Game', 'Original'] as const;
 export type LibraryCategory = (typeof categories)[number];
@@ -32,7 +49,7 @@ export default function CharacterLibrary({
   const [series, setSeries] = useState('All');
   const [sort, setSort] = useState('featured');
   const [page, setPage] = useState(1);
-  const [preview, setPreview] = useState<Record<string, (typeof poses)[number]>>({});
+  const [preview, setPreview] = useState<Record<string, PreviewPose>>({});
   const [artwork, setArtwork] = useState<Record<string, LibraryCharacter>>({});
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
@@ -120,7 +137,7 @@ export default function CharacterLibrary({
       if (active.current) setBusy('');
     }
   }
-  async function previewPose(entry: LibraryEntry, pose: (typeof poses)[number]) {
+  async function previewPose(entry: LibraryEntry, pose: PreviewPose) {
     setPreview((previous) => ({ ...previous, [entry.id]: pose }));
     setError('');
     if (artwork[entry.id] || pose === 'idle') return;
@@ -147,7 +164,7 @@ export default function CharacterLibrary({
           <p>
             {compact
               ? 'Choose Anime or Game, then pick a character to be your typing buddy.'
-              : 'Anime favorites, game friends, and our original laptop buddy. Every pet has idle, blinking, typing, and happy poses.'}
+              : 'Anime favorites, game friends, and our original laptop buddy. Ten poses each, from a little desk nap to a happy peace sign.'}
           </p>
         </div>
         {compact && (
@@ -295,6 +312,7 @@ export default function CharacterLibrary({
       <div className="pet-library">
         {displayed.map((entry) => {
           const pose = preview[entry.id] || 'idle';
+          const expressions = entry.poseStyle === 'confident' ? confidentPoses : extraPoses;
           return (
             <div className="card character-card" key={entry.id} data-character-id={entry.id}>
               <div className="character-scene">
@@ -333,6 +351,22 @@ export default function CharacterLibrary({
                         {value}
                       </button>
                     ))}
+                    <select
+                      className="character-extra-poses"
+                      aria-label={`More poses for ${entry.name}`}
+                      value={expressions.some(([value]) => value === pose) ? pose : ''}
+                      onChange={(event) => {
+                        if (event.target.value)
+                          void previewPose(entry, event.target.value as PreviewPose);
+                      }}
+                    >
+                      <option value="">More poses…</option>
+                      {expressions.map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 )}
                 <button

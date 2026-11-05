@@ -6,7 +6,10 @@ export interface LibraryCharacter {
   name: string;
   series: string;
   category: string;
-  poses: { idle: string; blinking: string; typing: string; happy: string };
+  poseStyle?: 'reference' | 'confident';
+  poses: { idle: string; blinking: string; typing: string; happy: string } & Partial<
+    Record<'wave' | 'peace' | 'shy' | 'sleep' | 'tired' | 'drink', string>
+  >;
   blinkFrames?: string[];
 }
 export function characterDesign(character: LibraryCharacter): PetDesign {
@@ -24,7 +27,16 @@ export function characterDesign(character: LibraryCharacter): PetDesign {
     libraryCharacterId: character.id,
     species: 'custom',
     accessory: 'none',
-    images: { idle, jump: typing, cheer: happy, surprise: blinking, dance: happy, sleep: blinking },
+    images: {
+      idle,
+      jump: character.poses.wave || typing,
+      cheer: happy,
+      surprise: character.poses.shy || blinking,
+      dance: character.poses.peace || happy,
+      sleep: character.poses.sleep || blinking,
+      ...(character.poses.tired ? { tired: character.poses.tired } : {}),
+      ...(character.poses.drink ? { drink: character.poses.drink } : {}),
+    },
     typingImage: typing,
     animations: { idle: blink },
   };

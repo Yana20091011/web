@@ -32,23 +32,33 @@ if (!scriptTag || !styleTag) throw new Error('Build the app before exporting it.
 // Lazy library chunks must travel with the standalone HTML too.
 async function inlineModule(path) {
   let source = await readFile(path, 'utf8');
-  const imports = [...source.matchAll(/import\(["'](\.[^"']+\.js)["']\)/g)];
-  for (const match of imports) {
-    const dependency = await inlineModule(assetPath(match[1], dirname(path)));
-    const url = `data:text/javascript;base64,${Buffer.from(dependency).toString('base64')}`;
-    source = source.replace(match[0], `import("${url}")`);
-  }
   // Thumbnails are separate files online; embed their generated URLs offline.
-  const portraits = [...source.matchAll(/(["'])([^"'\\\s]+\.webp)\1/g)];
+  // Replace files before expanding pose imports: the full library can exceed
+  // 100 MB, so repeatedly scanning the expanded module is unnecessarily costly.
+  const portraitPattern = /(["'])([^"'\\\s]+\.webp)\1/g;
+  const portraits = [...source.matchAll(portraitPattern)];
+  const embeddedPortraits = new Map();
   for (const match of portraits) {
+    if (embeddedPortraits.has(match[0])) continue;
     try {
       const embedded = await dataUrl(match[2], dirname(path));
-      source = source.replaceAll(match[0], JSON.stringify(embedded));
+      embeddedPortraits.set(match[0], JSON.stringify(embedded));
     } catch (error) {
       // Glob lookup keys refer to source paths, not generated files: keep them.
       if (error.code !== 'ENOENT') throw error;
     }
   }
+  source = source.replace(portraitPattern, (whole) => embeddedPortraits.get(whole) || whole);
+  const importPattern = /import\(["'](\.[^"']+\.js)["']\)/g;
+  const imports = [...source.matchAll(importPattern)];
+  const embeddedImports = new Map();
+  for (const match of imports) {
+    if (embeddedImports.has(match[0])) continue;
+    const dependency = await inlineModule(assetPath(match[1], dirname(path)));
+    const url = `data:text/javascript;base64,${Buffer.from(dependency).toString('base64')}`;
+    embeddedImports.set(match[0], `import(${JSON.stringify(url)})`);
+  }
+  source = source.replace(importPattern, (whole) => embeddedImports.get(whole) || whole);
   return source;
 }
 const script = await inlineModule(assetPath(scriptTag[1]));

@@ -2,7 +2,7 @@ import CustomPetImage from './CustomPetImage';
 
 export type Species = 'cat' | 'bunny' | 'blob' | 'custom';
 export type Accessory = 'bow' | 'glasses' | 'star' | 'none';
-export type Action = 'jump' | 'cheer' | 'surprise' | 'dance' | 'sleep';
+export type Action = 'jump' | 'cheer' | 'surprise' | 'dance' | 'sleep' | 'tired' | 'drink';
 export type PetPose = 'idle' | Action;
 export type PetImages = Partial<Record<PetPose, string>>;
 export interface PetFrame {
@@ -124,14 +124,14 @@ export default function Pet({
             <path d="M24 29h10v4H24zm-5 6h5v5h-5z" fill="#fff7df" opacity=".8" />
           </>
         )}
-        <g className={action === 'sleep' ? 'sleepy-face' : 'pet-face'}>
+        <g className={action === 'sleep' || action === 'tired' ? 'sleepy-face' : 'pet-face'}>
           {action === 'surprise' ? (
             <>
               <path d="M23 34h6v8h-6zm22 0h6v8h-6z" fill="#40374d" />
               <path d="M33 44h8v7h-8z" fill="#40374d" />
               <path d="M35 45h4v3h-4z" fill="#ef8fae" />
             </>
-          ) : action === 'sleep' ? (
+          ) : action === 'sleep' || action === 'tired' ? (
             <path d="M22 39h9v3h-9zm21 0h9v3h-9zM34 46h6v3h-6z" fill="#40374d" />
           ) : (
             <>

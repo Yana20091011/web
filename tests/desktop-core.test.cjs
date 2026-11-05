@@ -43,6 +43,26 @@ test('background and character identity survive native cleaning and reject unsaf
   assert.deepEqual(cleanPet(DEFAULT_PET), DEFAULT_PET);
 });
 
+test('drink and tired reactions and artwork survive native validation', () => {
+  const image = 'data:image/png;base64,iVBORw0KGgo=';
+  const pet = {
+    ...DEFAULT_PET,
+    design: { ...DEFAULT_PET.design, images: { idle: image, tired: image, drink: image } },
+    reactions: [
+      { id: 'sip', key: 'd', action: 'drink', phrase: 'Sip!' },
+      { id: 'rest', key: 't', action: 'tired', phrase: 'Rest!' },
+    ],
+  };
+  assert.deepEqual(cleanPet(pet), pet);
+  assert.equal(
+    cleanPet({
+      ...pet,
+      design: { ...pet.design, images: { ...pet.design.images, unknown: image } },
+    }),
+    null,
+  );
+});
+
 test('movement strength preserves old pets and validates the complete range', () => {
   assert.ok(cleanPet(DEFAULT_PET));
   for (const motionStrength of [0, 25, 100]) {

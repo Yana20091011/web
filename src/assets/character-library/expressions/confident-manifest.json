@@ -1,0 +1,308 @@
+{
+  "columns": ["wave", "peace", "shy", "sleep", "tired", "drink"],
+  "poseStyle": "confident",
+  "sheets": [
+    {
+      "key": "confident-00",
+      "file": "confident-00.png",
+      "ids": ["naruto"]
+    },
+    {
+      "key": "confident-01",
+      "file": "confident-01.png",
+      "ids": ["sasuke", "kakashi", "luffy", "zoro", "chopper", "goku", "vegeta"]
+    },
+    {
+      "key": "confident-02",
+      "file": "confident-02.png",
+      "ids": ["howl", "tanjiro", "zenitsu", "gojo", "yuji", "levi", "edward"]
+    },
+    {
+      "key": "confident-03",
+      "file": "confident-03.png",
+      "ids": ["silver", "mega-man", "cloud", "sora", "ralsei", "sonic", "tails"]
+    },
+    {
+      "key": "confident-04",
+      "file": "confident-04.png",
+      "ids": ["shadow", "tom-nook", "knuckles", "steve", "sans", "inuyasha", "crash"]
+    },
+    {
+      "key": "confident-05",
+      "file": "confident-05.png",
+      "ids": ["spyro", "rayman", "ichigo", "renji", "toshiro", "byakuya", "boruto"]
+    },
+    {
+      "key": "confident-06",
+      "file": "confident-06.png",
+      "ids": ["mitsuki", "itachi", "gaara", "rock-lee", "sanji", "ace", "sabo"]
+    },
+    {
+      "key": "confident-07",
+      "file": "confident-07.png",
+      "ids": ["law", "usopp", "brook", "inosuke", "giyu", "rengoku", "muichiro"]
+    },
+    {
+      "key": "confident-08",
+      "file": "confident-08.png",
+      "ids": ["izuku", "bakugo", "shoto", "all-might", "hawks", "loid", "bond"]
+    },
+    {
+      "key": "confident-09",
+      "file": "confident-09.png",
+      "ids": ["tadano", "wakana", "gon", "killua", "kurapika", "leorio", "alphonse"]
+    },
+    {
+      "key": "confident-10",
+      "file": "confident-10.png",
+      "ids": ["roy", "megumi", "nanami", "inumaki", "panda", "armin", "gohan"]
+    },
+    {
+      "key": "confident-11",
+      "file": "confident-11.png",
+      "ids": ["piccolo", "trunks", "krillin", "haku", "jiji", "calcifer", "ash"]
+    },
+    {
+      "key": "confident-12",
+      "file": "confident-12.png",
+      "ids": ["brock", "mob", "rimuru", "ciel", "sebastian", "metal-sonic", "espio"]
+    },
+    {
+      "key": "confident-13",
+      "file": "confident-13.png",
+      "ids": ["vector", "charmy", "big", "jet", "barret", "red-xiii", "vincent"]
+    },
+    {
+      "key": "confident-14",
+      "file": "confident-14.png",
+      "ids": ["zack", "sephiroth", "roxas", "axel", "riku", "ventus", "papyrus"]
+    },
+    {
+      "key": "confident-15",
+      "file": "confident-15.png",
+      "ids": ["lancer", "sebastian-(stardew)", "sam", "shane", "venti", "zhongli", "dan-heng"]
+    },
+    {
+      "key": "confident-16",
+      "file": "confident-16.png",
+      "ids": ["caelus", "jing-yuan", "pac-man", "bomberman", "shovel-knight", "quote", "mugman"]
+    },
+    {
+      "key": "confident-17",
+      "file": "confident-17.png",
+      "ids": ["amigo", "aiai", "beat", "klonoa", "ristar", "cuphead", "natsu"]
+    },
+    {
+      "key": "confident-18",
+      "file": "confident-18.png",
+      "ids": ["gray", "happy", "subaru", "otto", "roswaal", "jotaro", "joseph"]
+    },
+    {
+      "key": "confident-19",
+      "file": "confident-19.png",
+      "ids": ["josuke", "giorno", "dio", "bruno", "conan", "shinichi", "kaito-kid"]
+    },
+    {
+      "key": "confident-20",
+      "file": "confident-20.png",
+      "ids": ["heiji", "amuro", "shinji", "kaworu", "gendo", "jinshi", "okarun"]
+    },
+    {
+      "key": "confident-21",
+      "file": "confident-21.png",
+      "ids": ["denji", "aki", "pochita", "geralt", "solaire", "siegmeyer", "artorias"]
+    },
+    {
+      "key": "confident-22",
+      "file": "confident-22.png",
+      "ids": ["9s", "joker", "morgana", "phoenix-wright", "miles-edgeworth", "ryu", "ken"]
+    },
+    {
+      "key": "confident-23",
+      "file": "confident-23.png",
+      "ids": [
+        "dante",
+        "neuvillette",
+        "diluc",
+        "kaeya",
+        "xiao",
+        "terraria-guide",
+        "terraria-merchant"
+      ]
+    },
+    {
+      "key": "confident-24",
+      "file": "confident-24.png",
+      "ids": ["ratchet", "clank", "jak", "daxter", "sly-cooper", "sackboy", "zagreus"]
+    },
+    {
+      "key": "confident-25",
+      "file": "confident-25.png",
+      "ids": [
+        "hades",
+        "the-kid",
+        "shoyo-hinata",
+        "tobio-kageyama",
+        "kei-tsukishima",
+        "tadashi-yamaguchi",
+        "yu-nishinoya"
+      ]
+    },
+    {
+      "key": "confident-26",
+      "file": "confident-26.png",
+      "ids": [
+        "toru-oikawa",
+        "kenma-kozume",
+        "tetsuya-kuroko",
+        "taiga-kagami",
+        "ryota-kise",
+        "shintaro-midorima",
+        "daiki-aomine"
+      ]
+    },
+    {
+      "key": "confident-27",
+      "file": "confident-27.png",
+      "ids": [
+        "atsushi-murasakibara",
+        "seijuro-akashi",
+        "yoichi-isagi",
+        "meguru-bachira",
+        "hyoma-chigiri",
+        "rensuke-kunigami",
+        "seishiro-nagi"
+      ]
+    },
+    {
+      "key": "confident-28",
+      "file": "confident-28.png",
+      "ids": [
+        "reo-mikage",
+        "rin-itoshi",
+        "yuki-sohma",
+        "kyo-sohma",
+        "shigure-sohma",
+        "momiji-sohma",
+        "hatsuharu-sohma"
+      ]
+    },
+    {
+      "key": "confident-29",
+      "file": "confident-29.png",
+      "ids": [
+        "tamaki-suoh",
+        "kyoya-ootori",
+        "hikaru-hitachiin",
+        "kaoru-hitachiin",
+        "mitsukuni-haninozuka",
+        "takashi-morinozuka",
+        "syaoran-li"
+      ]
+    },
+    {
+      "key": "confident-30",
+      "file": "confident-30.png",
+      "ids": [
+        "kero",
+        "yue",
+        "toya-kinomoto",
+        "yukito-tsukishiro",
+        "kirito",
+        "kazuma",
+        "rintaro-okabe"
+      ]
+    },
+    {
+      "key": "confident-31",
+      "file": "confident-31.png",
+      "ids": [
+        "itaru-hashida",
+        "luka-urushibara",
+        "spike-spiegel",
+        "jet-black",
+        "ein",
+        "vicious",
+        "gintoki-sakata"
+      ]
+    },
+    {
+      "key": "confident-32",
+      "file": "confident-32.png",
+      "ids": [
+        "shinpachi-shimura",
+        "sadaharu",
+        "toshiro-hijikata",
+        "sogo-okita",
+        "kotaro-katsura",
+        "laios",
+        "chilchuck"
+      ]
+    },
+    {
+      "key": "confident-33",
+      "file": "confident-33.png",
+      "ids": [
+        "senshi",
+        "gingerbrave",
+        "wizard-cookie",
+        "pure-vanilla-cookie",
+        "dark-cacao-cookie",
+        "link",
+        "ganondorf"
+      ]
+    },
+    {
+      "key": "confident-34",
+      "file": "confident-34.png",
+      "ids": [
+        "sidon",
+        "tulin",
+        "meta-knight",
+        "king-dedede",
+        "bandana-waddle-dee",
+        "elfilin",
+        "magolor"
+      ]
+    },
+    {
+      "key": "confident-35",
+      "file": "confident-35.png",
+      "ids": ["marx", "byleth", "dimitri", "claude", "big-man", "shulk", "rex"]
+    },
+    {
+      "key": "confident-36",
+      "file": "confident-36.png",
+      "ids": ["leon-kennedy", "chris-redfield", "lucio", "winston", "ekko", "teemo", "gekko"]
+    },
+    {
+      "key": "confident-37",
+      "file": "confident-37.png",
+      "ids": [
+        "omen",
+        "makoto-naegi",
+        "byakuya-togami",
+        "nagito-komaeda",
+        "monokuma",
+        "omori",
+        "sunny"
+      ]
+    },
+    {
+      "key": "confident-38",
+      "file": "confident-38.png",
+      "ids": ["kel", "hero", "basil", "krobus"]
+    },
+    {
+      "key": "confident-01-mask",
+      "file": "confident-01-mask.png",
+      "ids": ["sasuke", "kakashi", "luffy", "zoro", "chopper", "goku", "vegeta"],
+      "onlyIds": ["kakashi"]
+    },
+    {
+      "key": "confident-shinichi",
+      "file": "confident-shinichi.png",
+      "ids": ["shinichi"]
+    }
+  ]
+}

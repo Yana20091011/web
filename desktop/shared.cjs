@@ -1,7 +1,7 @@
 const { resolve, sep } = require('node:path');
 
 const COLORS = ['#b5dbb3', '#c7b5ee', '#f1b2cb', '#f5d793', '#a9cce9'];
-const ACTIONS = ['jump', 'cheer', 'surprise', 'dance', 'sleep'];
+const ACTIONS = ['jump', 'cheer', 'surprise', 'dance', 'sleep', 'tired', 'drink'];
 const backgroundIds = new Set(
   require('./background-catalog.json').map((background) => background.id),
 );
@@ -10,7 +10,7 @@ function validAnimations(value) {
   let length = 0;
   const entries = Object.entries(value);
   return (
-    entries.length <= 6 &&
+    entries.length <= 8 &&
     entries.every(([pose, clip]) => {
       if (
         !['idle', ...ACTIONS].includes(pose) ||
@@ -53,7 +53,7 @@ function validImages(images) {
   if (!images || typeof images !== 'object' || Array.isArray(images)) return false;
   const entries = Object.entries(images);
   return (
-    entries.length <= 6 &&
+    entries.length <= 8 &&
     entries.every(
       ([slot, data]) =>
         ['idle', ...ACTIONS].includes(slot) &&

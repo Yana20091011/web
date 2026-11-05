@@ -19,7 +19,9 @@ stretches, heart hands, head tilts, and fist pumps.
 Character names belong to their respective creators.
 
 The expanded roster contains 500 distinct companions. `characters.json` is the
-complete source dataset used for validation. The packaging step also generates
+base four-pose source dataset used for validation. Six additional reference-guided
+poses are stored in the sibling `expressions/data` directory and merged during
+packaging. The packaging step also generates
 `catalog.json`, separate WebP portraits, and small JSON pose batches. The website
 uses the catalog and loads pose batches on demand; the offline HTML exporter
 embeds all batches and portraits.

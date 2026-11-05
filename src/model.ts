@@ -30,11 +30,13 @@ export const DEFAULT_PET: PetDesign = {
   accessory: 'bow',
 };
 export const ACTIONS: { value: Action; label: string; phrase: string }[] = [
-  { value: 'jump', label: 'Jump', phrase: 'Wheee!' },
+  { value: 'jump', label: 'Jump / Greeting', phrase: 'Wheee!' },
   { value: 'cheer', label: 'Cheer', phrase: 'You got this!' },
-  { value: 'surprise', label: 'Surprise', phrase: 'A little plot twist!' },
-  { value: 'dance', label: 'Dance', phrase: 'Happy little keystrokes!' },
-  { value: 'sleep', label: 'Sleep', phrase: 'Just resting my eyes…' },
+  { value: 'surprise', label: 'Surprise / Shy', phrase: 'A little plot twist!' },
+  { value: 'dance', label: 'Dance / Peace signs', phrase: 'Happy little keystrokes!' },
+  { value: 'sleep', label: 'Sleep / Desk nap', phrase: 'Just resting my eyes…' },
+  { value: 'tired', label: 'Tired', phrase: 'A little break sounds nice…' },
+  { value: 'drink', label: 'Drink', phrase: 'Time for a little sip!' },
 ];
 export const DEFAULT_REACTIONS: Reaction[] = [
   { id: 'space', key: ' ', action: 'jump', phrase: 'Wheee!' },

@@ -1,12 +1,21 @@
 import type { PetImages } from './Pet';
 
-export const IMAGE_SLOTS = ['idle', 'jump', 'cheer', 'surprise', 'dance', 'sleep'] as const;
+export const IMAGE_SLOTS = [
+  'idle',
+  'jump',
+  'cheer',
+  'surprise',
+  'dance',
+  'sleep',
+  'tired',
+  'drink',
+] as const;
 export const MAX_IMAGE_LENGTH = 220_000;
 export function validPetImages(value: unknown): value is PetImages {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const entries = Object.entries(value);
   return (
-    entries.length <= 6 &&
+    entries.length <= 8 &&
     entries.every(
       ([slot, data]) =>
         IMAGE_SLOTS.includes(slot as (typeof IMAGE_SLOTS)[number]) &&

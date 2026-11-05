@@ -35,6 +35,7 @@ import CustomPetStudio from './CustomPetStudio';
 import MotionControls from './MotionControls';
 import CharacterLibrary, { type LibraryCategory } from './CharacterLibrary';
 import BackgroundPicker from './BackgroundPicker';
+import LibraryPoseRefresh from './LibraryPoseRefresh';
 import { backgroundFor, backgroundImageFor } from './backgrounds';
 import { reactionDuration } from './framePlayback';
 import { usePetMotion } from './usePetMotion';
@@ -621,6 +622,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
                       autoComplete="off"
                     />
                   </div>
+                  <LibraryPoseRefresh design={design} onChange={setDesign} />
                   <CustomPetStudio design={design} onChange={setDesign} />
                   <div className="field-row color-row">
                     <span id="color-label">Color</span>

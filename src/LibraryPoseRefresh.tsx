@@ -1,4 +1,4 @@
-import { useState, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import type { PetDesign } from './Pet';
 import { characterSource } from './backgrounds';
 import { loadLibraryCharacter } from './characterLibraryData';
@@ -14,6 +14,45 @@ export default function LibraryPoseRefresh({
   const source = characterSource(design);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const needsPoses = Boolean(source && !design.images?.drink && !design.images?.tired);
+  useEffect(() => {
+    if (!source || !needsPoses) return;
+    let cancelled = false;
+    void loadLibraryCharacter(source)
+      .then((character) => {
+        if (cancelled) return;
+        const latest = characterDesign(character);
+        const originals = new Set([
+          character.poses.idle,
+          character.poses.blinking,
+          character.poses.typing,
+          character.poses.happy,
+        ]);
+        onChange((current) => {
+          // Only migrate recognizable library artwork. Keep uploaded/custom poses.
+          if (
+            characterSource(current)?.id !== source.id ||
+            current.images?.idle !== character.poses.idle ||
+            current.images?.drink ||
+            current.images?.tired
+          )
+            return current;
+          const images = { ...current.images };
+          for (const [slot, image] of Object.entries(latest.images || {})) {
+            const key = slot as keyof typeof images;
+            if (!images[key] || originals.has(images[key]!)) images[key] = image;
+          }
+          return { ...current, libraryCharacterId: source.id, images };
+        });
+      })
+      .catch((cause) => {
+        if (!cancelled)
+          setError(cause instanceof Error ? cause.message : 'Could not load new poses.');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [source?.id, needsPoses, onChange]);
   if (!source || (design.images?.drink && design.images?.tired)) return null;
   async function refresh() {
     if (!source) return;

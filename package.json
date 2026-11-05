@@ -1,7 +1,7 @@
 {
   "name": "keycritter",
   "private": true,
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "A tiny pixel pet that keeps you company while you type.",
   "author": "KeyCritter",
   "main": "desktop/main.cjs",

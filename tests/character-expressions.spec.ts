@@ -175,6 +175,10 @@ test('updates a saved library pet without losing its name, background, sizing or
     backgroundId: 'leaf-village',
     size: 125,
     motionStrength: 0,
+    images: {
+      ...old.images,
+      dance: base.find((character) => character.id === 'sakura')!.poses.happy,
+    },
   };
   const reactions = [{ id: 'rest', key: 'Enter', action: 'sleep', phrase: 'Nap time' }];
   await page.addInitScript(
@@ -182,9 +186,13 @@ test('updates a saved library pet without losing its name, background, sizing or
     { design, reactions, id: 'existing-pet' },
   );
   await page.goto('/');
-  await page
-    .getByRole('button', { name: 'Replace with latest library poses', exact: true })
-    .click();
+  await expect
+    .poll(async () =>
+      page.evaluate(() =>
+        Boolean(JSON.parse(localStorage.getItem('keycritter-draft')!).design.images?.drink),
+      ),
+    )
+    .toBe(true);
   await expect(
     page.getByRole('button', { name: 'Replace with latest library poses', exact: true }),
   ).toHaveCount(0);
@@ -198,6 +206,18 @@ test('updates a saved library pet without losing its name, background, sizing or
     libraryCharacterId: 'naruto',
   });
   expect(draft.reactions).toEqual(reactions);
+  expect(draft.design.animations).toEqual(design.animations);
+  await page.getByRole('button', { name: 'Upload', exact: true }).click();
+  for (const pose of ['sleep', 'tired', 'drink'])
+    await expect(
+      page
+        .getByRole('button', {
+          name: `Upload ${pose[0].toUpperCase() + pose.slice(1)} image`,
+          exact: true,
+        })
+        .locator('img'),
+    ).toBeVisible();
+  expect(draft.design.images.dance).toBe(design.images.dance);
   expect(Boolean(draft.design.images.drink && draft.design.images.tired)).toBe(true);
   expect(draft.design.images.sleep === old.images!.sleep).toBe(false);
   await page.getByRole('textbox', { name: 'Typing playground' }).press('Enter');

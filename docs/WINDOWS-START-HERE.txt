@@ -2,7 +2,7 @@ KEYCRITTER - WINDOWS DESKTOP PET
 
 For Windows 10/11, 64-bit (x64).
 
-This download is version 1.9.0. The logo and window title show v1.9.0.
+This download is version 1.9.1. The logo and window title show v1.9.1.
 Quit any older KeyCritter from the system tray before opening this update.
 The included verified-ui.png, verified-ai-ui.png, and verified-animation-ui.png
 are screenshots captured while testing this exact portable executable on Windows.
@@ -108,7 +108,8 @@ The desktop designer includes every scene offline.
 NEW CHARACTER POSES
 Use More poses in the character library to preview six extra expressions.
 Drink and Tired are available when editing a key reaction.
-For an older library pet, use Replace with latest library poses, then Save pet.
+Older library pets receive missing poses automatically when opened. Click Save pet.
+For customized artwork, Replace with latest library poses is still available.
 The update keeps the pet name, background, sizing and key bindings.
 
 Male characters have a cool, confident pose set with thumbs up, casual V signs,

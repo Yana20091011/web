@@ -46,3 +46,7 @@ New poses and key bindings travel through pet export/import.
 Male characters use a cool, confident pose set: thumbs up, a casual V sign, head
 scratch, folded-arm desk nap, neck stretch, and a drink. The reference-style set
 remains available for the other characters, with natural paw gestures for creatures.
+
+Older saved library pets now receive missing poses automatically when opened.
+Recognized old reaction images are refreshed; custom artwork, animations, names,
+backgrounds, sizes, movement settings and key bindings are preserved.

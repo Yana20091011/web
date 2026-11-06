@@ -1,3 +1,4 @@
+import brandLogo from './assets/brand/keycritter-logo.webp?inline';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ArrowDown,
@@ -314,7 +315,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
           aria-label="KeyCritter home"
         >
           <span className="brand-mark">
-            <PawPrint size={29} strokeWidth={2.3} />
+            <img src={brandLogo} alt="" width="46" height="46" />
           </span>
           <span>
             <span className="brand-name">

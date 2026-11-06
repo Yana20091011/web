@@ -315,7 +315,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
           aria-label="KeyCritter home"
         >
           <span className="brand-mark">
-            <img src={brandLogo} alt="" width="46" height="46" />
+            <img src={brandLogo} alt="" width="58" height="58" />
           </span>
           <span>
             <span className="brand-name">

@@ -2,7 +2,7 @@ KEYCRITTER - WINDOWS DESKTOP PET
 
 For Windows 10/11, 64-bit (x64).
 
-This download is version 1.9.2. The logo and window title show v1.9.2.
+This download is version 1.9.3. The logo and window title show v1.9.3.
 Quit any older KeyCritter from the system tray before opening this update.
 The included verified-ui.png, verified-ai-ui.png, and verified-animation-ui.png
 are screenshots captured while testing this exact portable executable on Windows.

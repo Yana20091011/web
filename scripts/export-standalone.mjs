@@ -75,7 +75,7 @@ html = html.replace(
   () => `<script type="module">${script.replace(/<\/script/gi, '<\\/script')}</script>`,
 );
 html = html.replace(styleTag[0], () => `<style>${css}</style>`);
-html = html.replace(/href="\.?\/?favicon.svg"/, `href="${await dataUrl('/favicon.svg')}"`);
+html = html.replace(/href="\.?\/?favicon-keycap.svg"/, `href="${await dataUrl('/favicon-keycap.svg')}"`);
 await mkdir(dirname(output), { recursive: true });
 await writeFile(output, html);
 console.log(`Standalone website saved to ${output}`);

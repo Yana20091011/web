@@ -1,22 +1,20 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type RefObject } from 'react';
 import { Download, Upload } from 'lucide-react';
-import {
-  exportPetFile,
-  importPetFile,
-  MAX_PET_FILE_BYTES,
-  petFileName,
-  type PortablePet,
-} from './petTransferFormat';
+import { importPetFile, MAX_PET_FILE_BYTES, type PortablePet } from './petTransferFormat';
+import { downloadPetFile } from './downloadPetFile';
 import './pet-transfer.css';
 
 export default function PetTransfer({
   pet,
   onImport,
+  inputRef,
 }: {
   pet: PortablePet;
+  inputRef?: RefObject<HTMLInputElement | null>;
   onImport: (pet: PortablePet) => void;
 }) {
-  const input = useRef<HTMLInputElement>(null);
+  const ownInput = useRef<HTMLInputElement>(null);
+  const input = inputRef || ownInput;
   const importHandler = useRef(onImport);
   importHandler.current = onImport;
   const busy = useRef(false);
@@ -27,14 +25,7 @@ export default function PetTransfer({
     setMessage('');
     setError('');
     try {
-      const url = URL.createObjectURL(new Blob([exportPetFile(pet)], { type: 'application/json' }));
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = petFileName(pet.design.name);
-      document.body.append(link);
-      link.click();
-      link.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      downloadPetFile(pet);
       setMessage('Pet file ready. Open KeyCritter on your other device and choose Import pet.');
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Could not export this pet.');
@@ -53,6 +44,7 @@ export default function PetTransfer({
         [
           ...Object.values(incoming.design.images || {}),
           incoming.design.typingImage,
+          incoming.design.backgroundImage,
           ...Object.values(incoming.design.animations || {}).flatMap(
             (clip) => clip?.frames.map((f) => f.image) || [],
           ),

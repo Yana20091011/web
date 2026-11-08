@@ -39,3 +39,64 @@ test('offers a direct public Windows download and usable instructions on both ta
   await page.getByRole('button', { name: /My Pets/ }).click();
   await expect(download).toBeVisible();
 });
+
+test('takes the latest website pet and uploaded background to a fresh app through the visible download handoff', async ({
+  page,
+  browser,
+}) => {
+  const { readFile } = await import('node:fs/promises');
+  await page.goto('/');
+  await page.getByRole('button', { name: /My Pets/ }).click();
+  await page.getByRole('button', { name: 'Choose Naruto', exact: true }).click();
+  await page.getByLabel('Name', { exact: true }).fill('Desktop friend');
+  await page.getByRole('button', { name: 'Change background', exact: true }).click();
+  await page.getByLabel('Upload background image').setInputFiles('public/cozy-room.png');
+  await expect(page.getByTestId('room-background')).toHaveAttribute('data-background-id', 'custom');
+  const expected = await page.evaluate(() => JSON.parse(localStorage.getItem('keycritter-draft')!));
+  // No Save pet action: the handoff must include current, unsaved edits too.
+  const pending = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Save my pet for desktop', exact: true }).click();
+  const file = await pending;
+  expect(file.suggestedFilename()).toBe('Desktop-friend.keycritter.json');
+  const contents = await readFile((await file.path())!, 'utf8');
+  expect(JSON.parse(contents).pet).toEqual({
+    design: expected.design,
+    reactions: expected.reactions,
+  });
+  await expect(page.getByRole('status').filter({ hasText: 'Pet file ready.' })).toBeVisible();
+  await page.getByLabel('Name', { exact: true }).fill('Changed again');
+  await expect(page.getByRole('status').filter({ hasText: 'Save a new pet file' })).toBeVisible();
+  const context = await browser.newContext();
+  try {
+    const destination = await context.newPage();
+    await destination.goto(page.url());
+    await destination.getByLabel('Import pet file').setInputFiles({
+      name: file.suggestedFilename(),
+      mimeType: 'application/json',
+      buffer: Buffer.from(contents),
+    });
+    await expect(
+      destination.getByRole('heading', { name: 'Meet Desktop friend', exact: true }),
+    ).toBeVisible();
+    await expect(destination.getByTestId('room-background')).toHaveAttribute(
+      'data-background-id',
+      'custom',
+    );
+    expect(
+      await destination.evaluate(
+        () => JSON.parse(localStorage.getItem('keycritter-draft')!).design,
+      ),
+    ).toEqual(expected.design);
+  } finally {
+    await context.close();
+  }
+  await page
+    .getByLabel('Import pet file')
+    .setInputFiles({
+      name: file.suggestedFilename(),
+      mimeType: 'application/json',
+      buffer: Buffer.from(contents),
+    });
+  await expect(page.getByRole('status').filter({ hasText: 'Pet file ready.' })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});

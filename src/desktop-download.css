@@ -91,3 +91,19 @@
 .desktop-download-actions .button {
   text-decoration: none;
 }
+
+.desktop-transfer-steps {
+  width: 100%;
+  border-top: 1px solid #e3daed;
+  padding-top: 12px;
+}
+.desktop-transfer-steps p + p {
+  margin-top: 6px;
+}
+.desktop-transfer-steps .desktop-transfer-status {
+  color: #5c764f;
+  font-weight: 700;
+}
+.desktop-transfer-steps .desktop-transfer-error {
+  color: #a63760;
+}

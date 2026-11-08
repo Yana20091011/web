@@ -199,7 +199,11 @@ try {
     ],
   };
   const transferFile = JSON.stringify({ format: 'keycritter-pet', version: 1, pet: transferPet });
-  await page.getByLabel('Import pet file').setInputFiles({
+  const websitePetChooser = page.waitForEvent('filechooser');
+  await page.getByRole('button', { name: 'Import website pet', exact: true }).click();
+  await (
+    await websitePetChooser
+  ).setFiles({
     name: 'portable-transfer.keycritter.json',
     mimeType: 'application/json',
     buffer: Buffer.from(transferFile),

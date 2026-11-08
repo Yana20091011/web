@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Monitor, Pause, Play, X, Pin } from 'lucide-react';
+import { Monitor, Pause, Play, X, Pin, Upload } from 'lucide-react';
 import type { PetDesign } from './Pet';
 import type { Reaction } from './model';
 import type { DesktopState } from './desktop';
@@ -8,10 +8,12 @@ export default function DesktopPanel({
   initial,
   design,
   reactions,
+  onImportPet,
 }: {
   initial: DesktopState;
   design: PetDesign;
   reactions: Reaction[];
+  onImportPet: () => void;
 }) {
   const [state, setState] = useState(initial);
   const [syncError, setSyncError] = useState('');
@@ -62,6 +64,10 @@ export default function DesktopPanel({
         </small>
       </div>
       <div className="desktop-panel-actions">
+        <button className="button preview-button" type="button" onClick={onImportPet}>
+          <Upload size={14} aria-hidden="true" />
+          Import website pet
+        </button>
         <button
           className={`button ${state.pinned ? 'preview-button' : 'primary'}`}
           aria-label="Pin pet above apps"

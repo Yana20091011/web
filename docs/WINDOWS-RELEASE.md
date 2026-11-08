@@ -54,3 +54,9 @@ backgrounds, sizes, movement settings and key bindings are preserved.
 Upload a custom room image under Change background. PNG, JPG and WebP files
 up to 8 MB are supported. Uploaded backgrounds save with the pet, work offline,
 and transfer through export/import. Preset backgrounds remain available.
+
+To keep a website design, use Save my pet for desktop beside the website’s
+Windows download button, then Import website pet in the desktop designer.
+The file contains current edits, including uploaded backgrounds and reactions.
+Website storage is separate from the desktop app; downloading the executable
+alone does not transfer settings.

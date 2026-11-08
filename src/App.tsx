@@ -88,6 +88,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
   const [elapsed, setElapsed] = useState(0);
   const [typed, setTyped] = useState(0);
   const textarea = useRef<HTMLTextAreaElement>(null);
+  const petImportInput = useRef<HTMLInputElement>(null);
   const keyInput = useRef<HTMLInputElement>(null);
   const editor = useRef<HTMLElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -352,7 +353,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
           Save pet
         </button>
       </header>
-      {!desktopState && <DesktopDownload />}
+      {!desktopState && <DesktopDownload pet={{ design, reactions }} />}
 
       {tab === 'playground' ? (
         <main className="main-content">
@@ -371,9 +372,14 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
               Made to be yours
             </span>
           </div>
-          <PetTransfer pet={{ design, reactions }} onImport={importPet} />
+          <PetTransfer pet={{ design, reactions }} onImport={importPet} inputRef={petImportInput} />
           {desktopState && (
-            <DesktopPanel initial={desktopState} design={design} reactions={reactions} />
+            <DesktopPanel
+              initial={desktopState}
+              design={design}
+              reactions={reactions}
+              onImportPet={() => petImportInput.current?.click()}
+            />
           )}
           <div className="workspace-grid">
             <section className="playground-column" aria-label="Pet playground">

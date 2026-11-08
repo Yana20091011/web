@@ -29,6 +29,7 @@ function cleanPet(value: unknown): PortablePet {
       size: design.size,
       accessory: design.accessory,
       ...(design.backgroundId === undefined ? {} : { backgroundId: design.backgroundId }),
+      ...(design.backgroundImage === undefined ? {} : { backgroundImage: design.backgroundImage }),
       ...(design.libraryCharacterId === undefined
         ? {}
         : { libraryCharacterId: design.libraryCharacterId }),

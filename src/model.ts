@@ -1,3 +1,4 @@
+import { validBackgroundImage } from './backgroundUpload';
 import type { Action, PetDesign } from './Pet';
 import { validPetImages } from './petImages';
 import { validAnimations } from './framePlayback';
@@ -53,6 +54,7 @@ export function validDesign(v: unknown): v is PetDesign {
     typeof v.name === 'string' &&
     (v.backgroundId === undefined ||
       (typeof v.backgroundId === 'string' && backgroundIds.has(v.backgroundId))) &&
+    (v.backgroundImage === undefined || validBackgroundImage(v.backgroundImage)) &&
     (v.libraryCharacterId === undefined ||
       (typeof v.libraryCharacterId === 'string' &&
         /^[a-z0-9().-]{1,100}$/.test(v.libraryCharacterId))) &&

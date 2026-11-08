@@ -43,6 +43,23 @@ test('background and character identity survive native cleaning and reject unsaf
   assert.deepEqual(cleanPet(DEFAULT_PET), DEFAULT_PET);
 });
 
+test('uploaded background survives native cleaning with image-only limits', () => {
+  const pet = {
+    ...DEFAULT_PET,
+    design: { ...DEFAULT_PET.design, backgroundImage: 'data:image/png;base64,iVBORw0KGgo=' },
+  };
+  assert.deepEqual(cleanPet(pet), pet);
+  for (const backgroundImage of [
+    'https://example.com/bg.png',
+    'javascript:alert(1)',
+    'data:image/svg+xml;base64,PHN2Zz4=',
+    null,
+    {},
+    'data:image/png;base64,' + 'A'.repeat(700_000),
+  ])
+    assert.equal(cleanPet({ ...pet, design: { ...pet.design, backgroundImage } }), null);
+});
+
 test('drink and tired reactions and artwork survive native validation', () => {
   const image = 'data:image/png;base64,iVBORw0KGgo=';
   const pet = {

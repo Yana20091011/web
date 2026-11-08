@@ -381,13 +381,21 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
                 <div
                   className="room-art"
                   data-testid="room-background"
-                  data-background-id={backgroundFor(design.backgroundId).id}
+                  data-background-id={
+                    design.backgroundImage ? 'custom' : backgroundFor(design.backgroundId).id
+                  }
                   role="img"
-                  aria-label={`${backgroundFor(design.backgroundId).name} background`}
+                  aria-label={
+                    design.backgroundImage
+                      ? 'Uploaded background'
+                      : `${backgroundFor(design.backgroundId).name} background`
+                  }
                   style={
-                    design.backgroundId && design.backgroundId !== 'cozy-room'
-                      ? { backgroundImage: `url("${backgroundImageFor(design.backgroundId)}")` }
-                      : undefined
+                    design.backgroundImage
+                      ? { backgroundImage: `url("${design.backgroundImage}")` }
+                      : design.backgroundId && design.backgroundId !== 'cozy-room'
+                        ? { backgroundImage: `url("${backgroundImageFor(design.backgroundId)}")` }
+                        : undefined
                   }
                 />
                 <div className="room-toolbar">
@@ -479,10 +487,7 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
                 </div>
               </div>
 
-              <BackgroundPicker
-                design={design}
-                onChange={(backgroundId) => setDesign((current) => ({ ...current, backgroundId }))}
-              />
+              <BackgroundPicker design={design} onChange={setDesign} />
 
               <section className="card typing-card">
                 <div className="section-heading">

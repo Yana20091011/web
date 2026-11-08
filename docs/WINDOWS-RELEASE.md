@@ -50,3 +50,7 @@ remains available for the other characters, with natural paw gestures for creatu
 Older saved library pets now receive missing poses automatically when opened.
 Recognized old reaction images are refreshed; custom artwork, animations, names,
 backgrounds, sizes, movement settings and key bindings are preserved.
+
+Upload a custom room image under Change background. PNG, JPG and WebP files
+up to 8 MB are supported. Uploaded backgrounds save with the pet, work offline,
+and transfer through export/import. Preset backgrounds remain available.

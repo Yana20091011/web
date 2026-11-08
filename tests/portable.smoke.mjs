@@ -136,6 +136,18 @@ try {
       page.evaluate(async () => (await window.keycritter.getState()).pet.design.backgroundId),
     )
     .toBe('leaf-village');
+  await page.getByLabel('Upload background image').setInputFiles(resolve('public/cozy-room.png'));
+  await expect(page.getByTestId('room-background')).toHaveAttribute('data-background-id', 'custom');
+  await expect
+    .poll(() =>
+      page.evaluate(async () =>
+        Boolean((await window.keycritter.getState()).pet.design.backgroundImage),
+      ),
+    )
+    .toBe(true);
+  const uploadedBackground = await page.evaluate(
+    async () => (await window.keycritter.getState()).pet.design.backgroundImage,
+  );
   await libraryPreview
     .getByRole('button', { name: `Browse all ${characters.length} pets`, exact: true })
     .click();
@@ -156,6 +168,7 @@ try {
       ...originalPet.design,
       name: 'Portable transfer',
       backgroundId: 'leaf-village',
+      backgroundImage: uploadedBackground,
       libraryCharacterId: sprite.id,
       species: 'custom',
       accessory: 'none',
@@ -192,6 +205,7 @@ try {
     buffer: Buffer.from(transferFile),
   });
   await expect(page.getByRole('heading', { name: 'Meet Portable transfer' })).toBeVisible();
+  await expect(page.getByTestId('room-background')).toHaveAttribute('data-background-id', 'custom');
   await expect
     .poll(() => page.evaluate(async () => (await window.keycritter.getState()).pet))
     .toEqual(transferPet);

@@ -80,6 +80,10 @@ function validPet(pet) {
     typeof d.name === 'string' &&
     (d.backgroundId === undefined ||
       (typeof d.backgroundId === 'string' && backgroundIds.has(d.backgroundId))) &&
+    (d.backgroundImage === undefined ||
+      (typeof d.backgroundImage === 'string' &&
+        d.backgroundImage.length <= 700_000 &&
+        /^data:image\/(png|webp|jpeg);base64,[A-Za-z0-9+/]+={0,2}$/.test(d.backgroundImage))) &&
     (d.libraryCharacterId === undefined ||
       (typeof d.libraryCharacterId === 'string' &&
         /^[a-z0-9().-]{1,100}$/.test(d.libraryCharacterId))) &&
@@ -126,6 +130,9 @@ function cleanPet(pet) {
       size,
       accessory,
       ...(pet.design.backgroundId === undefined ? {} : { backgroundId: pet.design.backgroundId }),
+      ...(pet.design.backgroundImage === undefined
+        ? {}
+        : { backgroundImage: pet.design.backgroundImage }),
       ...(pet.design.libraryCharacterId === undefined
         ? {}
         : { libraryCharacterId: pet.design.libraryCharacterId }),

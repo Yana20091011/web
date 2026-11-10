@@ -146,6 +146,17 @@ test('a key plays its own frames; changing a static image disables only that pos
   const chooser = page.waitForEvent('filechooser');
   await page.getByRole('button', { name: 'Upload Cheer image', exact: true }).click();
   await (await chooser).setFiles(files[0]);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => JSON.parse(localStorage.getItem('keycritter-draft')!).design.animations.cheer.enabled,
+      ),
+    )
+    .toBe(false);
+  // Safari's file picker can outlast the reaction. Preview it again rather than
+  // assuming it is still active while checking that the uploaded pose is static.
+  await page.getByRole('button', { name: 'Preview Enter reaction', exact: true }).click();
+  await expect(image).toHaveAttribute('data-pose', 'cheer');
   await expect(image).toHaveAttribute('data-animated', 'false');
   await page.getByRole('textbox', { name: 'Typing playground' }).press('Space');
   await expect(image).toHaveAttribute('data-pose', 'idle');

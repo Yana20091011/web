@@ -39,6 +39,10 @@ export default defineConfig({
     },
     {
       name: 'macbook-safari',
+      // The native Windows executable handoff belongs to the Chrome project.
+      testIgnore: '**/desktop-download.spec.ts',
+      // Multi-window image import/export flows take longer in WebKit.
+      timeout: 60_000,
       use: { ...devices['Desktop Safari'], viewport: { width: 1280, height: 800 } },
     },
   ],

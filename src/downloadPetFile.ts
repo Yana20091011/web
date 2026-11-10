@@ -10,6 +10,7 @@ export function downloadPetFile(pet: PortablePet): string {
   document.body.append(link);
   link.click();
   link.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  // Safari can start consuming a blob download after the click handler has returned.
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
   return filename;
 }

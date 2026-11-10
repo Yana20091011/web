@@ -15,7 +15,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  browser-compatibility:
+    name: Check MacBook Safari and Chrome
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Check typing, customization, uploads, animation, and transfers
+        run: >-
+          npx playwright test tests/macbook.spec.ts tests/playground.spec.ts
+          tests/background-upload.spec.ts tests/pet-transfer.spec.ts
+          tests/animation.spec.ts tests/movement.spec.ts tests/desktop-download.spec.ts
+          --project=desktop --project=macbook-safari
   deploy:
+    needs: browser-compatibility
     permissions:
       contents: read
       pages: write

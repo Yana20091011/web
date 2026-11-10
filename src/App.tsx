@@ -353,7 +353,18 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
           Save pet
         </button>
       </header>
-      {!desktopState && <DesktopDownload pet={{ design, reactions }} />}
+      {!desktopState && (
+        <DesktopDownload
+          pet={{ design, reactions }}
+          onUseBrowser={() => {
+            setTab('playground');
+            requestAnimationFrame(() => {
+              textarea.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              textarea.current?.focus({ preventScroll: true });
+            });
+          }}
+        />
+      )}
 
       {tab === 'playground' ? (
         <main className="main-content">
@@ -847,7 +858,14 @@ export default function App({ desktopState }: { desktopState?: DesktopState }) {
                     value={editorKey ? keyLabel(editorKey) : ''}
                     readOnly
                     onKeyDown={(e) => {
-                      if (e.key === 'Tab') return;
+                      if (
+                        e.key === 'Tab' ||
+                        e.nativeEvent.isComposing ||
+                        e.metaKey ||
+                        e.ctrlKey ||
+                        e.altKey
+                      )
+                        return;
                       e.preventDefault();
                       if (['Shift', 'Control', 'Meta', 'Alt', 'CapsLock', 'Escape'].includes(e.key))
                         return;

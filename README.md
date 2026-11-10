@@ -2,6 +2,18 @@
 
 A floating typing pet for Windows, with a cozy React designer. Customize a pixel pet, animate your own image frames, or generate a new companion with an AI prompt.
 
+## Use on a MacBook
+
+Open https://yana20091011.github.io/web/ in a current Safari or Chrome browser.
+Choose **Start typing in this browser** to open the typing playground. Character selection,
+background uploads, blink frames, custom key reactions, saving, and pet export/import work
+in the browser. Command shortcuts remain available while editing reaction keys.
+
+Use **Save pet** for My Pets, or **Save a pet backup** / **Export pet** to download a
+`.keycritter.json` file for **Import pet** in another browser. Browser reactions run while
+you type in this page. The floating pet that reacts above other apps is currently a
+Windows desktop app; its `.exe` cannot run on macOS.
+
 ## Use the Windows desktop pet
 
 1. Open `KeyCritter-Windows-1.10.1.exe` on a Windows 10/11 x64 computer. This is a portable app; Node.js and an installer are not required.
@@ -90,7 +102,7 @@ npm run test:desktop:unit
 npm run test:desktop
 ```
 
-Browser tests run in desktop and mobile Chromium. They use `/usr/bin/chromium` when available. Otherwise install Chromium with `npx playwright install chromium`, or set `CHROMIUM_PATH` to a browser executable. Playwright starts the development server automatically if it is not running.
+Browser tests run in desktop/mobile Chromium and a 1280×800 MacBook-sized WebKit (Safari engine) project. Install both engines with `npx playwright install --with-deps chromium webkit`. Chromium uses `/usr/bin/chromium` when available, or `CHROMIUM_PATH` when set; WebKit uses its own Playwright browser. Playwright starts the development server automatically. WebKit on Linux tests Safari's engine, not macOS desktop app behavior.
 
 `npm run preview` serves the production build after `npm run build`.
 
